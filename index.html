@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Newsroom – Daily Political Briefing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      --bg-main: #050512;
+      --bg-glass: rgba(19, 20, 48, 0.75);
+      --bg-glass-soft: rgba(22, 23, 60, 0.6);
+      --accent-purple: #b483ff;
+      --accent-pink: #ff7edb;
+      --accent-blue: #5fd4ff;
+      --text-main: #f5f5ff;
+      --text-muted: #a0a0c5;
+      --border-subtle: rgba(255, 255, 255, 0.15);
+      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.6);
+      --radius-xl: 24px;
+      --transition-fast: 0.18s ease-out;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Inter", sans-serif;
+      color: var(--text-main);
+      background: radial-gradient(circle at top, #20143a 0, #050512 35%) fixed;
+      background-color: var(--bg-main);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Subtle animated shimmer overlay */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.06), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.04), transparent 55%);
+      mix-blend-mode: screen;
+      opacity: 0.55;
+      pointer-events: none;
+      animation: shimmer 14s linear infinite alternate;
+    }
+
+    @keyframes shimmer {
+      0% {
+        transform: translate3d(-10px, 0, 0) scale(1);
+      }
+      100% {
+        transform: translate3d(10px, 0, 0) scale(1.01);
+      }
+    }
+
+    .page-shell {
+      position: relative;
+      width: 100%;
+      max-width: 1280px;
+      padding: 20px 16px 32px;
+      z-index: 1;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 18px;
+      background: radial-gradient(circle at 30% 20%, #ffffff, #f3d5ff 30%, #7b5bff 65%, #1c1034 100%);
+      box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(255, 255, 255, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-logo::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.3),
+        transparent 35%,
+        transparent 65%,
+        rgba(255, 255, 255, 0.15)
+      );
+      mix-blend-mode: soft-light;
+      opacity: 0.8;
+    }
+
+    .brand-text-title {
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+
+    .brand-text-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .brand-labels {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .right-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .pill {
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: linear-gradient(
+        135deg,
+        rgba(180, 131, 255, 0.12),
+        rgba(95, 212, 255, 0.12)
+      );
+      color: var(--text-muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 99px;
+      background: radial-gradient(circle, var(--accent-purple), var(--accent-blue));
+      box-shadow: 0 0 8px rgba(191, 128, 255, 0.9);
+    }
+
+    .btn-login {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.28), transparent 55%),
+        linear-gradient(135deg, #24163f, #151830, #151023);
+      color: var(--text-main);
+      font-size: 13px;
+      padding: 6px 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: var(--shadow-soft);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
+        background var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .btn-login span.icon {
+      font-size: 15px;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.9);
+      border-color: rgba(255, 255, 255, 0.4);
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.4), transparent 55%),
+        linear-gradient(135deg, #2c1e54, #191c3b, #181126);
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr) minmax(0, 0.9fr);
+      gap: 18px;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 960px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 55%),
+        var(--bg-glass);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 16px 16px 18px;
+      backdrop-filter: blur(20px);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel::before {
+      content: "";
+      position: absolute;
+      inset: -140%;
+      background: conic-gradient(
+        from 180deg,
+        rgba(191, 128, 255, 0.08),
+        transparent,
+        rgba(95, 212, 255, 0.06),
+        transparent,
+        rgba(255, 126, 219, 0.07)
+      );
+      opacity: 0.7;
+      mix-blend-mode: soft-light;
+      animation: panelGlow 16s linear infinite;
+      pointer-events: none;
+    }
+
+    @keyframes panelGlow {
+      from {
+        transform: translate3d(-10px, 0, 0) rotate(0deg);
+      }
+      to {
+        transform: translate3d(10px, 0, 0) rotate(2deg);
+      }
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .panel-title {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .panel-subtitle {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .panel-body {
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Big Picture list */
+    .big-picture-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .big-picture-item {
+      position: relative;
+      padding-left: 16px;
+      font-size: 13px;
+      color: var(--text-main);
+    }
+
+    .big-picture-item::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 7px;
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--accent-purple), var(--accent-blue));
+      box-shadow: 0 0 10px rgba(180, 131, 255, 0.9);
+    }
+
+    .big-picture-date {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Center column cards (stories) */
+    .story-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .story-card {
+      position: relative;
+      background: var(--bg-glass-soft);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      padding: 12px 12px 12px 14px;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 6px 14px;
+      align-items: flex-start;
+      transition: transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast),
+        background var(--transition-fast);
+    }
+
+    .story-card::before {
+      content: "";
+      position: absolute;
+      inset: -60%;
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.2), transparent 55%);
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+      pointer-events: none;
+    }
+
+    .story-card:hover {
+      transform: translateY(-2px) translateZ(0);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9);
+      border-color: rgba(255, 255, 255, 0.3);
+      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 65%),
+        rgba(19, 20, 48, 0.9);
+    }
+
+    .story-card:hover::before {
+      opacity: 0.6;
+    }
+
+    .story-main {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .story-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f8f4ff;
+    }
+
+    .story-summary {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .story-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .story-source-pill {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.15), transparent 60%);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .story-source-pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: radial-gradient(circle, var(--accent-purple), var(--accent-blue));
+    }
+
+    .story-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag-pill {
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text-muted);
+      background: rgba(9, 9, 22, 0.6);
+    }
+
+    .story-link {
+      align-self: center;
+      font-size: 11px;
+      text-decoration: none;
+      color: var(--accent-blue);
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px dashed rgba(95, 212, 255, 0.55);
+      background: radial-gradient(circle at 0 0, rgba(95, 212, 255, 0.12), transparent 60%);
+      backdrop-filter: blur(10px);
+      transition: background var(--transition-fast), transform var(--transition-fast),
+        border-color var(--transition-fast), box-shadow var(--transition-fast);
+      white-space: nowrap;
+    }
+
+    .story-link:hover {
+      transform: translateY(-1px);
+      background: radial-gradient(circle at 0 0, rgba(95, 212, 255, 0.28), transparent 60%);
+      border-color: rgba(95, 212, 255, 0.9);
+      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Right panel – personalization */
+    .prefs-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .prefs-group {
+      border-radius: 16px;
+      background: rgba(5, 5, 24, 0.8);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 10px 10px 8px;
+    }
+
+    .prefs-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 4px;
+      color: var(--text-main);
+    }
+
+    .prefs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .prefs-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: rgba(15, 15, 33, 0.95);
+      cursor: pointer;
+      transition: border-color var(--transition-fast), background var(--transition-fast),
+        transform var(--transition-fast);
+    }
+
+    .prefs-chip input {
+      accent-color: var(--accent-purple);
+      cursor: pointer;
+    }
+
+    .prefs-chip span.label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .prefs-chip.active {
+      border-color: rgba(180, 131, 255, 0.9);
+      background: radial-gradient(circle at 0 0, rgba(180, 131, 255, 0.38), transparent 60%);
+      transform: translateY(-0.5px);
+    }
+
+    .prefs-chip.active span.label {
+      color: var(--text-main);
+    }
+
+    .prefs-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .prefs-save-status {
+      font-size: 11px;
+      color: var(--accent-blue);
+      margin-top: 4px;
+      opacity: 0;
+      transition: opacity var(--transition-fast);
+    }
+
+    .prefs-save-status.visible {
+      opacity: 1;
+    }
+
+    /* Archive selector */
+    .archive-select {
+      font-size: 11px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(10, 9, 24, 0.9);
+      color: var(--text-muted);
+      outline: none;
+    }
+
+    .empty-state {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header>
+      <div class="brand">
+        <div class="brand-logo" aria-hidden="true"></div>
+        <div class="brand-labels">
+          <div class="brand-text-title">The Newsroom</div>
+          <div class="brand-text-sub">Daily U.S. politics, debriefed</div>
+        </div>
+      </div>
+
+      <div class="right-header">
+        <div class="pill">
+          <span class="pill-dot"></span>
+          Daily briefing · Auto-updated
+        </div>
+        <button class="btn-login" type="button">
+          <span class="icon">👤</span>
+          <span>Login / Sign up</span>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <!-- LEFT: Big Picture -->
+      <section class="panel" id="big-picture-panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Today’s Big Picture</div>
+            <div class="panel-subtitle">Key threads shaping U.S. politics right now</div>
+          </div>
+          <select id="archiveSelect" class="archive-select" title="Past briefings">
+            <option value="">Loading dates…</option>
+          </select>
+        </div>
+        <div class="panel-body">
+          <ul class="big-picture-list" id="bigPictureList">
+            <!-- Filled by JS -->
+          </ul>
+          <div class="big-picture-date" id="bigPictureDate">
+            <!-- “Updated November 21, 2025” -->
+          </div>
+          <div class="empty-state" id="bigPictureEmpty" style="display:none;">
+            No briefing found yet. Once your backend pushes the first daily JSON,
+            this will auto-populate.
+          </div>
+        </div>
+      </section>
+
+      <!-- CENTER: Story feed -->
+      <section class="panel" id="stories-panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Top Stories</div>
+            <div class="panel-subtitle">Handpicked from NYT, AP, Politico, Guardian, and more</div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="story-list" id="storyList">
+            <!-- Story cards injected here -->
+          </div>
+          <div class="empty-state" id="storyEmpty" style="display:none;">
+            Once today’s briefing is generated, you’ll see it here. Check back after the EC2
+            pipeline has run.
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Personalization -->
+      <aside class="panel" id="prefs-panel">
+        <div class="panel-header">
+          <div>
+            <div class="panel-title">Your Perspective</div>
+            <div class="panel-subtitle">Tell the system what matters to you</div>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="prefs-section">
+            <div class="prefs-group">
+              <div class="prefs-title">Topics</div>
+              <div class="prefs-grid" id="prefsTopics">
+                <!-- Chips injected by JS -->
+              </div>
+              <div class="prefs-note">
+                These toggles don’t change the global briefing yet, but they’ll be used to
+                personalize your dashboard view and emails later.
+              </div>
+              <div class="prefs-save-status" id="prefsSaveStatus">
+                Preferences saved.
+              </div>
+            </div>
+
+            <div class="prefs-group">
+              <div class="prefs-title">Identifiers</div>
+              <div style="display:flex;flex-direction:column;gap:6px;">
+                <label class="prefs-chip">
+                  <input type="checkbox" id="identifierBeginner" />
+                  <span class="label">I’m new to U.S. politics</span>
+                </label>
+                <label class="prefs-chip">
+                  <input type="checkbox" id="identifierPolicyNerd" />
+                  <span class="label">I like deep policy details</span>
+                </label>
+                <label class="prefs-chip">
+                  <input type="checkbox" id="identifierInvestor" />
+                  <span class="label">I care about market impact</span>
+                </label>
+              </div>
+              <div class="prefs-note">
+                We’ll eventually use these to decide how much context to show by default
+                (e.g., extra “what is the filibuster?” tooltips).
+              </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    // ---------- CONFIG ----------
+    const POSTS_INDEX_URL = "./data/index.json"; // list of posts
+    const POST_BY_SLUG_URL = (slug) => `./data/posts/${slug}.json`;
+
+    const DEFAULT_TOPICS = [
+      { id: "congress", label: "Congress & legislation" },
+      { id: "courts", label: "Supreme Court & courts" },
+      { id: "elections", label: "Elections & voting" },
+      { id: "foreign_policy", label: "Foreign policy & wars" },
+      { id: "economy", label: "Economy & markets" },
+      { id: "immigration", label: "Immigration & border" },
+      { id: "climate", label: "Climate & energy" },
+      { id: "social", label: "Social issues" },
+      { id: "state_politics", label: "States & local" }
+    ];
+
+    const PREFS_STORAGE_KEY = "newsroom_prefs_v1";
+
+    // ---------- UTIL ----------
+    function formatDatePretty(dateStr) {
+      if (!dateStr) return "";
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return dateStr;
+      return d.toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+    }
+
+    function loadPrefs() {
+      try {
+        const raw = localStorage.getItem(PREFS_STORAGE_KEY);
+        if (!raw) return {};
+        return JSON.parse(raw);
+      } catch (e) {
+        console.warn("Failed to parse prefs", e);
+        return {};
+      }
+    }
+
+    function savePrefs(prefs) {
+      try {
+        localStorage.setItem(PREFS_STORAGE_KEY, JSON.stringify(prefs));
+      } catch (e) {
+        console.warn("Failed to save prefs", e);
+      }
+    }
+
+    // ---------- PERSONALIZATION UI ----------
+    function initPrefsUI() {
+      const prefsTopicsContainer = document.getElementById("prefsTopics");
+      const statusEl = document.getElementById("prefsSaveStatus");
+
+      const prefs = loadPrefs();
+      const topicSelections = prefs.topics || [];
+      const identifiers = prefs.identifiers || {};
+
+      // topics chips
+      DEFAULT_TOPICS.forEach((topic) => {
+        const chip = document.createElement("label");
+        chip.className = "prefs-chip";
+
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.value = topic.id;
+
+        if (topicSelections.includes(topic.id)) {
+          input.checked = true;
+          chip.classList.add("active");
+        }
+
+        input.addEventListener("change", () => {
+          const newPrefs = loadPrefs();
+          const currentTopics = newPrefs.topics || [];
+          let updated;
+
+          if (input.checked) {
+            updated = Array.from(new Set([...currentTopics, topic.id]));
+            chip.classList.add("active");
+          } else {
+            updated = currentTopics.filter((t) => t !== topic.id);
+            chip.classList.remove("active");
+          }
+
+          newPrefs.topics = updated;
+          savePrefs(newPrefs);
+          showPrefsSaved(statusEl);
+        });
+
+        const labelSpan = document.createElement("span");
+        labelSpan.className = "label";
+        labelSpan.textContent = topic.label;
+
+        chip.appendChild(input);
+        chip.appendChild(labelSpan);
+        prefsTopicsContainer.appendChild(chip);
+      });
+
+      // identifiers
+      const identifierBeginner = document.getElementById("identifierBeginner");
+      const identifierPolicyNerd = document.getElementById("identifierPolicyNerd");
+      const identifierInvestor = document.getElementById("identifierInvestor");
+
+      identifierBeginner.checked = !!identifiers.beginner;
+      identifierPolicyNerd.checked = !!identifiers.policyNerd;
+      identifierInvestor.checked = !!identifiers.investor;
+
+      const handleIdentifierChange = () => {
+        const newPrefs = loadPrefs();
+        newPrefs.identifiers = {
+          beginner: identifierBeginner.checked,
+          policyNerd: identifierPolicyNerd.checked,
+          investor: identifierInvestor.checked
+        };
+        savePrefs(newPrefs);
+        showPrefsSaved(statusEl);
+      };
+
+      identifierBeginner.addEventListener("change", handleIdentifierChange);
+      identifierPolicyNerd.addEventListener("change", handleIdentifierChange);
+      identifierInvestor.addEventListener("change", handleIdentifierChange);
+    }
+
+    function showPrefsSaved(el) {
+      if (!el) return;
+      el.classList.add("visible");
+      setTimeout(() => el.classList.remove("visible"), 1300);
+    }
+
+    // ---------- BRIEFING LOADING ----------
+    async function fetchJsonSafe(url) {
+      const res = await fetch(url, { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error(`Failed to load ${url}: ${res.status}`);
+      }
+      return res.json();
+    }
+
+    async function loadPostsIndex() {
+      try {
+        const data = await fetchJsonSafe(POSTS_INDEX_URL);
+        const posts = (data && data.posts) || [];
+        const sorted = posts.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
+        return sorted;
+      } catch (e) {
+        console.warn("No posts index yet", e);
+        return [];
+      }
+    }
+
+    async function loadPostBySlug(slug) {
+      try {
+        const data = await fetchJsonSafe(POST_BY_SLUG_URL(slug));
+        return data;
+      } catch (e) {
+        console.warn("Failed to load post", e);
+        return null;
+      }
+    }
+
+    function renderBigPicture(post) {
+      const listEl = document.getElementById("bigPictureList");
+      const dateEl = document.getElementById("bigPictureDate");
+      const emptyEl = document.getElementById("bigPictureEmpty");
+
+      listEl.innerHTML = "";
+      if (!post || !post.bigPicture || post.bigPicture.length === 0) {
+        emptyEl.style.display = "block";
+        dateEl.textContent = "";
+        return;
+      }
+      emptyEl.style.display = "none";
+
+      post.bigPicture.forEach((line) => {
+        const li = document.createElement("li");
+        li.className = "big-picture-item";
+        li.textContent = line;
+        listEl.appendChild(li);
+      });
+
+      dateEl.textContent = `Updated ${formatDatePretty(post.date)}`;
+    }
+
+    function renderStories(post) {
+      const listEl = document.getElementById("storyList");
+      const emptyEl = document.getElementById("storyEmpty");
+      listEl.innerHTML = "";
+
+      if (!post || !post.stories || post.stories.length === 0) {
+        emptyEl.style.display = "block";
+        return;
+      }
+      emptyEl.style.display = "none";
+
+      post.stories.forEach((story) => {
+        const card = document.createElement("article");
+        card.className = "story-card";
+
+        const main = document.createElement("div");
+        main.className = "story-main";
+
+        const title = document.createElement("h3");
+        title.className = "story-title";
+        title.textContent = story.title || "Untitled story";
+
+        const summary = document.createElement("p");
+        summary.className = "story-summary";
+        summary.textContent =
+          story.summary ||
+          "No summary available yet. Check the source link for full details.";
+
+        const meta = document.createElement("div");
+        meta.className = "story-meta";
+
+        if (story.sourceName) {
+          const sourcePill = document.createElement("span");
+          sourcePill.className = "story-source-pill";
+          const dot = document.createElement("span");
+          dot.className = "dot";
+          const label = document.createElement("span");
+          label.textContent = story.sourceName;
+          sourcePill.appendChild(dot);
+          sourcePill.appendChild(label);
+          meta.appendChild(sourcePill);
+        }
+
+        if (story.tags && story.tags.length > 0) {
+          const tagsContainer = document.createElement("div");
+          tagsContainer.className = "story-tags";
+          story.tags.forEach((tag) => {
+            const t = document.createElement("span");
+            t.className = "tag-pill";
+            t.textContent = tag.replace(/_/g, " ");
+            tagsContainer.appendChild(t);
+          });
+          meta.appendChild(tagsContainer);
+        }
+
+        main.appendChild(title);
+        main.appendChild(summary);
+        main.appendChild(meta);
+
+        const link =
+          story.sourceUrl || story.url
+            ? document.createElement("a")
+            : document.createElement("span");
+
+        if (link.tagName.toLowerCase() === "a") {
+          link.className = "story-link";
+          link.href = story.sourceUrl || story.url;
+          link.target = "_blank";
+          link.rel = "noopener noreferrer";
+          link.textContent = "Open story";
+        } else {
+          link.className = "story-link";
+          link.textContent = "No source link";
+          link.style.opacity = "0.5";
+        }
+
+        card.appendChild(main);
+        card.appendChild(link);
+        listEl.appendChild(card);
+      });
+    }
+
+    async function hydratePage() {
+      initPrefsUI();
+
+      const archiveSelect = document.getElementById("archiveSelect");
+
+      const posts = await loadPostsIndex();
+      archiveSelect.innerHTML = "";
+
+      if (!posts.length) {
+        const opt = document.createElement("option");
+        opt.value = "";
+        opt.textContent = "No briefings yet";
+        archiveSelect.appendChild(opt);
+        renderBigPicture(null);
+        renderStories(null);
+        return;
+      }
+
+      posts.forEach((p, idx) => {
+        const opt = document.createElement("option");
+        opt.value = p.slug;
+        opt.textContent =
+          idx === 0
+            ? `Today · ${formatDatePretty(p.date)}`
+            : formatDatePretty(p.date);
+        archiveSelect.appendChild(opt);
+      });
+
+      const firstSlug = posts[0].slug;
+      const firstPost = await loadPostBySlug(firstSlug);
+      renderBigPicture(firstPost);
+      renderStories(firstPost);
+
+      archiveSelect.addEventListener("change", async () => {
+        const slug = archiveSelect.value;
+        if (!slug) return;
+        const post = await loadPostBySlug(slug);
+        renderBigPicture(post);
+        renderStories(post);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      hydratePage().catch((e) => console.error(e));
+    });
+  </script>
+</body>
+</html>
