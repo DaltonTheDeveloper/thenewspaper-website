@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Finishing sign-in…</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+</head>
+<body style="background:#050512;color:#f5f5ff;font-family:system-ui;padding:20px;">
+  <p>Finishing sign-in, please wait…</p>
+
+  <script>
+    const COGNITO_DOMAIN    = 'https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com';
+    const COGNITO_CLIENT_ID = '2shion39m0mim70d0etbtp0eh9';
+    const REDIRECT_URI      = 'https://daltonthedeveloper.github.io/thenewspaper-website/callback.html';
+    const TOKEN_ENDPOINT    = `${COGNITO_DOMAIN}/oauth2/token`;
+
+    async function finishLogin() {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get('code');
+      if (!code) {
+        document.body.innerHTML = '<p>Missing auth code from Cognito.</p>';
+        return;
+      }
+
+      const codeVerifier = sessionStorage.getItem('cognito_code_verifier');
+      if (!codeVerifier) {
+        document.body.innerHTML = '<p>Missing PKCE code verifier (session may have been cleared or expired).</p>';
+        return;
+      }
+
+      const body = new URLSearchParams({
+        grant_type: 'authorization_code',
+        client_id: COGNITO_CLIENT_ID,
+        code,
+        redirect_uri: REDIRECT_URI,
+        code_verifier: codeVerifier,
+      });
+
+      const res = await fetch(TOKEN_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        document.body.innerHTML = '<pre>Token error:\n' + text + '</pre>';
+        return;
+      }
+
+      const tokens = await res.json();
+      // { access_token, id_token, refresh_token?, expires_in, token_type }
+
+      sessionStorage.removeItem('cognito_code_verifier');
+      localStorage.setItem('newsroom_tokens', JSON.stringify(tokens));
+
+      // Redirect back to homepage
+      window.location.href = 'https://daltonthedeveloper.github.io/thenewspaper-website/';
+    }
+
+    finishLogin().catch(err => {
+      document.body.innerHTML = '<pre>' + (err?.stack || err) + '</pre>';
+    });
+  </script>
+</body>
+</html>

@@ -546,7 +546,7 @@
         </div>
         <button class="btn-login" type="button">
           <span class="icon">👤</span>
-          <span>Login / Sign up</span>
+          <span class="btn-login-label">Login / Sign up</span>
         </button>
       </div>
     </header>
@@ -567,9 +567,7 @@
           <ul class="big-picture-list" id="bigPictureList">
             <!-- Filled by JS -->
           </ul>
-          <div class="big-picture-date" id="bigPictureDate">
-            <!-- “Updated November 21, 2025” -->
-          </div>
+          <div class="big-picture-date" id="bigPictureDate"></div>
           <div class="empty-state" id="bigPictureEmpty" style="display:none;">
             No briefing found yet. Once your backend pushes the first daily JSON,
             this will auto-populate.
@@ -608,9 +606,7 @@
           <div class="prefs-section">
             <div class="prefs-group">
               <div class="prefs-title">Topics</div>
-              <div class="prefs-grid" id="prefsTopics">
-                <!-- Chips injected by JS -->
-              </div>
+              <div class="prefs-grid" id="prefsTopics"></div>
               <div class="prefs-note">
                 These toggles don’t change the global briefing yet, but they’ll be used to
                 personalize your dashboard view and emails later.
@@ -648,7 +644,7 @@
   </div>
 
   <script>
-    // ---------- CONFIG ----------
+    // ====== BACKEND / DATA CONFIG ======
     const POSTS_INDEX_URL = "./data/index.json"; // list of posts
     const POST_BY_SLUG_URL = (slug) => `./data/posts/${slug}.json`;
 
@@ -665,6 +661,11 @@
     ];
 
     const PREFS_STORAGE_KEY = "newsroom_prefs_v1";
+
+    // ====== COGNITO CONFIG ======
+    const COGNITO_DOMAIN    = 'https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com';
+    const COGNITO_CLIENT_ID = '2shion39m0mim70d0etbtp0eh9';
+    const REDIRECT_URI      = 'https://daltonthedeveloper.github.io/thenewspaper-website/callback.html';
 
     // ---------- UTIL ----------
     function formatDatePretty(dateStr) {
@@ -956,8 +957,67 @@
       });
     }
 
+    // ====== AUTH HELPERS (PKCE + TOKEN STATE) ======
+    async function sha256(buffer) {
+      return crypto.subtle.digest('SHA-256', buffer);
+    }
+
+    function base64UrlEncode(buffer) {
+      return btoa(String.fromCharCode(...new Uint8Array(buffer)))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+    }
+
+    async function createPkcePair() {
+      const random = crypto.getRandomValues(new Uint8Array(32));
+      const codeVerifier = base64UrlEncode(random);
+      const digest = await sha256(new TextEncoder().encode(codeVerifier));
+      const codeChallenge = base64UrlEncode(digest);
+      return { codeVerifier, codeChallenge };
+    }
+
+    function getTokens() {
+      try {
+        const raw = localStorage.getItem('newsroom_tokens');
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    }
+
+    async function startLogin() {
+      const { codeVerifier, codeChallenge } = await createPkcePair();
+      sessionStorage.setItem('cognito_code_verifier', codeVerifier);
+
+      const params = new URLSearchParams({
+        response_type: 'code',
+        client_id: COGNITO_CLIENT_ID,
+        redirect_uri: REDIRECT_URI,
+        code_challenge_method: 'S256',
+        code_challenge: codeChallenge,
+        scope: 'openid email profile'
+      });
+
+      window.location.href = `${COGNITO_DOMAIN}/oauth2/authorize?` + params.toString();
+    }
+
+    function initAuthUI() {
+      const loginBtn = document.querySelector('.btn-login');
+      const labelSpan = document.querySelector('.btn-login-label');
+      if (!loginBtn) return;
+
+      loginBtn.addEventListener('click', startLogin);
+
+      const tokens = getTokens();
+      if (tokens?.id_token && labelSpan) {
+        labelSpan.textContent = 'Account';
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       hydratePage().catch((e) => console.error(e));
+      initAuthUI();
     });
   </script>
 </body>
