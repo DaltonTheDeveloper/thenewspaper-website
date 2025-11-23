@@ -2,23 +2,23 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>The Newsroom – Daily Political Briefing</title>
+  <title>The Newsroom · Daily U.S. politics, debriefed</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
   <style>
     :root {
-      --bg-main: #050512;
-      --bg-glass: rgba(19, 20, 48, 0.75);
-      --bg-glass-soft: rgba(22, 23, 60, 0.6);
-      --accent-purple: #b483ff;
-      --accent-pink: #ff7edb;
-      --accent-blue: #5fd4ff;
+      --bg-main: #050516;
+      --bg-panel: rgba(14, 16, 40, 0.92);
+      --bg-panel-soft: rgba(16, 18, 50, 0.92);
+      --border-subtle: rgba(255, 255, 255, 0.08);
       --text-main: #f5f5ff;
-      --text-muted: #a0a0c5;
-      --border-subtle: rgba(255, 255, 255, 0.15);
+      --text-muted: #a3a3c4;
+      --accent-1: #b483ff;
+      --accent-2: #5fd4ff;
+      --danger: #ff6b81;
       --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.6);
-      --radius-xl: 24px;
-      --transition-fast: 0.18s ease-out;
+      --radius-lg: 24px;
+      --radius-md: 18px;
+      --radius-pill: 999px;
     }
 
     * {
@@ -28,25 +28,71 @@
     }
 
     body {
-      min-height: 100vh;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
         "Inter", sans-serif;
+      min-height: 100vh;
       color: var(--text-main);
-      background: radial-gradient(circle at top, #20143a 0, #050512 35%) fixed;
-      background-color: var(--bg-main);
+      background: radial-gradient(circle at top left, #140b33 0, #050516 40%),
+        radial-gradient(circle at bottom right, #02081b 0, #050516 55%);
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
     }
 
-    /* Subtle animated shimmer overlay */
-    body::before {
-      content: "";
+    .bg-bubbles {
       position: fixed;
       inset: 0;
-      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.06), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(255, 255, 255, 0.04), transparent 55%);
+      overflow: hidden;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .bg-bubble {
+      position: absolute;
+      border-radius: 999px;
+      filter: blur(40px);
+      opacity: 0.7;
       mix-blend-mode: screen;
+      background: radial-gradient(circle at 30% 20%, #ff9cf5 0, transparent 60%);
+      animation: float 22s ease-in-out infinite alternate;
+    }
+
+    .bg-bubble:nth-child(2) {
+      width: 420px;
+      height: 420px;
+      right: -120px;
+      top: 12%;
+      background: radial-gradient(circle at 60% 40%, #7dd2ff 0, transparent 60%);
+      animation-duration: 28s;
+    }
+
+    .bg-bubble:nth-child(3) {
+      width: 480px;
+      height: 480px;
+      left: 10%;
+      bottom: -220px;
+      background: radial-gradient(circle at 40% 0, #b483ff 0, transparent 60%);
+      animation-duration: 32s;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translate3d(0, 10px, 0) scale(1);
+      }
+      100% {
+        transform: translate3d(-10px, -10px, 0) scale(1.05);
+      }
+    }
+
+    .glare {
+      position: absolute;
+      inset: -40px;
+      background: radial-gradient(
+        circle at 0 0,
+        rgba(255, 255, 255, 0.1) 0,
+        transparent 50%
+      );
+      mix-blend-mode: soft-light;
       opacity: 0.55;
       pointer-events: none;
       animation: shimmer 14s linear infinite alternate;
@@ -64,49 +110,54 @@
     .page-shell {
       position: relative;
       width: 100%;
-      max-width: 1280px;
-      padding: 20px 16px 32px;
-      z-index: 1;
+      max-width: 1120px;
+      border-radius: 32px;
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.06), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(22, 181, 255, 0.18), transparent 60%),
+        linear-gradient(145deg, rgba(9, 10, 26, 0.96), rgba(3, 6, 25, 0.98));
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
+      padding: 20px 22px 24px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      overflow: hidden;
     }
 
     header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
+      gap: 16px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
     .brand-logo {
       width: 40px;
       height: 40px;
-      border-radius: 18px;
-      background: radial-gradient(circle at 30% 20%, #ffffff, #f3d5ff 30%, #7b5bff 65%, #1c1034 100%);
+      border-radius: 16px;
+      background:
+        radial-gradient(circle at 0 0, #ffffff, transparent 55%),
+        conic-gradient(
+          from 140deg,
+          #845cff,
+          #c184ff,
+          #5fd4ff,
+          #f26bff,
+          #845cff
+        );
       box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.75),
-        0 0 0 1px rgba(255, 255, 255, 0.3);
-      position: relative;
-      overflow: hidden;
+        0 0 0 1px rgba(255, 255, 255, 0.4),
+        0 8px 25px rgba(0, 0, 0, 0.85);
     }
 
-    .brand-logo::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(
-        135deg,
-        rgba(255, 255, 255, 0.3),
-        transparent 35%,
-        transparent 65%,
-        rgba(255, 255, 255, 0.15)
-      );
-      mix-blend-mode: soft-light;
-      opacity: 0.8;
+    .brand-labels {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
 
     .brand-text-title {
@@ -120,12 +171,6 @@
     .brand-text-sub {
       font-size: 12px;
       color: var(--text-muted);
-    }
-
-    .brand-labels {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
     }
 
     .right-header {
@@ -154,8 +199,8 @@
       width: 6px;
       height: 6px;
       border-radius: 99px;
-      background: radial-gradient(circle, var(--accent-purple), var(--accent-blue));
-      box-shadow: 0 0 8px rgba(191, 128, 255, 0.9);
+      background: radial-gradient(circle at 30% 30%, #5fd4ff, #b483ff);
+      box-shadow: 0 0 8px rgba(150, 255, 255, 0.9);
     }
 
     .btn-login {
@@ -171,43 +216,40 @@
       gap: 6px;
       cursor: pointer;
       box-shadow: var(--shadow-soft);
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast),
-        background var(--transition-fast), border-color var(--transition-fast);
-    }
-
-    .btn-login span.icon {
-      font-size: 15px;
+      transition: transform 0.16s ease-out, box-shadow 0.16s ease-out,
+        border-color 0.16s ease-out, background 0.16s ease-out;
     }
 
     .btn-login:hover {
       transform: translateY(-1px);
-      box-shadow: 0 22px 55px rgba(0, 0, 0, 0.9);
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.9);
       border-color: rgba(255, 255, 255, 0.4);
-      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.4), transparent 55%),
-        linear-gradient(135deg, #2c1e54, #191c3b, #181126);
+    }
+
+    .btn-login .icon {
+      font-size: 14px;
     }
 
     main {
       display: grid;
-      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.35fr) minmax(0, 0.9fr);
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
       gap: 18px;
-      margin-top: 8px;
-    }
-
-    @media (max-width: 960px) {
-      main {
-        grid-template-columns: minmax(0, 1fr);
-      }
+      align-items: flex-start;
     }
 
     .panel {
-      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.08), transparent 55%),
-        var(--bg-glass);
-      border-radius: var(--radius-xl);
+      background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.06),
+          rgba(255, 255, 255, 0.01)
+        ),
+        radial-gradient(circle at 0 0, rgba(240, 165, 255, 0.12), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(95, 212, 255, 0.18), transparent 55%),
+        rgba(7, 10, 34, 0.96);
+      border-radius: var(--radius-lg);
+      padding: 16px 16px 20px;
       border: 1px solid var(--border-subtle);
       box-shadow: var(--shadow-soft);
-      padding: 16px 16px 18px;
-      backdrop-filter: blur(20px);
       position: relative;
       overflow: hidden;
     }
@@ -215,321 +257,388 @@
     .panel::before {
       content: "";
       position: absolute;
-      inset: -140%;
-      background: conic-gradient(
-        from 180deg,
-        rgba(191, 128, 255, 0.08),
-        transparent,
-        rgba(95, 212, 255, 0.06),
-        transparent,
-        rgba(255, 126, 219, 0.07)
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.25),
+        rgba(255, 255, 255, 0.02)
       );
-      opacity: 0.7;
       mix-blend-mode: soft-light;
-      animation: panelGlow 16s linear infinite;
+      opacity: 0.35;
       pointer-events: none;
     }
 
-    @keyframes panelGlow {
-      from {
-        transform: translate3d(-10px, 0, 0) rotate(0deg);
-      }
-      to {
-        transform: translate3d(10px, 0, 0) rotate(2deg);
-      }
+    .panel > * {
+      position: relative;
+      z-index: 1;
     }
 
     .panel-header {
       display: flex;
-      align-items: baseline;
       justify-content: space-between;
-      gap: 10px;
-      margin-bottom: 10px;
-      position: relative;
-      z-index: 1;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 12px;
     }
 
     .panel-title {
-      font-size: 15px;
+      font-size: 16px;
       font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
-      color: var(--text-muted);
     }
 
     .panel-subtitle {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .panel-meta {
       font-size: 11px;
       color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 6px;
     }
 
-    .panel-body {
-      position: relative;
-      z-index: 1;
+    .panel-meta-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #5fd4ff, #b483ff);
     }
 
-    /* Big Picture list */
+    .panel-select {
+      font-size: 11px;
+      border-radius: 999px;
+      padding: 4px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(13, 17, 44, 0.9);
+      color: var(--text-main);
+      outline: none;
+    }
+
     .big-picture-list {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 8px;
+      margin-top: 8px;
     }
 
     .big-picture-item {
-      position: relative;
-      padding-left: 16px;
+      padding: 8px 9px;
+      border-radius: 12px;
+      background: radial-gradient(
+          circle at 0 0,
+          rgba(183, 140, 255, 0.18),
+          transparent 50%
+        ),
+        linear-gradient(
+          135deg,
+          rgba(12, 15, 45, 0.98),
+          rgba(9, 11, 35, 0.98)
+        );
+      border: 1px solid rgba(255, 255, 255, 0.1);
       font-size: 13px;
       color: var(--text-main);
+      display: flex;
+      gap: 8px;
     }
 
     .big-picture-item::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 7px;
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: radial-gradient(circle, var(--accent-purple), var(--accent-blue));
-      box-shadow: 0 0 10px rgba(180, 131, 255, 0.9);
+      content: "•";
+      color: var(--accent-2);
+      margin-right: 4px;
     }
 
-    .big-picture-date {
-      margin-top: 10px;
-      font-size: 11px;
+    .placeholder-text {
+      font-size: 13px;
       color: var(--text-muted);
+      padding: 6px 0 2px;
     }
 
-    /* Center column cards (stories) */
     .story-list {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
+      margin-top: 6px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding-right: 4px;
     }
 
     .story-card {
-      position: relative;
-      background: var(--bg-glass-soft);
-      border-radius: 20px;
+      border-radius: var(--radius-md);
+      padding: 10px 11px 10px;
+      background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.02)
+        ),
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.18), transparent 55%),
+        rgba(9, 11, 36, 0.96);
       border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 12px 12px 12px 14px;
-      overflow: hidden;
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 6px 14px;
-      align-items: flex-start;
-      transition: transform var(--transition-fast),
-        box-shadow var(--transition-fast),
-        border-color var(--transition-fast),
-        background var(--transition-fast);
-    }
-
-    .story-card::before {
-      content: "";
-      position: absolute;
-      inset: -60%;
-      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.2), transparent 55%);
-      opacity: 0;
-      transition: opacity var(--transition-fast);
-      pointer-events: none;
-    }
-
-    .story-card:hover {
-      transform: translateY(-2px) translateZ(0);
-      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.9);
-      border-color: rgba(255, 255, 255, 0.3);
-      background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.12), transparent 65%),
-        rgba(19, 20, 48, 0.9);
-    }
-
-    .story-card:hover::before {
-      opacity: 0.6;
-    }
-
-    .story-main {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
+    }
+
+    .story-title-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: center;
     }
 
     .story-title {
       font-size: 14px;
-      font-weight: 600;
-      color: #f8f4ff;
+      font-weight: 500;
+    }
+
+    .story-tag {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: radial-gradient(
+        circle at 0 0,
+        rgba(95, 212, 255, 0.4),
+        transparent 55%
+      );
+      color: #06151f;
+    }
+
+    .story-tldr {
+      font-size: 12px;
+      color: var(--text-muted);
     }
 
     .story-summary {
       font-size: 12px;
-      color: var(--text-muted);
+      color: #dadbf8;
     }
 
     .story-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-size: 11px;
       color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 4px;
-      flex-wrap: wrap;
+      margin-top: 2px;
     }
 
-    .story-source-pill {
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.15), transparent 60%);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      color: var(--text-main);
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .story-source-pill span.dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: radial-gradient(circle, var(--accent-purple), var(--accent-blue));
-    }
-
-    .story-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-    }
-
-    .tag-pill {
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.16);
-      color: var(--text-muted);
-      background: rgba(9, 9, 22, 0.6);
+    .story-meta-sources {
+      opacity: 0.9;
     }
 
     .story-link {
-      align-self: center;
+      margin-top: 2px;
+      align-self: flex-start;
       font-size: 11px;
+      color: #8ee7ff;
       text-decoration: none;
-      color: var(--accent-blue);
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px dashed rgba(95, 212, 255, 0.55);
-      background: radial-gradient(circle at 0 0, rgba(95, 212, 255, 0.12), transparent 60%);
-      backdrop-filter: blur(10px);
-      transition: background var(--transition-fast), transform var(--transition-fast),
-        border-color var(--transition-fast), box-shadow var(--transition-fast);
-      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
-    .story-link:hover {
-      transform: translateY(-1px);
-      background: radial-gradient(circle at 0 0, rgba(95, 212, 255, 0.28), transparent 60%);
-      border-color: rgba(95, 212, 255, 0.9);
-      box-shadow: 0 12px 26px rgba(0, 0, 0, 0.7);
+    .story-link::after {
+      content: "↗";
+      font-size: 11px;
     }
 
-    /* Right panel – personalization */
-    .prefs-section {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      font-size: 12px;
+    .sub-panel {
+      margin-top: 16px;
+      border-radius: 18px;
+      padding: 12px 13px;
+      background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.06),
+          rgba(255, 255, 255, 0.02)
+        ),
+        rgba(7, 9, 31, 0.96);
+      border: 1px dashed rgba(255, 255, 255, 0.2);
+    }
+
+    .sub-panel-title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
       color: var(--text-muted);
+      margin-bottom: 6px;
     }
 
     .prefs-group {
-      border-radius: 16px;
-      background: rgba(5, 5, 24, 0.8);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      padding: 10px 10px 8px;
-    }
-
-    .prefs-title {
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-      margin-bottom: 4px;
-      color: var(--text-main);
-    }
-
-    .prefs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 6px;
       margin-top: 8px;
-    }
-
-    .prefs-chip {
       display: flex;
-      align-items: center;
+      flex-direction: column;
       gap: 6px;
-      padding: 5px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      background: rgba(15, 15, 33, 0.95);
-      cursor: pointer;
-      transition: border-color var(--transition-fast), background var(--transition-fast),
-        transform var(--transition-fast);
     }
 
-    .prefs-chip input {
-      accent-color: var(--accent-purple);
-      cursor: pointer;
-    }
-
-    .prefs-chip span.label {
-      font-size: 11px;
+    .prefs-label {
+      font-size: 12px;
       color: var(--text-muted);
     }
 
-    .prefs-chip.active {
-      border-color: rgba(180, 131, 255, 0.9);
-      background: radial-gradient(circle at 0 0, rgba(180, 131, 255, 0.38), transparent 60%);
+    .prefs-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .chip {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.05),
+          rgba(255, 255, 255, 0.01)
+        ),
+        rgba(11, 13, 39, 0.96);
+      font-size: 11px;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: border-color 0.16s ease-out, background 0.16s ease-out,
+        transform 0.16s ease-out;
+    }
+
+    .chip:hover {
+      border-color: rgba(255, 255, 255, 0.4);
       transform: translateY(-0.5px);
     }
 
-    .prefs-chip.active span.label {
-      color: var(--text-main);
+    .chip input {
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 5px;
+      border: 1px solid rgba(255, 255, 255, 0.45);
+      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.4), transparent 55%),
+        rgba(10, 11, 37, 0.96);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 3px;
+      position: relative;
     }
 
-    .prefs-note {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .prefs-save-status {
-      font-size: 11px;
-      color: var(--accent-blue);
-      margin-top: 4px;
+    .chip input::after {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 3px;
+      background: linear-gradient(135deg, #b483ff, #5fd4ff);
       opacity: 0;
-      transition: opacity var(--transition-fast);
+      transform: scale(0.7);
+      transition: opacity 0.15s ease-out, transform 0.15s ease-out;
     }
 
-    .prefs-save-status.visible {
+    .chip input:checked::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .chip input:checked + .label {
+      color: #eef0ff;
+    }
+
+    .chip input:checked ~ .label {
+      color: #eef0ff;
+    }
+
+    .chip input:checked ~ .chip-bg {
       opacity: 1;
     }
 
-    /* Archive selector */
-    .archive-select {
-      font-size: 11px;
-      padding: 5px 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: rgba(10, 9, 24, 0.9);
-      color: var(--text-muted);
-      outline: none;
+    .chip .label {
+      position: relative;
     }
 
-    .empty-state {
-      font-size: 13px;
-      color: var(--text-muted);
+    .identifier-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-top: 6px;
+    }
+
+    .id-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(7, 9, 31, 0.9);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .id-pill input {
+      width: 12px;
+      height: 12px;
+      accent-color: #b483ff;
+    }
+
+    .prefs-status {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--accent-2);
+      opacity: 0;
+      transform: translateY(3px);
+      transition: opacity 0.18s ease-out, transform 0.18s ease-out;
+    }
+
+    .prefs-status.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 860px) {
+      main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .page-shell {
+        padding: 18px 16px 22px;
+      }
+    }
+
+    @media (max-width: 600px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+
+      .right-header {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .story-list {
+        max-height: none;
+      }
     }
   </style>
 </head>
 <body>
+  <div class="bg-bubbles">
+    <div class="bg-bubble" style="width:360px;height:360px;left:-140px;top:8%;"></div>
+    <div class="bg-bubble"></div>
+    <div class="bg-bubble"></div>
+  </div>
+
   <div class="page-shell">
+    <div class="glare"></div>
+
     <header>
       <div class="brand">
         <div class="brand-logo" aria-hidden="true"></div>
@@ -542,7 +651,7 @@
       <div class="right-header">
         <div class="pill">
           <span class="pill-dot"></span>
-          Daily briefing · Auto-updated
+          <span class="pill-label">Daily briefing · Auto-updated</span>
         </div>
         <button class="btn-login" type="button">
           <span class="icon">👤</span>
@@ -558,95 +667,77 @@
           <div>
             <div class="panel-title">Today’s Big Picture</div>
             <div class="panel-subtitle">Key threads shaping U.S. politics right now</div>
+            <div class="panel-meta">
+              <span class="panel-meta-dot"></span>
+              <span id="bigPictureDate">No briefing yet</span>
+            </div>
           </div>
-          <select id="archiveSelect" class="archive-select" title="Past briefings">
-            <option value="">Loading dates…</option>
+          <select id="archiveSelect" class="panel-select">
+            <option>Loading…</option>
           </select>
         </div>
-        <div class="panel-body">
-          <ul class="big-picture-list" id="bigPictureList">
-            <!-- Filled by JS -->
-          </ul>
-          <div class="big-picture-date" id="bigPictureDate"></div>
-          <div class="empty-state" id="bigPictureEmpty" style="display:none;">
-            No briefing found yet. Once your backend pushes the first daily JSON,
-            this will auto-populate.
-          </div>
+
+        <ul class="big-picture-list" id="bigPictureList"></ul>
+        <div class="placeholder-text" id="bigPictureEmpty">
+          No briefing found yet. Once your backend pushes the first daily JSON, this will auto-populate.
         </div>
       </section>
 
-      <!-- CENTER: Story feed -->
-      <section class="panel" id="stories-panel">
+      <!-- RIGHT: Top stories + preferences -->
+      <section class="panel">
         <div class="panel-header">
           <div>
-            <div class="panel-title">Top Stories</div>
-            <div class="panel-subtitle">Handpicked from NYT, AP, Politico, Guardian, and more</div>
+            <div class="panel-title">Top stories</div>
+            <div class="panel-subtitle">
+              Handpicked from NYT, AP, Politico, Guardian, and more
+            </div>
           </div>
         </div>
-        <div class="panel-body">
-          <div class="story-list" id="storyList">
-            <!-- Story cards injected here -->
+
+        <div class="story-list" id="storyList"></div>
+        <div class="placeholder-text" id="storyEmpty">
+          Once today’s briefing is generated, you’ll see it here. Check back after the EC2 pipeline has run.
+        </div>
+
+        <div class="sub-panel">
+          <div class="sub-panel-title">Your perspective</div>
+
+          <div class="prefs-group">
+            <div class="prefs-label">Topics you care about</div>
+            <div class="prefs-chips" id="prefsTopics"></div>
           </div>
-          <div class="empty-state" id="storyEmpty" style="display:none;">
-            Once today’s briefing is generated, you’ll see it here. Check back after the EC2
-            pipeline has run.
+
+          <div class="prefs-group">
+            <div class="prefs-label">How political are you?</div>
+            <div class="identifier-row">
+              <label class="id-pill">
+                <input type="checkbox" id="identifierBeginner" />
+                <span>New to U.S. politics</span>
+              </label>
+              <label class="id-pill">
+                <input type="checkbox" id="identifierPolicyNerd" />
+                <span>Policy & process nerd</span>
+              </label>
+              <label class="id-pill">
+                <input type="checkbox" id="identifierInvestor" />
+                <span>Markets & macro watcher</span>
+              </label>
+            </div>
           </div>
+
+          <div class="prefs-status" id="prefsStatus">Preferences saved. We’ll quietly bias picks toward this.</div>
         </div>
       </section>
-
-      <!-- RIGHT: Personalization -->
-      <aside class="panel" id="prefs-panel">
-        <div class="panel-header">
-          <div>
-            <div class="panel-title">Your Perspective</div>
-            <div class="panel-subtitle">Tell the system what matters to you</div>
-          </div>
-        </div>
-        <div class="panel-body">
-          <div class="prefs-section">
-            <div class="prefs-group">
-              <div class="prefs-title">Topics</div>
-              <div class="prefs-grid" id="prefsTopics"></div>
-              <div class="prefs-note">
-                These toggles don’t change the global briefing yet, but they’ll be used to
-                personalize your dashboard view and emails later.
-              </div>
-              <div class="prefs-save-status" id="prefsSaveStatus">
-                Preferences saved.
-              </div>
-            </div>
-
-            <div class="prefs-group">
-              <div class="prefs-title">Identifiers</div>
-              <div style="display:flex;flex-direction:column;gap:6px;">
-                <label class="prefs-chip">
-                  <input type="checkbox" id="identifierBeginner" />
-                  <span class="label">I’m new to U.S. politics</span>
-                </label>
-                <label class="prefs-chip">
-                  <input type="checkbox" id="identifierPolicyNerd" />
-                  <span class="label">I like deep policy details</span>
-                </label>
-                <label class="prefs-chip">
-                  <input type="checkbox" id="identifierInvestor" />
-                  <span class="label">I care about market impact</span>
-                </label>
-              </div>
-              <div class="prefs-note">
-                We’ll eventually use these to decide how much context to show by default
-                (e.g., extra “what is the filibuster?” tooltips).
-              </div>
-            </div>
-          </div>
-        </div>
-      </aside>
     </main>
   </div>
 
   <script>
-    // ====== BACKEND / DATA CONFIG ======
+    // ---------- CONFIG ----------
     const POSTS_INDEX_URL = "./data/index.json"; // list of posts
     const POST_BY_SLUG_URL = (slug) => `./data/posts/${slug}.json`;
+
+    // Backend API base URL (Stripe + subscription status)
+    const API_BASE_URL = "http://localhost:4242"; // change to your EC2 URL in prod
 
     const DEFAULT_TOPICS = [
       { id: "congress", label: "Congress & legislation" },
@@ -661,11 +752,6 @@
     ];
 
     const PREFS_STORAGE_KEY = "newsroom_prefs_v1";
-
-    // ====== COGNITO CONFIG ======
-    const COGNITO_DOMAIN    = 'https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com';
-    const COGNITO_CLIENT_ID = '2shion39m0mim70d0etbtp0eh9';
-    const REDIRECT_URI      = 'https://daltonthedeveloper.github.io/thenewspaper-website/callback.html';
 
     // ---------- UTIL ----------
     function formatDatePretty(dateStr) {
@@ -698,50 +784,40 @@
       }
     }
 
-    // ---------- PERSONALIZATION UI ----------
+    function showPrefsSaved(el) {
+      el.classList.add("visible");
+      setTimeout(() => el.classList.remove("visible"), 1800);
+    }
+
+    // ---------- PREFS UI ----------
     function initPrefsUI() {
-      const prefsTopicsContainer = document.getElementById("prefsTopics");
-      const statusEl = document.getElementById("prefsSaveStatus");
-
       const prefs = loadPrefs();
-      const topicSelections = prefs.topics || [];
+      const topics = prefs.topics || {};
       const identifiers = prefs.identifiers || {};
+      const prefsTopicsContainer = document.getElementById("prefsTopics");
+      const statusEl = document.getElementById("prefsStatus");
 
-      // topics chips
+      prefsTopicsContainer.innerHTML = "";
+
       DEFAULT_TOPICS.forEach((topic) => {
         const chip = document.createElement("label");
-        chip.className = "prefs-chip";
+        chip.className = "chip";
 
         const input = document.createElement("input");
         input.type = "checkbox";
-        input.value = topic.id;
-
-        if (topicSelections.includes(topic.id)) {
-          input.checked = true;
-          chip.classList.add("active");
-        }
-
-        input.addEventListener("change", () => {
-          const newPrefs = loadPrefs();
-          const currentTopics = newPrefs.topics || [];
-          let updated;
-
-          if (input.checked) {
-            updated = Array.from(new Set([...currentTopics, topic.id]));
-            chip.classList.add("active");
-          } else {
-            updated = currentTopics.filter((t) => t !== topic.id);
-            chip.classList.remove("active");
-          }
-
-          newPrefs.topics = updated;
-          savePrefs(newPrefs);
-          showPrefsSaved(statusEl);
-        });
+        input.checked = !!topics[topic.id];
 
         const labelSpan = document.createElement("span");
         labelSpan.className = "label";
         labelSpan.textContent = topic.label;
+
+        input.addEventListener("change", () => {
+          const prefs = loadPrefs();
+          prefs.topics = prefs.topics || {};
+          prefs.topics[topic.id] = input.checked;
+          savePrefs(prefs);
+          showPrefsSaved(statusEl);
+        });
 
         chip.appendChild(input);
         chip.appendChild(labelSpan);
@@ -773,52 +849,40 @@
       identifierInvestor.addEventListener("change", handleIdentifierChange);
     }
 
-    function showPrefsSaved(el) {
-      if (!el) return;
-      el.classList.add("visible");
-      setTimeout(() => el.classList.remove("visible"), 1300);
-    }
-
-    // ---------- BRIEFING LOADING ----------
-    async function fetchJsonSafe(url) {
-      const res = await fetch(url, { cache: "no-store" });
-      if (!res.ok) {
-        throw new Error(`Failed to load ${url}: ${res.status}`);
-      }
-      return res.json();
-    }
-
+    // ---------- DATA LOADING ----------
     async function loadPostsIndex() {
       try {
-        const data = await fetchJsonSafe(POSTS_INDEX_URL);
-        const posts = (data && data.posts) || [];
-        const sorted = posts.slice().sort((a, b) => (a.date < b.date ? 1 : -1));
-        return sorted;
+        const res = await fetch(POSTS_INDEX_URL, { cache: "no-cache" });
+        if (!res.ok) throw new Error("Index HTTP " + res.status);
+        return res.json();
       } catch (e) {
-        console.warn("No posts index yet", e);
+        console.error("Failed to load posts index", e);
         return [];
       }
     }
 
     async function loadPostBySlug(slug) {
       try {
-        const data = await fetchJsonSafe(POST_BY_SLUG_URL(slug));
-        return data;
+        const res = await fetch(POST_BY_SLUG_URL(slug), { cache: "no-cache" });
+        if (!res.ok) throw new Error("Post HTTP " + res.status);
+        return res.json();
       } catch (e) {
-        console.warn("Failed to load post", e);
+        console.error("Failed to load post", e);
         return null;
       }
     }
 
+    // ---------- RENDERING ----------
     function renderBigPicture(post) {
       const listEl = document.getElementById("bigPictureList");
-      const dateEl = document.getElementById("bigPictureDate");
       const emptyEl = document.getElementById("bigPictureEmpty");
+      const dateEl = document.getElementById("bigPictureDate");
 
       listEl.innerHTML = "";
+
       if (!post || !post.bigPicture || post.bigPicture.length === 0) {
         emptyEl.style.display = "block";
-        dateEl.textContent = "";
+        dateEl.textContent = "No briefing yet";
         return;
       }
       emptyEl.style.display = "none";
@@ -849,46 +913,46 @@
         card.className = "story-card";
 
         const main = document.createElement("div");
-        main.className = "story-main";
 
-        const title = document.createElement("h3");
+        const titleRow = document.createElement("div");
+        titleRow.className = "story-title-row";
+
+        const title = document.createElement("div");
         title.className = "story-title";
         title.textContent = story.title || "Untitled story";
 
-        const summary = document.createElement("p");
+        const tag = document.createElement("span");
+        tag.className = "story-tag";
+        tag.textContent = (story.category || "Politics").toUpperCase();
+
+        titleRow.appendChild(title);
+        titleRow.appendChild(tag);
+
+        const tldr = document.createElement("div");
+        tldr.className = "story-tldr";
+        tldr.textContent = story.tldr || story.summary || "";
+
+        const summary = document.createElement("div");
         summary.className = "story-summary";
-        summary.textContent =
-          story.summary ||
-          "No summary available yet. Check the source link for full details.";
+        summary.textContent = story.body || story.summaryLong || "";
 
         const meta = document.createElement("div");
         meta.className = "story-meta";
 
-        if (story.sourceName) {
-          const sourcePill = document.createElement("span");
-          sourcePill.className = "story-source-pill";
-          const dot = document.createElement("span");
-          dot.className = "dot";
-          const label = document.createElement("span");
-          label.textContent = story.sourceName;
-          sourcePill.appendChild(dot);
-          sourcePill.appendChild(label);
-          meta.appendChild(sourcePill);
-        }
+        const sources = document.createElement("span");
+        sources.className = "story-meta-sources";
+        sources.textContent = story.sources && story.sources.length
+          ? "Sources: " + story.sources.join(", ")
+          : story.source || "Multiple sources";
 
-        if (story.tags && story.tags.length > 0) {
-          const tagsContainer = document.createElement("div");
-          tagsContainer.className = "story-tags";
-          story.tags.forEach((tag) => {
-            const t = document.createElement("span");
-            t.className = "tag-pill";
-            t.textContent = tag.replace(/_/g, " ");
-            tagsContainer.appendChild(t);
-          });
-          meta.appendChild(tagsContainer);
-        }
+        const time = document.createElement("span");
+        time.textContent = formatDatePretty(story.date) || "Today";
 
-        main.appendChild(title);
+        meta.appendChild(sources);
+        meta.appendChild(time);
+
+        main.appendChild(titleRow);
+        main.appendChild(tldr);
         main.appendChild(summary);
         main.appendChild(meta);
 
@@ -957,25 +1021,10 @@
       });
     }
 
-    // ====== AUTH HELPERS (PKCE + TOKEN STATE) ======
-    async function sha256(buffer) {
-      return crypto.subtle.digest('SHA-256', buffer);
-    }
-
-    function base64UrlEncode(buffer) {
-      return btoa(String.fromCharCode(...new Uint8Array(buffer)))
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_')
-        .replace(/=+$/, '');
-    }
-
-    async function createPkcePair() {
-      const random = crypto.getRandomValues(new Uint8Array(32));
-      const codeVerifier = base64UrlEncode(random);
-      const digest = await sha256(new TextEncoder().encode(codeVerifier));
-      const codeChallenge = base64UrlEncode(digest);
-      return { codeVerifier, codeChallenge };
-    }
+    // ---------- AUTH (Cognito login + Stripe API helper) ----------
+    const COGNITO_DOMAIN    = 'https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com';
+    const COGNITO_CLIENT_ID = '2shion39m0mim70d0etbtp0eh9';
+    const COGNITO_REDIRECT  = 'https://daltonthedeveloper.github.io/thenewspaper-website/callback.html';
 
     function getTokens() {
       try {
@@ -986,32 +1035,108 @@
       }
     }
 
-    async function startLogin() {
-      const { codeVerifier, codeChallenge } = await createPkcePair();
-      sessionStorage.setItem('cognito_code_verifier', codeVerifier);
+    async function sha256(plain) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(plain);
+      const hash = await crypto.subtle.digest("SHA-256", data);
+      return new Uint8Array(hash);
+    }
 
-      const params = new URLSearchParams({
-        response_type: 'code',
-        client_id: COGNITO_CLIENT_ID,
-        redirect_uri: REDIRECT_URI,
-        code_challenge_method: 'S256',
-        code_challenge: codeChallenge,
-        scope: 'openid email profile'
+    function base64UrlEncode(bytes) {
+      let binary = "";
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+    }
+
+    async function createPkcePair() {
+      const codeVerifier = base64UrlEncode(crypto.getRandomValues(new Uint8Array(32)));
+      const hashed = await sha256(codeVerifier);
+      const codeChallenge = base64UrlEncode(hashed);
+      return { codeVerifier, codeChallenge };
+    }
+
+    function startLogin() {
+      createPkcePair().then(({ codeVerifier, codeChallenge }) => {
+        sessionStorage.setItem("cognito_code_verifier", codeVerifier);
+
+        const params = new URLSearchParams({
+          client_id: COGNITO_CLIENT_ID,
+          response_type: "code",
+          scope: "openid email profile",
+          redirect_uri: COGNITO_REDIRECT,
+          code_challenge_method: "S256",
+          code_challenge: codeChallenge,
+        });
+
+        window.location.href = `${COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
+      }).catch((err) => {
+        console.error("Failed to start login", err);
+      });
+    }
+
+    async function callApi(path, options = {}) {
+      const tokens = getTokens();
+      if (!tokens || !tokens.id_token) {
+        throw new Error("Not logged in");
+      }
+      const headers = {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+        Authorization: `Bearer ${tokens.id_token}`,
+      };
+
+      const res = await fetch(`${API_BASE_URL}${path}`, {
+        ...options,
+        headers,
       });
 
-      window.location.href = `${COGNITO_DOMAIN}/oauth2/authorize?` + params.toString();
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`API ${path} failed: ${res.status} ${text}`);
+      }
+
+      return res.json();
+    }
+
+    async function refreshSubscriptionBadge() {
+      const pillLabel = document.querySelector(".pill-label");
+      if (!pillLabel) return;
+
+      const tokens = getTokens();
+      if (!tokens || !tokens.id_token) {
+        pillLabel.textContent = "Daily briefing · Auto-updated";
+        return;
+      }
+
+      try {
+        const status = await callApi("/api/subscription-status", { method: "GET" });
+        if (status.active) {
+          pillLabel.textContent = "Subscriber · Daily briefing";
+        } else {
+          pillLabel.textContent = "Daily briefing · Free preview";
+        }
+      } catch (err) {
+        console.warn("Subscription status check failed:", err);
+      }
     }
 
     function initAuthUI() {
-      const loginBtn = document.querySelector('.btn-login');
-      const labelSpan = document.querySelector('.btn-login-label');
+      const loginBtn = document.querySelector(".btn-login");
+      const labelSpan = document.querySelector(".btn-login-label");
       if (!loginBtn) return;
 
-      loginBtn.addEventListener('click', startLogin);
-
       const tokens = getTokens();
-      if (tokens?.id_token && labelSpan) {
-        labelSpan.textContent = 'Account';
+
+      if (tokens && tokens.id_token) {
+        if (labelSpan) labelSpan.textContent = "Account";
+        loginBtn.addEventListener("click", () => {
+          window.location.href = "https://thenewspaper.site/billing.html";
+        });
+        refreshSubscriptionBadge();
+      } else {
+        loginBtn.addEventListener("click", startLogin);
       }
     }
 
@@ -1019,6 +1144,7 @@
       hydratePage().catch((e) => console.error(e));
       initAuthUI();
     });
+
   </script>
 </body>
 </html>
