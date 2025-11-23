@@ -2,389 +2,497 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>The Newsroom · Subscription & Billing</title>
+  <title>The Newsroom · Billing</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg: #050716;
-      --card-bg: rgba(10, 14, 40, 0.9);
-      --accent: #7f5dff;
-      --accent-soft: #5ac8ff;
-      --text-main: #ffffff;
-      --text-muted: #9ba3c2;
-      --danger: #ff4d6a;
+      --bg-main: #050512;
+      --bg-panel: rgba(19, 20, 48, 0.88);
+      --bg-panel-soft: rgba(25, 26, 64, 0.9);
+      --border-subtle: rgba(255, 255, 255, 0.18);
+      --text-main: #f5f5ff;
+      --text-muted: #a3a3c4;
+      --accent-1: #b483ff;
+      --accent-2: #5fd4ff;
+      --danger: #ff6b81;
+      --radius-lg: 24px;
+      --radius-pill: 999px;
+      --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.85);
+      --transition-fast: 0.18s ease-out;
     }
+
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
     }
+
     body {
       min-height: 100vh;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
-        "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top, #301a75 0, #050716 45%);
-      color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 16px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
+      color: var(--text-main);
+      background:
+        radial-gradient(circle at top left, #201443 0, #050512 45%),
+        radial-gradient(circle at bottom right, #030821 0, #050512 55%);
+      padding: 24px 16px;
     }
-    .card {
+
+    .shell {
       width: 100%;
-      max-width: 720px;
-      background: var(--card-bg);
-      border-radius: 28px;
-      padding: 28px 32px 24px;
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.75);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(28px);
+      max-width: 540px;
+      position: relative;
     }
-    .card-header {
+
+    .card {
+      position: relative;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.14), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(95, 212, 255, 0.16), transparent 60%),
+        linear-gradient(145deg, rgba(10, 11, 36, 0.98), rgba(3, 6, 25, 0.98));
+      border-radius: 28px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 22px 20px 20px;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40px;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.12), transparent 55%);
+      mix-blend-mode: soft-light;
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+    .card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
       gap: 12px;
+      margin-bottom: 16px;
     }
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
     .title {
-      font-size: 20px;
-      font-weight: 650;
-      letter-spacing: 0.04em;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
     }
+
     .subtitle {
       font-size: 13px;
       color: var(--text-muted);
-      margin-top: 4px;
     }
+
     .pill {
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 11px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: linear-gradient(135deg, rgba(127, 93, 255, 0.2), rgba(90, 200, 255, 0.12));
-      border: 1px solid rgba(127, 93, 255, 0.4);
+      gap: 7px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: linear-gradient(135deg, rgba(180, 131, 255, 0.16), rgba(95, 212, 255, 0.12));
+      font-size: 11px;
     }
+
     .pill-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 999px;
-      background: var(--accent-soft);
-      box-shadow: 0 0 8px rgba(90, 200, 255, 0.9);
+      background: radial-gradient(circle at 30% 30%, #5fd4ff, #b483ff);
+      box-shadow: 0 0 10px rgba(160, 255, 255, 0.9);
     }
+
     .section {
-      margin-top: 16px;
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      gap: 10px;
+    }
+
     .section-title {
       font-size: 13px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
+      font-weight: 500;
+    }
+
+    .badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(15, 18, 40, 0.96);
+      color: var(--text-muted);
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-text {
+      font-size: 13px;
       color: var(--text-muted);
       margin-bottom: 6px;
     }
-    .row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-      font-size: 13px;
-      color: var(--text-muted);
+
+    .status-text strong {
+      color: #ffffff;
     }
-    .status-badge {
-      padding: 5px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      background: rgba(255, 255, 255, 0.05);
-    }
-    .status-badge.error {
-      color: var(--danger);
-      border: 1px solid rgba(255, 77, 106, 0.5);
-    }
-    .status-badge.ok {
-      color: #4cd964;
-      border: 1px solid rgba(76, 217, 100, 0.5);
-    }
-    .status-badge.none {
-      color: var(--text-muted);
-    }
-    .email-pill {
-      font-size: 12px;
-      padding: 5px 12px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-muted);
-    }
-    .button-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 22px;
-    }
-    .btn {
-      flex: 1;
-      border-radius: 999px;
-      padding: 11px 16px;
-      font-size: 13px;
-      font-weight: 500;
-      border: none;
-      outline: none;
-      cursor: pointer;
-      transition: transform 0.12s ease, box-shadow 0.12s ease,
-        background 0.12s ease, opacity 0.12s ease;
-      white-space: nowrap;
-    }
-    .btn-primary {
-      background: linear-gradient(90deg, var(--accent) 0%, var(--accent-soft) 100%);
-      color: #0b0717;
-      box-shadow: 0 0 18px rgba(127, 93, 255, 0.65);
-    }
-    .btn-secondary {
-      flex: 0 0 auto;
-      padding: 11px 18px;
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-main);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-    }
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7);
-    }
-    .btn:active {
-      transform: translateY(0);
-      box-shadow: none;
-    }
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: default;
-      box-shadow: none;
-      transform: none;
-    }
-    .fine-print {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 14px;
-      line-height: 1.4;
-    }
-    .error-text {
-      margin-top: 8px;
-      color: var(--danger);
-      font-size: 11px;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-    .back-link {
+
+    .status-pill {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      margin-top: 18px;
+      gap: 6px;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .status-pill.active {
+      border: 1px solid rgba(144, 238, 144, 0.7);
+      background: rgba(22, 122, 72, 0.5);
+      color: #eaffea;
+    }
+
+    .status-pill.inactive {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(14, 15, 40, 0.96);
+      color: var(--text-muted);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 9px 14px;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        opacity var(--transition-fast),
+        background var(--transition-fast),
+        border-color var(--transition-fast);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    .btn-primary {
+      flex: 1;
+      background: linear-gradient(135deg, #b483ff, #5fd4ff);
+      color: #050512;
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.8);
+      font-weight: 500;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
+    }
+
+    .btn-secondary {
+      background: rgba(12, 14, 40, 0.98);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.85);
+    }
+
+    .notice {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .error {
+      margin-top: 6px;
       font-size: 12px;
-      color: var(--accent-soft);
+      color: var(--danger);
+      min-height: 16px;
+    }
+
+    .footer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--accent-2);
       text-decoration: none;
     }
-    .back-link:hover {
-      text-decoration: underline;
+
+    .footer-link span.arrow {
+      font-size: 14px;
+      transform: translateY(0.5px);
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 18px 16px 18px;
+        border-radius: 22px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="card">
-    <div class="card-header">
-      <div>
-        <div class="title">Subscription</div>
-        <div class="subtitle">
-          Unlock the full daily briefing for $1.99 / month.
+  <div class="shell">
+    <div class="card">
+      <div class="header">
+        <div class="title-block">
+          <div class="title">Subscription</div>
+          <div class="subtitle">Unlock the full daily briefing for $1.99 / month.</div>
+        </div>
+        <div class="pill">
+          <div class="pill-dot"></div>
+          <span id="pillLabel">Checking status…</span>
         </div>
       </div>
-      <div class="pill">
-        <span class="pill-dot"></span>
-        <span id="status-badge" class="status-badge none">Loading…</span>
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Status</div>
+          <div class="badge" id="userEmailBadge">Not logged in</div>
+        </div>
+
+        <div class="status-text" id="statusText">
+          Loading your subscription…
+        </div>
+
+        <div class="status-pill inactive" id="statusPill">
+          <span id="statusPillLabel">Unknown</span>
+        </div>
+
+        <div class="buttons">
+          <button class="btn-primary" id="btnSubscribe">
+            Subscribe · $1.99 / mo
+          </button>
+          <button class="btn-secondary" id="btnRefresh">
+            Refresh status
+          </button>
+        </div>
+
+        <div class="notice">
+          You’ll be redirected to Stripe’s secure checkout page. You can cancel anytime via Stripe.
+        </div>
+        <div class="error" id="errorBox"></div>
       </div>
-    </div>
 
-    <div class="section">
-      <div class="section-title">Status</div>
-      <div class="row">
-        <div id="subscription-status">Checking subscription status…</div>
-        <div id="user-email" class="email-pill"></div>
-      </div>
+      <a href="https://thenewspaper.site" class="footer-link">
+        <span class="arrow">←</span>
+        <span>Back to The Newsroom</span>
+      </a>
     </div>
-
-    <div class="button-row">
-      <button id="subscribe-btn" class="btn btn-primary">
-        Subscribe · $1.99 / mo
-      </button>
-      <button id="refresh-btn" class="btn btn-secondary">
-        Refresh status
-      </button>
-      <button id="manage-btn" class="btn btn-secondary">
-        Manage billing
-      </button>
-    </div>
-
-    <div class="fine-print">
-      You'll be redirected to Stripe's secure checkout page. You can cancel any time
-      via Stripe's billing portal.
-    </div>
-    <div id="error-text" class="error-text"></div>
-
-    <a href="index.html" class="back-link">← Back to The Newsroom</a>
   </div>
 
   <script>
+    // ===== CONFIG =====
     const API_BASE_URL = "https://api.thenewspaper.site";
 
-    function getSession() {
-      const raw = localStorage.getItem("newsroom-session");
-      if (!raw) return null;
+    // ===== TOKEN HELPERS (matches callback.html localStorage) =====
+    function getTokens() {
       try {
+        const raw = localStorage.getItem("newsroom_tokens");
+        if (!raw) return null;
         return JSON.parse(raw);
-      } catch {
+      } catch (e) {
+        console.error("Failed to parse newsroom_tokens:", e);
         return null;
       }
     }
 
     function getIdToken() {
-      const session = getSession();
-      return session && session.id_token ? session.id_token : null;
+      const tokens = getTokens();
+      return tokens && tokens.id_token ? tokens.id_token : null;
     }
 
-    function populateEmail() {
-      const session = getSession();
-      const emailEl = document.getElementById("user-email");
-      if (session && session.id_token_payload && session.id_token_payload.email) {
-        emailEl.textContent = session.id_token_payload.email;
-      } else if (session && session.email) {
-        emailEl.textContent = session.email;
-      } else {
-        emailEl.textContent = "";
+    function decodeEmailFromIdToken() {
+      const idToken = getIdToken();
+      if (!idToken) return null;
+      try {
+        const payload = idToken.split(".")[1];
+        const decoded = JSON.parse(atob(payload));
+        return decoded.email || null;
+      } catch (e) {
+        console.error("Failed to decode id_token:", e);
+        return null;
       }
     }
 
-    async function fetchJSON(path, options = {}) {
-      const token = getIdToken();
-      if (!token) {
-        window.location.href = "index.html?reason=no_session";
-        return;
+    async function callApi(path, options = {}) {
+      const idToken = getIdToken();
+      if (!idToken) {
+        throw new Error("You must be logged in.");
       }
+
+      const headers = {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+        Authorization: "Bearer " + idToken,
+      };
 
       const res = await fetch(API_BASE_URL + path, {
         ...options,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-          ...(options.headers || {})
-        }
+        headers,
       });
-
-      if (res.status === 401) {
-        // Token expired / invalid -> force login again
-        localStorage.removeItem("newsroom-session");
-        window.location.href = "index.html?reason=session_expired";
-        return;
-      }
 
       if (!res.ok) {
         const text = await res.text();
-        throw new Error("API " + path + " failed: " + res.status + " " + text);
+        throw new Error(`API ${path} failed: ${res.status} ${text}`);
       }
 
       return res.json();
     }
 
-    async function loadSubscriptionStatus() {
-      const statusEl = document.getElementById("subscription-status");
-      const statusBadge = document.getElementById("status-badge");
-      const errorEl = document.getElementById("error-text");
-      errorEl.textContent = "";
+    // ===== UI STATE =====
+    const pillLabel = document.getElementById("pillLabel");
+    const statusText = document.getElementById("statusText");
+    const statusPill = document.getElementById("statusPill");
+    const statusPillLabel = document.getElementById("statusPillLabel");
+    const errorBox = document.getElementById("errorBox");
+    const userEmailBadge = document.getElementById("userEmailBadge");
+    const btnSubscribe = document.getElementById("btnSubscribe");
+    const btnRefresh = document.getElementById("btnRefresh");
+
+    function setError(msg) {
+      errorBox.textContent = msg || "";
+    }
+
+    function setLoading(isLoading) {
+      btnSubscribe.disabled = isLoading;
+      btnRefresh.disabled = isLoading;
+    }
+
+    function updateEmailBadge() {
+      const email = decodeEmailFromIdToken();
+      if (email) {
+        userEmailBadge.textContent = email;
+      } else {
+        userEmailBadge.textContent = "Not logged in";
+      }
+    }
+
+    async function refreshStatus() {
+      setError("");
+      setLoading(true);
+
+      const idToken = getIdToken();
+      if (!idToken) {
+        statusText.textContent = "You must be logged in to view your subscription.";
+        statusPill.className = "status-pill inactive";
+        statusPillLabel.textContent = "Login required";
+        pillLabel.textContent = "Login required";
+        setLoading(false);
+        return;
+      }
+
+      updateEmailBadge();
 
       try {
-        statusBadge.textContent = "Loading…";
-        statusBadge.className = "status-badge none";
-        statusEl.textContent = "Checking subscription status…";
+        const status = await callApi("/api/subscription-status", {
+          method: "GET",
+        });
 
-        const data = await fetchJSON("/api/subscription-status");
-        if (!data) return; // redirect happened
+        if (status && status.active) {
+          statusText.innerHTML = "<strong>Active subscription.</strong> You’ll receive the full daily briefing.";
+          statusPill.className = "status-pill active";
+          statusPillLabel.textContent = "Active";
+          pillLabel.textContent = "Subscriber · Daily briefing";
 
-        if (data.status === "active") {
-          statusEl.textContent = "Active subscription";
-          statusBadge.textContent = "Active";
-          statusBadge.className = "status-badge ok";
-        } else if (data.status === "none") {
-          statusEl.textContent = "No active subscription.";
-          statusBadge.textContent = "None";
-          statusBadge.className = "status-badge none";
+          if (status.current_period_end) {
+            const d = new Date(status.current_period_end * 1000);
+            statusText.innerHTML += `<br /><span style="font-size:11px;color:var(--text-muted);">Renews around ${d.toLocaleDateString()}.</span>`;
+          }
+
+          btnSubscribe.textContent = "Update billing";
         } else {
-          statusEl.textContent = "Subscription status: " + data.status;
-          statusBadge.textContent = data.status;
-          statusBadge.className = "status-badge none";
+          statusText.textContent = "No active subscription found. You’re on the free preview.";
+          statusPill.className = "status-pill inactive";
+          statusPillLabel.textContent = "Not subscribed";
+          pillLabel.textContent = "Free preview · Upgrade for full brief";
+          btnSubscribe.textContent = "Subscribe · $1.99 / mo";
         }
       } catch (err) {
         console.error(err);
-        statusEl.textContent = "Could not load subscription status.";
-        statusBadge.textContent = "Error loading status";
-        statusBadge.className = "status-badge error";
-        errorEl.textContent = String(err);
+        statusText.textContent = "Could not load subscription status.";
+        statusPill.className = "status-pill inactive";
+        statusPillLabel.textContent = "Error";
+        pillLabel.textContent = "Error loading status";
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     }
 
     async function startCheckout() {
-      const errorEl = document.getElementById("error-text");
-      errorEl.textContent = "";
+      setError("");
+      setLoading(true);
 
       try {
-        const data = await fetchJSON("/api/create-checkout-session", {
+        const data = await callApi("/api/create-checkout-session", {
           method: "POST",
-          body: JSON.stringify({})
+          body: JSON.stringify({}),
         });
-        if (!data) return; // redirect happened
 
-        if (data.url) {
+        if (data && data.url) {
           window.location.href = data.url;
         } else {
-          throw new Error("No checkout URL returned");
+          throw new Error("No checkout URL returned from server.");
         }
       } catch (err) {
         console.error(err);
-        errorEl.textContent = "Could not start checkout: " + err;
-      }
-    }
-
-    async function openBillingPortal() {
-      const errorEl = document.getElementById("error-text");
-      errorEl.textContent = "";
-
-      try {
-        const data = await fetchJSON("/api/create-portal-session", {
-          method: "POST",
-          body: JSON.stringify({})
-        });
-        if (!data) return; // redirect happened
-
-        if (data.url) {
-          window.location.href = data.url;
-        } else {
-          throw new Error("No portal URL returned");
-        }
-      } catch (err) {
-        console.error(err);
-        errorEl.textContent = "Could not open billing portal: " + err;
+        setError("Could not start checkout: " + err.message);
+        setLoading(false);
       }
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      populateEmail();
-      loadSubscriptionStatus();
+      btnSubscribe.addEventListener("click", startCheckout);
+      btnRefresh.addEventListener("click", refreshStatus);
 
-      document
-        .getElementById("subscribe-btn")
-        .addEventListener("click", startCheckout);
-      document
-        .getElementById("manage-btn")
-        .addEventListener("click", openBillingPortal);
-      document
-        .getElementById("refresh-btn")
-        .addEventListener("click", loadSubscriptionStatus);
+      updateEmailBadge();
+      refreshStatus().catch((e) => {
+        console.error(e);
+      });
     });
   </script>
 </body>
