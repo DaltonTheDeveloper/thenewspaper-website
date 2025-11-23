@@ -326,10 +326,9 @@
 
   <script>
     // ===== CONFIG =====
-    // For now, this points directly at your EC2. Later, put HTTPS + domain in front.
     const API_BASE_URL = "https://api.thenewspaper.site";
 
-    // ===== TOKEN HELPERS (match callback.html) =====
+    // ===== TOKEN HELPERS (matches callback.html localStorage) =====
     function getTokens() {
       try {
         const raw = localStorage.getItem("newsroom_tokens");
@@ -490,7 +489,6 @@
       btnSubscribe.addEventListener("click", startCheckout);
       btnRefresh.addEventListener("click", refreshStatus);
 
-      // Initial UI
       updateEmailBadge();
       refreshStatus().catch((e) => {
         console.error(e);
