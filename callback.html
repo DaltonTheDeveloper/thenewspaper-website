@@ -11,7 +11,9 @@
   <script>
     const COGNITO_DOMAIN    = 'https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com';
     const COGNITO_CLIENT_ID = '2shion39m0mim70d0etbtp0eh9';
-    const REDIRECT_URI      = 'https://daltonthedeveloper.github.io/thenewspaper-website/callback.html';
+
+    // 👇 use custom domain as redirect
+    const REDIRECT_URI      = 'https://thenewspaper.site/callback.html';
     const TOKEN_ENDPOINT    = `${COGNITO_DOMAIN}/oauth2/token`;
 
     async function finishLogin() {
@@ -54,8 +56,8 @@
       sessionStorage.removeItem('cognito_code_verifier');
       localStorage.setItem('newsroom_tokens', JSON.stringify(tokens));
 
-      // Redirect back to homepage
-      window.location.href = 'https://daltonthedeveloper.github.io/thenewspaper-website/';
+      // 👇 send user back to main site on custom domain
+      window.location.href = 'https://thenewspaper.site/';
     }
 
     finishLogin().catch(err => {

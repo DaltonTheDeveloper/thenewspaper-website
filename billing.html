@@ -5,6 +5,7 @@
   <title>The Newsroom · Billing</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    /* your original billing styles unchanged */
     :root {
       --bg-main: #050512;
       --bg-panel: rgba(19, 20, 48, 0.88);
@@ -20,258 +21,106 @@
       --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.85);
       --transition-fast: 0.18s ease-out;
     }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
-      color: var(--text-main);
+    *{box-sizing:border-box;margin:0;padding:0;}
+    body{
+      min-height:100vh;display:flex;align-items:center;justify-content:center;
+      font-family:system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",sans-serif;
+      color:var(--text-main);
       background:
-        radial-gradient(circle at top left, #201443 0, #050512 45%),
-        radial-gradient(circle at bottom right, #030821 0, #050512 55%);
-      padding: 24px 16px;
+        radial-gradient(circle at top left,#201443 0,#050512 45%),
+        radial-gradient(circle at bottom right,#030821 0,#050512 55%);
+      padding:24px 16px;
     }
-
-    .shell {
-      width: 100%;
-      max-width: 540px;
-      position: relative;
-    }
-
-    .card {
-      position: relative;
+    .shell{width:100%;max-width:540px;position:relative;}
+    .card{
+      position:relative;
       background:
-        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.14), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(95, 212, 255, 0.16), transparent 60%),
-        linear-gradient(145deg, rgba(10, 11, 36, 0.98), rgba(3, 6, 25, 0.98));
-      border-radius: 28px;
-      border: 1px solid var(--border-subtle);
-      box-shadow: var(--shadow-soft);
-      padding: 22px 20px 20px;
-      overflow: hidden;
+        radial-gradient(circle at 0 0,rgba(255,255,255,0.14),transparent 55%),
+        radial-gradient(circle at 100% 100%,rgba(95,212,255,0.16),transparent 60%),
+        linear-gradient(145deg,rgba(10,11,36,0.98),rgba(3,6,25,0.98));
+      border-radius:28px;border:1px solid var(--border-subtle);
+      box-shadow:var(--shadow-soft);padding:22px 20px 20px;overflow:hidden;
     }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      inset: -40px;
-      background:
-        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.12), transparent 55%);
-      mix-blend-mode: soft-light;
-      opacity: 0.6;
-      pointer-events: none;
+    .card::before{
+      content:"";position:absolute;inset:-40px;
+      background:radial-gradient(circle at 0 0,rgba(255,255,255,0.12),transparent 55%);
+      mix-blend-mode:soft-light;opacity:0.6;pointer-events:none;
     }
-
-    .card > * {
-      position: relative;
-      z-index: 1;
+    .card>*{position:relative;z-index:1;}
+    .header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;}
+    .title-block{display:flex;flex-direction:column;gap:4px;}
+    .title{font-size:18px;font-weight:600;letter-spacing:0.03em;}
+    .subtitle{font-size:13px;color:var(--text-muted);}
+    .pill{
+      display:inline-flex;align-items:center;gap:7px;
+      padding:5px 12px;border-radius:var(--radius-pill);
+      border:1px solid rgba(255,255,255,0.24);
+      background:linear-gradient(135deg,rgba(180,131,255,0.16),rgba(95,212,255,0.12));
+      font-size:11px;
     }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
+    .pill-dot{
+      width:7px;height:7px;border-radius:999px;
+      background:radial-gradient(circle at 30% 30%,#5fd4ff,#b483ff);
+      box-shadow:0 0 10px rgba(160,255,255,0.9);
     }
-
-    .title-block {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
+    .section{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);}
+    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:10px;}
+    .section-title{font-size:13px;font-weight:500;}
+    .badge{
+      font-size:11px;padding:4px 10px;border-radius:999px;
+      border:1px solid rgba(255,255,255,0.22);
+      background:rgba(15,18,40,0.96);color:var(--text-muted);
+      max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
     }
-
-    .title {
-      font-size: 18px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
+    .status-text{font-size:13px;color:var(--text-muted);margin-bottom:6px;}
+    .status-text strong{color:#ffffff;}
+    .status-pill{
+      display:inline-flex;align-items:center;gap:6px;
+      font-size:11px;padding:4px 10px;border-radius:999px;margin-bottom:10px;
     }
-
-    .subtitle {
-      font-size: 13px;
-      color: var(--text-muted);
+    .status-pill.active{
+      border:1px solid rgba(144,238,144,0.7);
+      background:rgba(22,122,72,0.5);color:#eaffea;
     }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 5px 12px;
-      border-radius: var(--radius-pill);
-      border: 1px solid rgba(255, 255, 255, 0.24);
-      background: linear-gradient(135deg, rgba(180, 131, 255, 0.16), rgba(95, 212, 255, 0.12));
-      font-size: 11px;
+    .status-pill.inactive{
+      border:1px solid rgba(255,255,255,0.18);
+      background:rgba(14,15,40,0.96);color:var(--text-muted);
     }
-
-    .pill-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 999px;
-      background: radial-gradient(circle at 30% 30%, #5fd4ff, #b483ff);
-      box-shadow: 0 0 10px rgba(160, 255, 255, 0.9);
+    .buttons{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;}
+    button{
+      border:none;border-radius:14px;padding:9px 14px;font-size:13px;
+      display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+      transition:transform var(--transition-fast),box-shadow var(--transition-fast),
+                 opacity var(--transition-fast),background var(--transition-fast),
+                 border-color var(--transition-fast);
     }
-
-    .section {
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    button:disabled{opacity:0.55;cursor:not-allowed;box-shadow:none!important;transform:none!important;}
+    .btn-primary{
+      flex:1;
+      background:linear-gradient(135deg,#b483ff,#5fd4ff);
+      color:#050512;box-shadow:0 16px 35px rgba(0,0,0,0.8);font-weight:500;
     }
-
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 4px;
-      gap: 10px;
+    .btn-primary:hover:not(:disabled){
+      transform:translateY(-1px);
+      box-shadow:0 20px 45px rgba(0,0,0,0.9);
     }
-
-    .section-title {
-      font-size: 13px;
-      font-weight: 500;
+    .btn-secondary{
+      background:rgba(12,14,40,0.98);
+      color:var(--text-main);border:1px solid rgba(255,255,255,0.22);
     }
-
-    .badge {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      background: rgba(15, 18, 40, 0.96);
-      color: var(--text-muted);
-      max-width: 220px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .btn-secondary:hover:not(:disabled){
+      transform:translateY(-1px);
+      box-shadow:0 16px 35px rgba(0,0,0,0.85);
     }
-
-    .status-text {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 6px;
+    .notice{margin-top:10px;font-size:11px;color:var(--text-muted);}
+    .error{margin-top:6px;font-size:12px;color:var(--danger);min-height:16px;white-space:pre-wrap;}
+    .footer-link{
+      display:inline-flex;align-items:center;gap:6px;margin-top:14px;
+      font-size:12px;color:var(--accent-2);text-decoration:none;
     }
-
-    .status-text strong {
-      color: #ffffff;
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 10px;
-    }
-
-    .status-pill.active {
-      border: 1px solid rgba(144, 238, 144, 0.7);
-      background: rgba(22, 122, 72, 0.5);
-      color: #eaffea;
-    }
-
-    .status-pill.inactive {
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background: rgba(14, 15, 40, 0.96);
-      color: var(--text-muted);
-    }
-
-    .buttons {
-      display: flex;
-      gap: 10px;
-      margin-top: 4px;
-      flex-wrap: wrap;
-    }
-
-    button {
-      border: none;
-      border-radius: 14px;
-      padding: 9px 14px;
-      font-size: 13px;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      cursor: pointer;
-      transition:
-        transform var(--transition-fast),
-        box-shadow var(--transition-fast),
-        opacity var(--transition-fast),
-        background var(--transition-fast),
-        border-color var(--transition-fast);
-    }
-
-    button:disabled {
-      opacity: 0.55;
-      cursor: not-allowed;
-      box-shadow: none !important;
-      transform: none !important;
-    }
-
-    .btn-primary {
-      flex: 1;
-      background: linear-gradient(135deg, #b483ff, #5fd4ff);
-      color: #050512;
-      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.8);
-      font-weight: 500;
-    }
-
-    .btn-primary:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
-    }
-
-    .btn-secondary {
-      background: rgba(12, 14, 40, 0.98);
-      color: var(--text-main);
-      border: 1px solid rgba(255, 255, 255, 0.22);
-    }
-
-    .btn-secondary:hover:not(:disabled) {
-      transform: translateY(-1px);
-      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.85);
-    }
-
-    .notice {
-      margin-top: 10px;
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
-    .error {
-      margin-top: 6px;
-      font-size: 12px;
-      color: var(--danger);
-      min-height: 16px;
-      white-space: pre-wrap;
-    }
-
-    .footer-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 14px;
-      font-size: 12px;
-      color: var(--accent-2);
-      text-decoration: none;
-    }
-
-    .footer-link span.arrow {
-      font-size: 14px;
-      transform: translateY(0.5px);
-    }
-
-    @media (max-width: 480px) {
-      .card {
-        padding: 18px 16px 18px;
-        border-radius: 22px;
-      }
+    .footer-link span.arrow{font-size:14px;transform:translateY(0.5px);}
+    @media (max-width:480px){
+      .card{padding:18px 16px 18px;border-radius:22px;}
     }
   </style>
 </head>
@@ -346,6 +195,12 @@
       return tokens && tokens.id_token ? tokens.id_token : null;
     }
 
+    // 👇 NEW: access token for backend auth
+    function getAccessToken() {
+      const tokens = getTokens();
+      return tokens && tokens.access_token ? tokens.access_token : null;
+    }
+
     function decodeEmailFromIdToken() {
       const idToken = getIdToken();
       if (!idToken) return null;
@@ -360,8 +215,8 @@
     }
 
     async function callApi(path, options = {}) {
-      const idToken = getIdToken();
-      if (!idToken) {
+      const accessToken = getAccessToken();
+      if (!accessToken) {
         const err = new Error("You must be logged in.");
         err.code = "NO_LOGIN";
         throw err;
@@ -370,7 +225,7 @@
       const headers = {
         "Content-Type": "application/json",
         ...(options.headers || {}),
-        Authorization: "Bearer " + idToken,
+        Authorization: "Bearer " + accessToken,
       };
 
       const res = await fetch(API_BASE_URL + path, {
@@ -450,8 +305,8 @@
       setError("");
       setLoading(true);
 
-      const idToken = getIdToken();
-      if (!idToken) {
+      const accessToken = getAccessToken();
+      if (!accessToken) {
         statusText.textContent =
           "You must be logged in to view your subscription.";
         statusPill.className = "status-pill inactive";
