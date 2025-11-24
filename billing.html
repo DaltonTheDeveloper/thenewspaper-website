@@ -5,7 +5,6 @@
   <title>The Newsroom · Billing</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* your original billing styles unchanged */
     :root {
       --bg-main: #050512;
       --bg-panel: rgba(19, 20, 48, 0.88);
@@ -36,7 +35,7 @@
       position:relative;
       background:
         radial-gradient(circle at 0 0,rgba(255,255,255,0.14),transparent 55%),
-        radial-gradient(circle at 100% 100%,rgba(95,212,255,0.16),transparent 60%),
+        radial-gradient(circle at 100% 100,rgba(95,212,255,0.16),transparent 60%),
         linear-gradient(145deg,rgba(10,11,36,0.98),rgba(3,6,25,0.98));
       border-radius:28px;border:1px solid var(--border-subtle);
       box-shadow:var(--shadow-soft);padding:22px 20px 20px;overflow:hidden;
@@ -132,9 +131,16 @@
           <div class="title">Subscription</div>
           <div class="subtitle">Unlock the full daily briefing for $1.99 / month.</div>
         </div>
-        <div class="pill">
-          <div class="pill-dot"></div>
-          <span id="pillLabel">Checking status…</span>
+
+        <!-- LOGIN BUTTON + STATUS PILL -->
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="btn-secondary" id="btnLoginHeader" type="button">
+            Login
+          </button>
+          <div class="pill">
+            <div class="pill-dot"></div>
+            <span id="pillLabel">Checking status…</span>
+          </div>
         </div>
       </div>
 
@@ -178,7 +184,62 @@
     // ===== CONFIG =====
     const API_BASE_URL = "https://api.thenewspaper.site";
 
-    // ===== TOKEN HELPERS (must match callback.html / index.html) =====
+    // Cognito config (same as index/callback)
+    const COGNITO_DOMAIN    = 'https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com';
+    const COGNITO_CLIENT_ID = '2shion39m0mim70d0etbtp0eh9';
+    const COGNITO_REDIRECT  = 'https://thenewspaper.site/callback.html';
+
+    // === PKCE helpers ===
+    async function sha256(plain) {
+      const encoder = new TextEncoder();
+      const data = encoder.encode(plain);
+      const hash = await crypto.subtle.digest("SHA-256", data);
+      return new Uint8Array(hash);
+    }
+
+    function base64UrlEncode(bytes) {
+      let binary = "";
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return btoa(binary)
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+    }
+
+    async function createPkcePair() {
+      const codeVerifier = base64UrlEncode(
+        crypto.getRandomValues(new Uint8Array(32))
+      );
+      const hashed = await sha256(codeVerifier);
+      const codeChallenge = base64UrlEncode(hashed);
+      return { codeVerifier, codeChallenge };
+    }
+
+    function startLogin() {
+      createPkcePair()
+        .then(({ codeVerifier, codeChallenge }) => {
+          sessionStorage.setItem("cognito_code_verifier", codeVerifier);
+
+          const params = new URLSearchParams({
+            client_id: COGNITO_CLIENT_ID,
+            response_type: "code",
+            scope: "openid email profile",
+            redirect_uri: COGNITO_REDIRECT,
+            code_challenge_method: "S256",
+            code_challenge: codeChallenge,
+          });
+
+          window.location.href =
+            `${COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
+        })
+        .catch((err) => {
+          console.error("Failed to start login", err);
+        });
+    }
+
+    // ===== TOKEN HELPERS =====
     function getTokens() {
       try {
         const raw = localStorage.getItem("newsroom_tokens");
@@ -195,7 +256,6 @@
       return tokens && tokens.id_token ? tokens.id_token : null;
     }
 
-    // 👇 NEW: access token for backend auth
     function getAccessToken() {
       const tokens = getTokens();
       return tokens && tokens.access_token ? tokens.access_token : null;
@@ -254,6 +314,7 @@
     const userEmailBadge = document.getElementById("userEmailBadge");
     const btnSubscribe = document.getElementById("btnSubscribe");
     const btnRefresh = document.getElementById("btnRefresh");
+    const btnLoginHeader = document.getElementById("btnLoginHeader");
 
     function setError(msg) {
       errorBox.textContent = msg || "";
@@ -321,7 +382,6 @@
       try {
         const data = await callApi("/api/subscription-status", { method: "GET" });
 
-        // Backend shape: { status: "active" | "none" | other, renews?: ms }
         if (data && data.status === "active") {
           applyActiveStatus(data.renews);
         } else {
@@ -387,6 +447,7 @@
     document.addEventListener("DOMContentLoaded", () => {
       btnSubscribe.addEventListener("click", startCheckout);
       btnRefresh.addEventListener("click", refreshStatus);
+      if (btnLoginHeader) btnLoginHeader.addEventListener("click", startLogin);
 
       updateEmailBadge();
       refreshStatus().catch((e) => {

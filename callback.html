@@ -12,7 +12,7 @@
     const COGNITO_DOMAIN    = 'https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com';
     const COGNITO_CLIENT_ID = '2shion39m0mim70d0etbtp0eh9';
 
-    // 👇 use custom domain as redirect
+    // custom domain callback
     const REDIRECT_URI      = 'https://thenewspaper.site/callback.html';
     const TOKEN_ENDPOINT    = `${COGNITO_DOMAIN}/oauth2/token`;
 
@@ -26,7 +26,7 @@
 
       const codeVerifier = sessionStorage.getItem('cognito_code_verifier');
       if (!codeVerifier) {
-        document.body.innerHTML = '<p>Missing PKCE code verifier (session may have been cleared or expired).</p>';
+        document.body.innerHTML = '<p>Missing PKCE verifier (session may have been cleared or expired).</p>';
         return;
       }
 
@@ -56,7 +56,7 @@
       sessionStorage.removeItem('cognito_code_verifier');
       localStorage.setItem('newsroom_tokens', JSON.stringify(tokens));
 
-      // 👇 send user back to main site on custom domain
+      // back to homepage on custom domain
       window.location.href = 'https://thenewspaper.site/';
     }
 
