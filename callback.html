@@ -9,13 +9,12 @@
   <p>Finishing sign-in, please wait…</p>
 
   <script>
-    const COGNITO_DOMAIN =
-      "https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com";
-    const COGNITO_CLIENT_ID = "2shion39m0mim70d0etbtp0eh9";
+    const COGNITO_DOMAIN   = 'https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com';
+    const COGNITO_CLIENT_ID = '2shion39m0mim70d0etbtp0eh9';
 
-    // Custom domain callback + homepage
-    const REDIRECT_URI = "https://thenewspaper.site/callback.html";
-    const TOKEN_ENDPOINT = `${COGNITO_DOMAIN}/oauth2/token`;
+    // MUST match what we configured in the user pool + index.html
+    const REDIRECT_URI      = 'https://thenewspaper.site/callback.html';
+    const TOKEN_ENDPOINT    = `${COGNITO_DOMAIN}/oauth2/token`;
 
     async function finishLogin() {
       const params = new URLSearchParams(window.location.search);
@@ -58,7 +57,7 @@
       sessionStorage.removeItem("cognito_code_verifier");
       localStorage.setItem("newsroom_tokens", JSON.stringify(tokens));
 
-      // Back to homepage on custom domain
+      // Back to homepage on the custom domain
       window.location.href = "https://thenewspaper.site/";
     }
 

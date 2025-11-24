@@ -2,23 +2,25 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>The Newsroom · Daily U.S. politics, debriefed</title>
+  <title>The Newsroom · Daily Political Briefing</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     :root {
-      --bg-main: #050516;
-      --bg-panel: rgba(14, 16, 40, 0.92);
-      --bg-panel-soft: rgba(16, 18, 50, 0.92);
+      --bg-main: #050512;
+      --bg-panel: rgba(19, 20, 48, 0.88);
+      --bg-panel-soft: rgba(25, 26, 64, 0.9);
       --border-subtle: rgba(255, 255, 255, 0.08);
       --text-main: #f5f5ff;
       --text-muted: #a3a3c4;
       --accent-1: #b483ff;
       --accent-2: #5fd4ff;
+      --accent-3: #ffc36b;
       --danger: #ff6b81;
-      --shadow-soft: 0 18px 45px rgba(0, 0, 0, 0.6);
       --radius-lg: 24px;
-      --radius-md: 18px;
       --radius-pill: 999px;
+      --shadow-soft: 0 20px 60px rgba(0, 0, 0, 0.9);
+      --transition-fast: 0.18s ease-out;
+      --transition-med: 0.25s ease-out;
     }
 
     * {
@@ -28,127 +30,52 @@
     }
 
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", sans-serif;
       min-height: 100vh;
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Inter", sans-serif;
       color: var(--text-main);
       background:
-        radial-gradient(circle at top left, #140b33 0, #050516 40%),
-        radial-gradient(circle at bottom right, #02081b 0, #050516 55%);
+        radial-gradient(circle at top left, #271744 0, #050512 45%),
+        radial-gradient(circle at bottom right, #02061c 0, #050512 55%);
+      padding: 24px 16px 40px;
       display: flex;
       justify-content: center;
-      padding: 32px 16px;
     }
 
-    .bg-bubbles {
-      position: fixed;
-      inset: 0;
-      overflow: hidden;
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .bg-bubble {
-      position: absolute;
-      border-radius: 999px;
-      filter: blur(40px);
-      opacity: 0.7;
-      mix-blend-mode: screen;
-      background: radial-gradient(circle at 30% 20%, #ff9cf5 0, transparent 60%);
-      animation: float 22s ease-in-out infinite alternate;
-    }
-
-    .bg-bubble:nth-child(1) {
-      width: 360px;
-      height: 360px;
-      left: -140px;
-      top: 8%;
-    }
-
-    .bg-bubble:nth-child(2) {
-      width: 420px;
-      height: 420px;
-      right: -120px;
-      top: 12%;
-      background: radial-gradient(circle at 60% 40%, #7dd2ff 0, transparent 60%);
-      animation-duration: 28s;
-    }
-
-    .bg-bubble:nth-child(3) {
-      width: 480px;
-      height: 480px;
-      left: 10%;
-      bottom: -220px;
-      background: radial-gradient(circle at 40% 0, #b483ff 0, transparent 60%);
-      animation-duration: 32s;
-    }
-
-    @keyframes float {
-      0% {
-        transform: translate3d(0, 10px, 0) scale(1);
-      }
-      100% {
-        transform: translate3d(-10px, -10px, 0) scale(1.05);
-      }
-    }
-
-    .glare {
-      position: absolute;
-      inset: -40px;
-      background: radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.1) 0, transparent 50%);
-      mix-blend-mode: soft-light;
-      opacity: 0.55;
-      pointer-events: none;
-      animation: shimmer 14s linear infinite alternate;
-    }
-
-    @keyframes shimmer {
-      0% {
-        transform: translate3d(-10px, 0, 0) scale(1);
-      }
-      100% {
-        transform: translate3d(10px, 0, 0) scale(1.01);
-      }
-    }
-
-    .page-shell {
-      position: relative;
+    .page {
       width: 100%;
-      max-width: 1120px;
-      border-radius: 32px;
-      background:
-        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.06), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(22, 181, 255, 0.18), transparent 60%),
-        linear-gradient(145deg, rgba(9, 10, 26, 0.96), rgba(3, 6, 25, 0.98));
-      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.9);
-      padding: 20px 22px 24px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      overflow: hidden;
+      max-width: 980px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
+
+    /* Header */
 
     header {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
-      gap: 16px;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 4px;
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 14px;
     }
 
     .brand-logo {
       width: 40px;
       height: 40px;
-      border-radius: 16px;
+      border-radius: 20px;
       background:
-        radial-gradient(circle at 0 0, #ffffff, transparent 55%),
-        conic-gradient(from 140deg, #845cff, #c184ff, #5fd4ff, #f26bff, #845cff);
+        radial-gradient(circle at 30% 20%, #ffffff, #e0d7ff 35%, #b483ff 65%, #5fd4ff 100%);
       box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.4),
-        0 8px 25px rgba(0, 0, 0, 0.85);
+        0 0 0 1px rgba(255, 255, 255, 0.6),
+        0 10px 30px rgba(0, 0, 0, 0.85);
     }
 
     .brand-labels {
@@ -159,10 +86,8 @@
 
     .brand-text-title {
       font-weight: 600;
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      font-size: 14px;
-      color: var(--text-main);
+      font-size: 19px;
+      letter-spacing: 0.02em;
     }
 
     .brand-text-sub {
@@ -173,441 +98,584 @@
     .right-header {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .pill {
-      padding: 5px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      background: linear-gradient(135deg, rgba(180, 131, 255, 0.12), rgba(95, 212, 255, 0.12));
-      color: var(--text-muted);
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: linear-gradient(
+        135deg,
+        rgba(180, 131, 255, 0.16),
+        rgba(95, 212, 255, 0.16)
+      );
+      font-size: 11px;
+      white-space: nowrap;
     }
 
     .pill-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 99px;
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
       background: radial-gradient(circle at 30% 30%, #5fd4ff, #b483ff);
-      box-shadow: 0 0 8px rgba(150, 255, 255, 0.9);
+      box-shadow: 0 0 10px rgba(160, 255, 255, 0.9);
+    }
+
+    .pill-label {
+      color: var(--text-main);
     }
 
     .btn-login {
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      background:
-        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.28), transparent 55%),
-        linear-gradient(135deg, #24163f, #151830, #151023);
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: rgba(10, 12, 40, 0.98);
       color: var(--text-main);
+      padding: 7px 14px;
       font-size: 13px;
-      padding: 6px 16px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       cursor: pointer;
-      box-shadow: var(--shadow-soft);
       transition:
-        transform 0.16s ease-out,
-        box-shadow 0.16s ease-out,
-        border-color 0.16s ease-out,
-        background 0.16s ease-out;
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast),
+        background var(--transition-fast),
+        color var(--transition-fast);
     }
 
     .btn-login:hover {
       transform: translateY(-1px);
-      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.9);
-      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.9);
+      border-color: rgba(255, 255, 255, 0.5);
     }
 
     .btn-login .icon {
       font-size: 14px;
     }
 
-    main {
+    /* Layout */
+
+    .layout {
       display: grid;
-      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 2.1fr) minmax(0, 1.3fr);
       gap: 18px;
       align-items: flex-start;
     }
 
-    .panel {
+    @media (max-width: 880px) {
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .right-header {
+        align-self: stretch;
+        justify-content: space-between;
+      }
+    }
+
+    /* Main card */
+
+    .card-main {
+      position: relative;
+      border-radius: 28px;
+      padding: 20px 18px 18px;
       background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.01)),
-        radial-gradient(circle at 0 0, rgba(240, 165, 255, 0.12), transparent 55%),
-        radial-gradient(circle at 100% 100%, rgba(95, 212, 255, 0.18), transparent 55%),
-        rgba(7, 10, 34, 0.96);
-      border-radius: var(--radius-lg);
-      padding: 16px 16px 20px;
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.1), transparent 52%),
+        radial-gradient(circle at 100% 120%, rgba(95, 212, 255, 0.15), transparent 55%),
+        linear-gradient(145deg, rgba(10, 11, 36, 0.98), rgba(2, 5, 21, 0.98));
       border: 1px solid var(--border-subtle);
       box-shadow: var(--shadow-soft);
-      position: relative;
       overflow: hidden;
     }
 
-    .panel::before {
+    .card-main::before {
       content: "";
       position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.02));
+      inset: -40px;
+      background: radial-gradient(
+        circle at 0 0,
+        rgba(255, 255, 255, 0.12),
+        transparent 55%
+      );
       mix-blend-mode: soft-light;
-      opacity: 0.35;
+      opacity: 0.7;
       pointer-events: none;
     }
 
-    .panel > * {
+    .card-main > * {
       position: relative;
       z-index: 1;
     }
 
-    .panel-header {
+    .main-header-row {
       display: flex;
       justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 12px;
+      align-items: center;
       gap: 12px;
+      margin-bottom: 14px;
     }
 
-    .panel-title {
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 0.06em;
+    .headline {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .headline-kicker {
+      font-size: 11px;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
+      color: rgba(218, 219, 255, 0.8);
     }
 
-    .panel-subtitle {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 3px;
+    .headline-main {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
     }
 
-    .panel-meta {
-      font-size: 11px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 6px;
-    }
-
-    .panel-meta-dot {
-      width: 4px;
-      height: 4px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%, #5fd4ff, #b483ff);
-    }
-
-    .panel-select {
-      font-size: 11px;
-      border-radius: 999px;
-      padding: 4px 9px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: rgba(13, 17, 44, 0.9);
-      color: var(--text-main);
-      outline: none;
-    }
-
-    .big-picture-list {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .big-picture-item {
-      padding: 8px 9px;
-      border-radius: 12px;
-      background:
-        radial-gradient(circle at 0 0, rgba(183, 140, 255, 0.18), transparent 50%),
-        linear-gradient(135deg, rgba(12, 15, 45, 0.98), rgba(9, 11, 35, 0.98));
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 13px;
-      color: var(--text-main);
-      display: flex;
-      gap: 8px;
-    }
-
-    .big-picture-item::before {
-      content: "•";
-      color: var(--accent-2);
-      margin-right: 4px;
-    }
-
-    .placeholder-text {
+    .headline-sub {
       font-size: 13px;
       color: var(--text-muted);
-      padding: 6px 0 2px;
     }
 
-    .story-list {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 6px;
-      max-height: 420px;
-      overflow-y: auto;
-      padding-right: 4px;
-    }
-
-    .story-card {
-      border-radius: var(--radius-md);
-      padding: 10px 11px 10px;
-      background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
-        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.18), transparent 55%),
-        rgba(9, 11, 36, 0.96);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .story-title-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .story-title {
-      font-size: 14px;
-      font-weight: 500;
-    }
-
-    .story-tag {
-      font-size: 10px;
-      padding: 3px 7px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      background: radial-gradient(circle at 0 0, rgba(95, 212, 255, 0.4), transparent 55%);
-      color: #06151f;
-    }
-
-    .story-tldr {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .story-summary {
-      font-size: 12px;
-      color: #dadbf8;
-    }
-
-    .story-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 2px;
-    }
-
-    .story-meta-sources {
-      opacity: 0.9;
-    }
-
-    .story-link {
-      margin-top: 2px;
-      align-self: flex-start;
-      font-size: 11px;
-      color: #8ee7ff;
-      text-decoration: none;
+    .status-chip {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-    }
-
-    .story-link::after {
-      content: "↗";
+      gap: 6px;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(11, 13, 38, 0.96);
       font-size: 11px;
+      color: var(--text-muted);
     }
 
-    .sub-panel {
-      margin-top: 16px;
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #5fd4ff, #b483ff);
+      box-shadow: 0 0 10px rgba(160, 255, 255, 0.9);
+    }
+
+    .status-chip strong {
+      color: #ffffff;
+    }
+
+    .main-body {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.2fr);
+      gap: 14px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 720px) {
+      .main-body {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    .tldr {
+      background: linear-gradient(
+        150deg,
+        rgba(11, 15, 54, 0.92),
+        rgba(5, 9, 32, 0.98)
+      );
       border-radius: 18px;
       padding: 12px 13px;
-      background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02)),
-        rgba(7, 9, 31, 0.96);
-      border: 1px dashed rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .sub-panel-title {
-      font-size: 13px;
+    .tldr-label {
+      font-size: 12px;
+      letter-spacing: 0.14em;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
+      color: rgba(218, 219, 255, 0.9);
       margin-bottom: 6px;
     }
 
-    .prefs-group {
-      margin-top: 8px;
+    .tldr-list {
+      list-style: none;
       display: flex;
       flex-direction: column;
       gap: 6px;
+      font-size: 13px;
     }
 
-    .prefs-label {
+    .tldr-list li {
+      display: flex;
+      gap: 7px;
+      line-height: 1.4;
+    }
+
+    .tldr-bullet {
+      width: 4px;
+      height: 4px;
+      border-radius: 999px;
+      margin-top: 7px;
+      background: radial-gradient(circle at 30% 30%, #ffc36b, #ff9a6b);
+    }
+
+    .tldr-text {
+      color: rgba(242, 242, 255, 0.96);
+    }
+
+    .meta-card {
+      border-radius: 18px;
+      padding: 10px 11px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: linear-gradient(
+        150deg,
+        rgba(10, 12, 40, 0.98),
+        rgba(3, 6, 23, 0.98)
+      );
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       font-size: 12px;
       color: var(--text-muted);
     }
 
-    .prefs-chips {
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .meta-label {
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-size: 10px;
+      color: rgba(204, 204, 255, 0.9);
+    }
+
+    .meta-value {
+      color: #ffffff;
+    }
+
+    .meta-badge {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(7, 9, 32, 0.98);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text-muted);
+    }
+
+    .meta-note {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Accordion */
+
+    .sections {
+      margin-top: 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(7, 8, 30, 0.9);
+      padding: 10px;
+    }
+
+    .sections-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+
+    .sections-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .sections-nav {
       display: flex;
       flex-wrap: wrap;
       gap: 6px;
     }
 
     .chip {
-      position: relative;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      background:
-        linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.01)),
-        rgba(11, 13, 39, 0.96);
       font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(10, 12, 38, 0.98);
       cursor: pointer;
-      color: var(--text-main);
+      color: var(--text-muted);
       transition:
-        border-color 0.16s ease-out,
-        background 0.16s ease-out,
-        transform 0.16s ease-out;
+        background var(--transition-fast),
+        color var(--transition-fast),
+        border-color var(--transition-fast);
     }
 
     .chip:hover {
-      border-color: rgba(255, 255, 255, 0.4);
-      transform: translateY(-0.5px);
+      border-color: rgba(255, 255, 255, 0.3);
     }
 
-    .chip input {
-      appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 5px;
-      border: 1px solid rgba(255, 255, 255, 0.45);
-      background:
-        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.4), transparent 55%),
-        rgba(10, 11, 37, 0.96);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 3px;
-      position: relative;
-    }
-
-    .chip input::after {
-      content: "";
-      width: 8px;
-      height: 8px;
-      border-radius: 3px;
+    .chip.active {
       background: linear-gradient(135deg, #b483ff, #5fd4ff);
-      opacity: 0;
-      transform: scale(0.7);
-      transition:
-        opacity 0.15s ease-out,
-        transform 0.15s ease-out;
+      color: #050512;
+      border-color: transparent;
     }
 
-    .chip input:checked::after {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .chip input:checked ~ .label {
-      color: #eef0ff;
-    }
-
-    .chip .label {
-      position: relative;
-    }
-
-    .identifier-row {
+    .sections-body {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 8px;
       margin-top: 6px;
     }
 
-    .id-pill {
-      padding: 6px 10px;
+    details.section {
+      border-radius: 14px;
+      padding: 9px 10px;
+      background: rgba(5, 7, 28, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    details.section[open] {
+      background: rgba(8, 11, 40, 0.98);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    summary {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .section-title-main {
+      font-weight: 500;
+    }
+
+    .section-tag {
+      font-size: 11px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 255, 255, 0.22);
-      background: rgba(7, 9, 31, 0.9);
+      padding: 3px 7px;
+      background: rgba(10, 14, 44, 0.96);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .section-content {
+      margin-top: 8px;
+      font-size: 13px;
+      color: rgba(235, 235, 255, 0.98);
+      line-height: 1.5;
+    }
+
+    .section-content p {
+      margin-bottom: 6px;
+    }
+
+    .section-footer {
+      margin-top: 6px;
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+    }
+
+    .btn-top {
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: rgba(7, 8, 30, 0.98);
+      color: var(--text-main);
+      font-size: 11px;
+      padding: 3px 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-top .arrow {
+      font-size: 12px;
+      transform: translateY(0.5px);
+    }
+
+    /* Sidebar */
+
+    .card-side {
+      position: relative;
+      border-radius: 24px;
+      padding: 16px 14px 14px;
+      background:
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.12), transparent 52%),
+        radial-gradient(circle at 120% 120%, rgba(95, 212, 255, 0.24), transparent 55%),
+        linear-gradient(145deg, rgba(9, 9, 34, 0.98), rgba(3, 6, 23, 0.98));
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .side-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .side-title {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .substatus-pill {
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(10, 12, 40, 0.96);
       font-size: 11px;
-      cursor: pointer;
+      color: var(--text-muted);
     }
 
-    .id-pill input {
-      width: 12px;
-      height: 12px;
-      accent-color: #b483ff;
+    .substatus-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #5fd4ff, #b483ff);
+      box-shadow: 0 0 10px rgba(160, 255, 255, 0.9);
     }
 
-    .prefs-status {
+    .side-body {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .side-body p {
+      line-height: 1.5;
+    }
+
+    .side-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       margin-top: 6px;
-      font-size: 11px;
-      color: var(--accent-2);
-      opacity: 0;
-      transform: translateY(3px);
+    }
+
+    .btn-wide-primary,
+    .btn-wide-ghost {
+      border-radius: 16px;
+      padding: 8px 10px;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: none;
+      cursor: pointer;
       transition:
-        opacity 0.18s ease-out,
-        transform 0.18s ease-out;
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        background var(--transition-fast),
+        border-color var(--transition-fast),
+        color var(--transition-fast);
     }
 
-    .prefs-status.visible {
-      opacity: 1;
-      transform: translateY(0);
+    .btn-wide-primary {
+      background: linear-gradient(135deg, #b483ff, #5fd4ff);
+      color: #050512;
+      font-weight: 500;
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.9);
     }
 
-    @media (max-width: 860px) {
-      main {
-        grid-template-columns: minmax(0, 1fr);
-      }
-
-      .page-shell {
-        padding: 18px 16px 22px;
-      }
+    .btn-wide-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 1);
     }
 
-    @media (max-width: 600px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-      }
+    .btn-wide-ghost {
+      background: rgba(10, 12, 40, 0.98);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
 
-      .right-header {
-        width: 100%;
-        justify-content: space-between;
-      }
+    .btn-wide-ghost:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.9);
+      border-color: rgba(255, 255, 255, 0.32);
+    }
 
-      .story-list {
-        max-height: none;
-      }
+    .btn-wide-label {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      text-align: left;
+    }
+
+    .btn-wide-main {
+      font-size: 13px;
+    }
+
+    .btn-wide-sub {
+      font-size: 11px;
+      color: rgba(7, 8, 30, 0.9);
+    }
+
+    .btn-wide-ghost .btn-wide-sub {
+      color: var(--text-muted);
+    }
+
+    .btn-wide-icon {
+      font-size: 15px;
+    }
+
+    .side-note {
+      margin-top: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    footer {
+      margin-top: 16px;
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: left;
+    }
+
+    footer a {
+      color: var(--accent-2);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
     }
   </style>
 </head>
 <body>
-  <div class="bg-bubbles">
-    <div class="bg-bubble"></div>
-    <div class="bg-bubble"></div>
-    <div class="bg-bubble"></div>
-  </div>
-
-  <div class="page-shell">
-    <div class="glare"></div>
-
+  <div class="page" id="top">
     <header>
       <div class="brand">
         <div class="brand-logo" aria-hidden="true"></div>
@@ -629,383 +697,269 @@
       </div>
     </header>
 
-    <main>
-      <!-- LEFT: Big Picture -->
-      <section class="panel" id="big-picture-panel">
-        <div class="panel-header">
-          <div>
-            <div class="panel-title">Today’s Big Picture</div>
-            <div class="panel-subtitle">Key threads shaping U.S. politics right now</div>
-            <div class="panel-meta">
-              <span class="panel-meta-dot"></span>
-              <span id="bigPictureDate">No briefing yet</span>
+    <main class="layout">
+      <section class="card-main">
+        <div class="main-header-row">
+          <div class="headline">
+            <div class="headline-kicker">Today’s Briefing</div>
+            <div class="headline-main">
+              Your politics cheat sheet, in one email.
+            </div>
+            <div class="headline-sub">
+              A tight, readable summary of the day’s U.S. political news —
+              with context, definitions, and links to dig deeper.
             </div>
           </div>
-          <select id="archiveSelect" class="panel-select">
-            <option>Loading…</option>
-          </select>
+          <div class="status-chip" id="subStatusChip">
+            <span class="status-dot"></span>
+            <span id="subStatusText">Checking subscription…</span>
+          </div>
         </div>
 
-        <ul class="big-picture-list" id="bigPictureList"></ul>
-        <div class="placeholder-text" id="bigPictureEmpty">
-          No briefing found yet. Once your backend pushes the first daily JSON, this will auto-populate.
+        <div class="main-body">
+          <article class="tldr">
+            <div class="tldr-label">What you’ll get</div>
+            <ul class="tldr-list">
+              <li>
+                <span class="tldr-bullet"></span>
+                <span class="tldr-text">
+                  A single morning email recapping the biggest moves in U.S.
+                  politics and policy.
+                </span>
+              </li>
+              <li>
+                <span class="tldr-bullet"></span>
+                <span class="tldr-text">
+                  A neutral, fact-first summary of what happened, why it matters,
+                  and what to watch next.
+                </span>
+              </li>
+              <li>
+                <span class="tldr-bullet"></span>
+                <span class="tldr-text">
+                  Jargon explained inline — hover terms like “cloture” or “markup”
+                  to see what they mean.
+                </span>
+              </li>
+            </ul>
+          </article>
+
+          <aside class="meta-card">
+            <div class="meta-row">
+              <div>
+                <div class="meta-label">Cadence</div>
+                <div class="meta-value">Weekdays · Morning delivery</div>
+              </div>
+              <span class="meta-badge">U.S.-centric · Major global stories</span>
+            </div>
+            <div class="meta-row">
+              <div>
+                <div class="meta-label">Depth</div>
+                <div class="meta-value">TL;DR first, deep dive below</div>
+              </div>
+            </div>
+            <p class="meta-note">
+              Built for people who follow politics casually but want to stay
+              grounded in real reporting — not just the loudest timelines.
+            </p>
+          </aside>
         </div>
+
+        <section class="sections" aria-label="Briefing sections">
+          <div class="sections-header">
+            <div class="sections-title">What the email looks like</div>
+            <div class="sections-nav">
+              <button class="chip active" type="button">Congress</button>
+              <button class="chip" type="button">White House</button>
+              <button class="chip" type="button">Courts</button>
+              <button class="chip" type="button">Campaigns</button>
+            </div>
+          </div>
+
+          <div class="sections-body">
+            <details class="section" open>
+              <summary>
+                <span class="section-title-main">Congress · What passed, what stalled</span>
+                <span class="section-tag">Hover-to-define terms</span>
+              </summary>
+              <div class="section-content">
+                <p>
+                  Think of this as your running log of what Congress actually
+                  did today: which bills moved, which died quietly in committee,
+                  and where the leadership fights really are.
+                </p>
+                <p>
+                  Key terms (like
+                  <span style="border-bottom: 1px dotted rgba(255,255,255,0.5); cursor: help;"
+                        title="A procedure to end debate in the Senate and move to a vote, usually requiring 60 votes.">
+                    cloture
+                  </span>
+                  or
+                  <span style="border-bottom: 1px dotted rgba(255,255,255,0.5); cursor: help;"
+                        title="The process by which a committee edits and rewrites a bill before it goes to the full chamber.">
+                    markup
+                  </span>
+                  get a short, in-line explanation like this.
+                </p>
+              </div>
+              <div class="section-footer">
+                <span>Each section ends with a quick recap + links for deeper reads.</span>
+                <button class="btn-top" type="button" onclick="document.getElementById('top').scrollIntoView({ behavior: 'smooth' })">
+                  <span class="arrow">↑</span>
+                  <span>Back to top</span>
+                </button>
+              </div>
+            </details>
+
+            <details class="section">
+              <summary>
+                <span class="section-title-main">White House · What the administration did</span>
+                <span class="section-tag">Policy moves · Statements</span>
+              </summary>
+              <div class="section-content">
+                <p>
+                  Executive orders, agency rules, press briefings — all boiled down
+                  into what changed and who it affects.
+                </p>
+              </div>
+              <div class="section-footer">
+                <span>Short, readable context so you don’t have to live on X all day.</span>
+                <button class="btn-top" type="button" onclick="document.getElementById('top').scrollIntoView({ behavior: 'smooth' })">
+                  <span class="arrow">↑</span>
+                  <span>Back to top</span>
+                </button>
+              </div>
+            </details>
+
+            <details class="section">
+              <summary>
+                <span class="section-title-main">Courts · Major rulings & cases</span>
+                <span class="section-tag">Supreme Court · Key lower courts</span>
+              </summary>
+              <div class="section-content">
+                <p>
+                  When a court hands down a ruling that actually changes something,
+                  we’ll explain what the decision says — and what comes next.
+                </p>
+              </div>
+              <div class="section-footer">
+                <span>Focused on impact, not just legalese or hot takes.</span>
+                <button class="btn-top" type="button" onclick="document.getElementById('top').scrollIntoView({ behavior: 'smooth' })">
+                  <span class="arrow">↑</span>
+                  <span>Back to top</span>
+                </button>
+              </div>
+            </details>
+          </div>
+        </section>
       </section>
 
-      <!-- RIGHT: Top stories + preferences -->
-      <section class="panel">
-        <div class="panel-header">
-          <div>
-            <div class="panel-title">Top stories</div>
-            <div class="panel-subtitle">
-              Handpicked from NYT, AP, Politico, Guardian, and more
-            </div>
+      <aside class="card-side">
+        <div class="side-header">
+          <div class="side-title">Subscription</div>
+          <div class="substatus-pill">
+            <span class="substatus-dot"></span>
+            <span id="subStatusSide">Checking…</span>
           </div>
         </div>
 
-        <div class="story-list" id="storyList"></div>
-        <div class="placeholder-text" id="storyEmpty">
-          Once today’s briefing is generated, you’ll see it here. Check back after the EC2 pipeline has run.
+        <div class="side-body">
+          <p>
+            The beta price is <strong>$1.99 / month</strong>. While we’re in early
+            testing, that gets you:
+          </p>
+          <ul style="padding-left: 16px; margin-top: 4px; display: flex; flex-direction: column; gap: 4px;">
+            <li>✅ Full weekday briefings (not just the preview)</li>
+            <li>✅ Archive access while you’re subscribed</li>
+            <li>✅ Ability to suggest topics & recurring explainer terms</li>
+          </ul>
+
+          <div class="side-buttons">
+            <button class="btn-wide-primary" type="button" id="btnManageBilling">
+              <span class="btn-wide-label">
+                <span class="btn-wide-main">Manage billing</span>
+                <span class="btn-wide-sub" id="btnManageBillingSub">
+                  Open Stripe billing portal
+                </span>
+              </span>
+              <span class="btn-wide-icon">↗</span>
+            </button>
+
+            <button class="btn-wide-ghost" type="button" id="btnViewSample">
+              <span class="btn-wide-label">
+                <span class="btn-wide-main">View a sample briefing</span>
+                <span class="btn-wide-sub">
+                  See the format before subscribing
+                </span>
+              </span>
+              <span class="btn-wide-icon">→</span>
+            </button>
+          </div>
+
+          <p class="side-note">
+            You can cancel anytime in a couple of clicks via Stripe. No tricks,
+            no annual lock-in.
+          </p>
         </div>
-
-        <div class="sub-panel">
-          <div class="sub-panel-title">Your perspective</div>
-
-          <div class="prefs-group">
-            <div class="prefs-label">Topics you care about</div>
-            <div class="prefs-chips" id="prefsTopics"></div>
-          </div>
-
-          <div class="prefs-group">
-            <div class="prefs-label">How political are you?</div>
-            <div class="identifier-row">
-              <label class="id-pill">
-                <input type="checkbox" id="identifierBeginner" />
-                <span>New to U.S. politics</span>
-              </label>
-              <label class="id-pill">
-                <input type="checkbox" id="identifierPolicyNerd" />
-                <span>Policy & process nerd</span>
-              </label>
-              <label class="id-pill">
-                <input type="checkbox" id="identifierInvestor" />
-                <span>Markets & macro watcher</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="prefs-status" id="prefsStatus">
-            Preferences saved. We’ll quietly bias picks toward this.
-          </div>
-        </div>
-      </section>
+      </aside>
     </main>
+
+    <footer>
+      Built on top of real reporting from outlets across the spectrum.
+      We’ll always link out so you can read more from the original sources.
+      · <a href="https://thenewspaper.site/billing.html">Billing &amp; subscription settings</a>
+    </footer>
   </div>
 
   <script>
-    // ---------- CONFIG ----------
-    const POSTS_INDEX_URL = "./data/index.json";
-    const POST_BY_SLUG_URL = (slug) => `./data/posts/${slug}.json`;
-
-    // Backend API base URL (Stripe + subscription status)
+    // ===== CONFIG =====
     const API_BASE_URL = "https://api.thenewspaper.site";
 
-    const DEFAULT_TOPICS = [
-      { id: "congress", label: "Congress & legislation" },
-      { id: "courts", label: "Supreme Court & courts" },
-      { id: "elections", label: "Elections & voting" },
-      { id: "foreign_policy", label: "Foreign policy & wars" },
-      { id: "economy", label: "Economy & markets" },
-      { id: "immigration", label: "Immigration & border" },
-      { id: "climate", label: "Climate & energy" },
-      { id: "social", label: "Social issues" },
-      { id: "state_politics", label: "States & local" }
-    ];
-
-    const PREFS_STORAGE_KEY = "newsroom_prefs_v1";
-
-    // ---------- UTIL ----------
-    function formatDatePretty(dateStr) {
-      if (!dateStr) return "";
-      const d = new Date(dateStr);
-      if (isNaN(d.getTime())) return dateStr;
-      return d.toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "long",
-        day: "numeric"
-      });
-    }
-
-    function loadPrefs() {
-      try {
-        const raw = localStorage.getItem(PREFS_STORAGE_KEY);
-        if (!raw) return {};
-        return JSON.parse(raw);
-      } catch (e) {
-        console.warn("Failed to parse prefs", e);
-        return {};
-      }
-    }
-
-    function savePrefs(prefs) {
-      try {
-        localStorage.setItem(PREFS_STORAGE_KEY, JSON.stringify(prefs));
-      } catch (e) {
-        console.warn("Failed to save prefs", e);
-      }
-    }
-
-    function showPrefsSaved(el) {
-      el.classList.add("visible");
-      setTimeout(() => el.classList.remove("visible"), 1800);
-    }
-
-    // ---------- PREFS UI ----------
-    function initPrefsUI() {
-      const prefs = loadPrefs();
-      const topics = prefs.topics || {};
-      const identifiers = prefs.identifiers || {};
-      const prefsTopicsContainer = document.getElementById("prefsTopics");
-      const statusEl = document.getElementById("prefsStatus");
-
-      prefsTopicsContainer.innerHTML = "";
-
-      DEFAULT_TOPICS.forEach((topic) => {
-        const chip = document.createElement("label");
-        chip.className = "chip";
-
-        const input = document.createElement("input");
-        input.type = "checkbox";
-        input.checked = !!topics[topic.id];
-
-        const labelSpan = document.createElement("span");
-        labelSpan.className = "label";
-        labelSpan.textContent = topic.label;
-
-        input.addEventListener("change", () => {
-          const prefs = loadPrefs();
-          prefs.topics = prefs.topics || {};
-          prefs.topics[topic.id] = input.checked;
-          savePrefs(prefs);
-          showPrefsSaved(statusEl);
-        });
-
-        chip.appendChild(input);
-        chip.appendChild(labelSpan);
-        prefsTopicsContainer.appendChild(chip);
-      });
-
-      const identifierBeginner = document.getElementById("identifierBeginner");
-      const identifierPolicyNerd = document.getElementById("identifierPolicyNerd");
-      const identifierInvestor = document.getElementById("identifierInvestor");
-
-      identifierBeginner.checked = !!identifiers.beginner;
-      identifierPolicyNerd.checked = !!identifiers.policyNerd;
-      identifierInvestor.checked = !!identifiers.investor;
-
-      const handleIdentifierChange = () => {
-        const newPrefs = loadPrefs();
-        newPrefs.identifiers = {
-          beginner: identifierBeginner.checked,
-          policyNerd: identifierPolicyNerd.checked,
-          investor: identifierInvestor.checked
-        };
-        savePrefs(newPrefs);
-        showPrefsSaved(statusEl);
-      };
-
-      identifierBeginner.addEventListener("change", handleIdentifierChange);
-      identifierPolicyNerd.addEventListener("change", handleIdentifierChange);
-      identifierInvestor.addEventListener("change", handleIdentifierChange);
-    }
-
-    // ---------- DATA LOADING ----------
-    async function loadPostsIndex() {
-      try {
-        const res = await fetch(POSTS_INDEX_URL, { cache: "no-cache" });
-        if (!res.ok) throw new Error("Index HTTP " + res.status);
-        return res.json();
-      } catch (e) {
-        console.error("Failed to load posts index", e);
-        return [];
-      }
-    }
-
-    async function loadPostBySlug(slug) {
-      try {
-        const res = await fetch(POST_BY_SLUG_URL(slug), { cache: "no-cache" });
-        if (!res.ok) throw new Error("Post HTTP " + res.status);
-        return res.json();
-      } catch (e) {
-        console.error("Failed to load post", e);
-        return null;
-      }
-    }
-
-    // ---------- RENDERING ----------
-    function renderBigPicture(post) {
-      const listEl = document.getElementById("bigPictureList");
-      const emptyEl = document.getElementById("bigPictureEmpty");
-      const dateEl = document.getElementById("bigPictureDate");
-
-      listEl.innerHTML = "";
-
-      if (!post || !post.bigPicture || post.bigPicture.length === 0) {
-        emptyEl.style.display = "block";
-        dateEl.textContent = "No briefing yet";
-        return;
-      }
-      emptyEl.style.display = "none";
-
-      post.bigPicture.forEach((line) => {
-        const li = document.createElement("li");
-        li.className = "big-picture-item";
-        li.textContent = line;
-        listEl.appendChild(li);
-      });
-
-      dateEl.textContent = `Updated ${formatDatePretty(post.date)}`;
-    }
-
-    function renderStories(post) {
-      const listEl = document.getElementById("storyList");
-      const emptyEl = document.getElementById("storyEmpty");
-      listEl.innerHTML = "";
-
-      if (!post || !post.stories || post.stories.length === 0) {
-        emptyEl.style.display = "block";
-        return;
-      }
-      emptyEl.style.display = "none";
-
-      post.stories.forEach((story) => {
-        const card = document.createElement("article");
-        card.className = "story-card";
-
-        const main = document.createElement("div");
-
-        const titleRow = document.createElement("div");
-        titleRow.className = "story-title-row";
-
-        const title = document.createElement("div");
-        title.className = "story-title";
-        title.textContent = story.title || "Untitled story";
-
-        const tag = document.createElement("span");
-        tag.className = "story-tag";
-        tag.textContent = (story.category || "Politics").toUpperCase();
-
-        titleRow.appendChild(title);
-        titleRow.appendChild(tag);
-
-        const tldr = document.createElement("div");
-        tldr.className = "story-tldr";
-        tldr.textContent = story.tldr || story.summary || "";
-
-        const summary = document.createElement("div");
-        summary.className = "story-summary";
-        summary.textContent = story.body || story.summaryLong || "";
-
-        const meta = document.createElement("div");
-        meta.className = "story-meta";
-
-        const sources = document.createElement("span");
-        sources.className = "story-meta-sources";
-        sources.textContent =
-          story.sources && story.sources.length
-            ? "Sources: " + story.sources.join(", ")
-            : story.source || "Multiple sources";
-
-        const time = document.createElement("span");
-        time.textContent = formatDatePretty(story.date) || "Today";
-
-        meta.appendChild(sources);
-        meta.appendChild(time);
-
-        main.appendChild(titleRow);
-        main.appendChild(tldr);
-        main.appendChild(summary);
-        main.appendChild(meta);
-
-        const link =
-          story.sourceUrl || story.url
-            ? document.createElement("a")
-            : document.createElement("span");
-
-        if (link.tagName.toLowerCase() === "a") {
-          link.className = "story-link";
-          link.href = story.sourceUrl || story.url;
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-          link.textContent = "Open story";
-        } else {
-          link.className = "story-link";
-          link.textContent = "No source link";
-          link.style.opacity = "0.5";
-        }
-
-        card.appendChild(main);
-        card.appendChild(link);
-        listEl.appendChild(card);
-      });
-    }
-
-    async function hydratePage() {
-      initPrefsUI();
-
-      const archiveSelect = document.getElementById("archiveSelect");
-
-      const posts = await loadPostsIndex();
-      archiveSelect.innerHTML = "";
-
-      if (!posts.length) {
-        const opt = document.createElement("option");
-        opt.value = "";
-        opt.textContent = "No briefings yet";
-        archiveSelect.appendChild(opt);
-        renderBigPicture(null);
-        renderStories(null);
-        return;
-      }
-
-      posts.forEach((p, idx) => {
-        const opt = document.createElement("option");
-        opt.value = p.slug;
-        opt.textContent =
-          idx === 0
-            ? `Today · ${formatDatePretty(p.date)}`
-            : formatDatePretty(p.date);
-        archiveSelect.appendChild(opt);
-      });
-
-      const firstSlug = posts[0].slug;
-      const firstPost = await loadPostBySlug(firstSlug);
-      renderBigPicture(firstPost);
-      renderStories(firstPost);
-
-      archiveSelect.addEventListener("change", async () => {
-        const slug = archiveSelect.value;
-        if (!slug) return;
-        const post = await loadPostBySlug(slug);
-        renderBigPicture(post);
-        renderStories(post);
-      });
-    }
-
-    // ---------- AUTH (Cognito login + Stripe API helper) ----------
     const COGNITO_DOMAIN    = 'https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com';
     const COGNITO_CLIENT_ID = '2shion39m0mim70d0etbtp0eh9';
     const COGNITO_REDIRECT  = 'https://thenewspaper.site/callback.html';
 
     function getTokens() {
       try {
-        const raw = localStorage.getItem('newsroom_tokens');
-        return raw ? JSON.parse(raw) : null;
-      } catch {
+        const raw = localStorage.getItem("newsroom_tokens");
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (e) {
+        console.error("Failed to parse newsroom_tokens:", e);
         return null;
       }
     }
 
+    function clearTokens() {
+      localStorage.removeItem("newsroom_tokens");
+    }
+
+    // Core API: ALWAYS use the ID TOKEN (what server.ts expects).
+    async function callApi(path, options = {}) {
+      const tokens = getTokens();
+      if (!tokens || !tokens.id_token) {
+        throw new Error("Not logged in");
+      }
+      const headers = {
+        "Content-Type": "application/json",
+        ...(options.headers || {}),
+        Authorization: `Bearer ${tokens.id_token}`,  // <-- ID TOKEN
+      };
+
+      const res = await fetch(`${API_BASE_URL}${path}`, {
+        ...options,
+        headers,
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(`API ${path} failed: ${res.status} ${text}`);
+      }
+
+      return res.json();
+    }
+
+    // ===== PKCE / Login flow =====
     async function sha256(plain) {
       const encoder = new TextEncoder();
       const data = encoder.encode(plain);
@@ -1025,90 +979,63 @@
     }
 
     async function createPkcePair() {
-      const codeVerifier = base64UrlEncode(
-        crypto.getRandomValues(new Uint8Array(32))
-      );
-      const hashed = await sha256(codeVerifier);
-      const codeChallenge = base64UrlEncode(hashed);
+      const verifierBytes = crypto.getRandomValues(new Uint8Array(32));
+      const codeVerifier = base64UrlEncode(verifierBytes);
+      const hash = await sha256(codeVerifier);
+      const codeChallenge = base64UrlEncode(hash);
       return { codeVerifier, codeChallenge };
     }
 
     function startLogin() {
-      createPkcePair()
-        .then(({ codeVerifier, codeChallenge }) => {
-          sessionStorage.setItem("cognito_code_verifier", codeVerifier);
+      createPkcePair().then(({ codeVerifier, codeChallenge }) => {
+        sessionStorage.setItem("cognito_code_verifier", codeVerifier);
 
-          const params = new URLSearchParams({
-            client_id: COGNITO_CLIENT_ID,
-            response_type: "code",
-            scope: "openid email profile",
-            redirect_uri: COGNITO_REDIRECT,
-            code_challenge_method: "S256",
-            code_challenge: codeChallenge,
-          });
-
-          window.location.href =
-            `${COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
-        })
-        .catch((err) => {
-          console.error("Failed to start login", err);
+        const params = new URLSearchParams({
+          client_id: COGNITO_CLIENT_ID,
+          response_type: "code",
+          scope: "openid email profile",
+          redirect_uri: COGNITO_REDIRECT,
+          code_challenge_method: "S256",
+          code_challenge: codeChallenge,
         });
-    }
 
-    // use ACCESS TOKEN for API
-    async function callApi(path, options = {}) {
-      const tokens = getTokens();
-      if (!tokens || !tokens.access_token) {
-        const err = new Error("Not logged in");
-        err.code = "NO_LOGIN";
-        throw err;
-      }
-
-      const headers = {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-        Authorization: `Bearer ${tokens.access_token}`,
-      };
-
-      const res = await fetch(`${API_BASE_URL}${path}`, {
-        ...options,
-        headers,
+        window.location.href = `${COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
+      }).catch((err) => {
+        console.error("Failed to start login:", err);
       });
-
-      if (!res.ok) {
-        const text = await res.text();
-        const err = new Error(`API ${path} failed: ${res.status} ${text}`);
-        err.httpStatus = res.status;
-        throw err;
-      }
-
-      return res.json();
     }
 
+    // ===== Subscription status badge =====
     async function refreshSubscriptionBadge() {
-      const pillLabel = document.querySelector(".pill-label");
-      if (!pillLabel) return;
+      const sideText   = document.getElementById("subStatusSide");
+      const chipText   = document.getElementById("subStatusText");
+      const manageSub  = document.getElementById("btnManageBillingSub");
 
-      const tokens = getTokens();
-      if (!tokens || !tokens.access_token) {
-        pillLabel.textContent = "Daily briefing · Auto-updated";
-        return;
-      }
+      if (sideText) sideText.textContent = "Checking…";
+      if (chipText) chipText.textContent = "Checking subscription…";
 
       try {
-        const status = await callApi("/api/subscription-status", { method: "GET" });
-        if (status && status.status === "active") {
-          pillLabel.textContent = "Subscriber · Daily briefing";
+        const data = await callApi("/api/subscription-status", { method: "GET" });
+
+        if (data && data.status === "active") {
+          if (sideText) sideText.textContent = "Active · Full briefings";
+          if (chipText) chipText.textContent = "Subscriber · Full access";
+          if (manageSub) manageSub.textContent = "Manage subscription in Stripe";
         } else {
-          pillLabel.textContent = "Daily briefing · Free preview";
+          if (sideText) sideText.textContent = "Free preview · Upgrade for full email";
+          if (chipText) chipText.textContent = "Free preview · Upgrade for full brief";
+          if (manageSub) manageSub.textContent = "Start subscription for $1.99 / mo";
         }
       } catch (err) {
-        console.warn("Subscription status check failed:", err);
+        console.error("Error refreshing subscription status:", err);
+        if (sideText) sideText.textContent = "Error loading status";
+        if (chipText) chipText.textContent = "Status unavailable";
+        if (manageSub) manageSub.textContent = "Open Stripe billing portal";
       }
     }
 
     function initAuthUI() {
-      const loginBtn = document.querySelector(".btn-login");
+      const loginBtn  = document.querySelector(".btn-login");
       const labelSpan = document.querySelector(".btn-login-label");
       if (!loginBtn) return;
 
@@ -1125,9 +1052,26 @@
       }
     }
 
+    function initButtons() {
+      const sampleBtn = document.getElementById("btnViewSample");
+      const billingBtn = document.getElementById("btnManageBilling");
+
+      if (sampleBtn) {
+        sampleBtn.addEventListener("click", () => {
+          alert("Sample briefings will be available soon in the beta.");
+        });
+      }
+
+      if (billingBtn) {
+        billingBtn.addEventListener("click", () => {
+          window.location.href = "https://thenewspaper.site/billing.html";
+        });
+      }
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
-      hydratePage().catch((e) => console.error(e));
       initAuthUI();
+      initButtons();
     });
   </script>
 </body>
