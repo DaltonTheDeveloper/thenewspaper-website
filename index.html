@@ -935,15 +935,19 @@
     }
 
     // Core API: ALWAYS use the ID TOKEN (what server.ts expects).
+
     async function callApi(path, options = {}) {
       const tokens = getTokens();
-      if (!tokens || !tokens.id_token) {
+      const idToken = tokens && tokens.id_token;
+
+      if (!idToken) {
         throw new Error("Not logged in");
       }
+
       const headers = {
         "Content-Type": "application/json",
         ...(options.headers || {}),
-        Authorization: `Bearer ${tokens.id_token}`,  // <-- ID TOKEN
+        Authorization: `Bearer ${idToken}`,   // <-- IMPORTANT
       };
 
       const res = await fetch(`${API_BASE_URL}${path}`, {
