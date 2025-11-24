@@ -1059,8 +1059,11 @@
     async function callApi(path, options = {}) {
       const tokens = getTokens();
       if (!tokens || !tokens.access_token) {
-        throw new Error("Not logged in");
+        const err = new Error("Not logged in");
+        err.code = "NO_LOGIN";
+        throw err;
       }
+
       const headers = {
         "Content-Type": "application/json",
         ...(options.headers || {}),
@@ -1074,7 +1077,9 @@
 
       if (!res.ok) {
         const text = await res.text();
-        throw new Error(`API ${path} failed: ${res.status} ${text}`);
+        const err = new Error(`API ${path} failed: ${res.status} ${text}`);
+        err.httpStatus = res.status;
+        throw err;
       }
 
       return res.json();

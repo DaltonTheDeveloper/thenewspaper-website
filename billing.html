@@ -20,106 +20,294 @@
       --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.85);
       --transition-fast: 0.18s ease-out;
     }
-    *{box-sizing:border-box;margin:0;padding:0;}
-    body{
-      min-height:100vh;display:flex;align-items:center;justify-content:center;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",sans-serif;
-      color:var(--text-main);
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+        "Inter", sans-serif;
+      color: var(--text-main);
       background:
-        radial-gradient(circle at top left,#201443 0,#050512 45%),
-        radial-gradient(circle at bottom right,#030821 0,#050512 55%);
-      padding:24px 16px;
+        radial-gradient(circle at top left, #201443 0, #050512 45%),
+        radial-gradient(circle at bottom right, #030821 0, #050512 55%);
+      padding: 24px 16px;
     }
-    .shell{width:100%;max-width:540px;position:relative;}
-    .card{
-      position:relative;
+
+    .shell {
+      width: 100%;
+      max-width: 540px;
+      position: relative;
+    }
+
+    .card {
+      position: relative;
       background:
-        radial-gradient(circle at 0 0,rgba(255,255,255,0.14),transparent 55%),
-        radial-gradient(circle at 100% 100,rgba(95,212,255,0.16),transparent 60%),
-        linear-gradient(145deg,rgba(10,11,36,0.98),rgba(3,6,25,0.98));
-      border-radius:28px;border:1px solid var(--border-subtle);
-      box-shadow:var(--shadow-soft);padding:22px 20px 20px;overflow:hidden;
+        radial-gradient(circle at 0 0, rgba(255, 255, 255, 0.14), transparent 55%),
+        radial-gradient(circle at 100% 100%, rgba(95, 212, 255, 0.16), transparent 60%),
+        linear-gradient(145deg, rgba(10, 11, 36, 0.98), rgba(3, 6, 25, 0.98));
+      border-radius: 28px;
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 22px 20px 20px;
+      overflow: hidden;
     }
-    .card::before{
-      content:"";position:absolute;inset:-40px;
-      background:radial-gradient(circle at 0 0,rgba(255,255,255,0.12),transparent 55%);
-      mix-blend-mode:soft-light;opacity:0.6;pointer-events:none;
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -40px;
+      background: radial-gradient(
+        circle at 0 0,
+        rgba(255, 255, 255, 0.12),
+        transparent 55%
+      );
+      mix-blend-mode: soft-light;
+      opacity: 0.6;
+      pointer-events: none;
     }
-    .card>*{position:relative;z-index:1;}
-    .header{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;}
-    .title-block{display:flex;flex-direction:column;gap:4px;}
-    .title{font-size:18px;font-weight:600;letter-spacing:0.03em;}
-    .subtitle{font-size:13px;color:var(--text-muted);}
-    .pill{
-      display:inline-flex;align-items:center;gap:7px;
-      padding:5px 12px;border-radius:var(--radius-pill);
-      border:1px solid rgba(255,255,255,0.24);
-      background:linear-gradient(135deg,rgba(180,131,255,0.16),rgba(95,212,255,0.12));
-      font-size:11px;
+
+    .card > * {
+      position: relative;
+      z-index: 1;
     }
-    .pill-dot{
-      width:7px;height:7px;border-radius:999px;
-      background:radial-gradient(circle at 30% 30%,#5fd4ff,#b483ff);
-      box-shadow:0 0 10px rgba(160,255,255,0.9);
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
     }
-    .section{margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.08);}
-    .section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:10px;}
-    .section-title{font-size:13px;font-weight:500;}
-    .badge{
-      font-size:11px;padding:4px 10px;border-radius:999px;
-      border:1px solid rgba(255,255,255,0.22);
-      background:rgba(15,18,40,0.96);color:var(--text-muted);
-      max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+
+    .title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
-    .status-text{font-size:13px;color:var(--text-muted);margin-bottom:6px;}
-    .status-text strong{color:#ffffff;}
-    .status-pill{
-      display:inline-flex;align-items:center;gap:6px;
-      font-size:11px;padding:4px 10px;border-radius:999px;margin-bottom:10px;
+
+    .title {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
     }
-    .status-pill.active{
-      border:1px solid rgba(144,238,144,0.7);
-      background:rgba(22,122,72,0.5);color:#eaffea;
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
     }
-    .status-pill.inactive{
-      border:1px solid rgba(255,255,255,0.18);
-      background:rgba(14,15,40,0.96);color:var(--text-muted);
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      background: linear-gradient(
+        135deg,
+        rgba(180, 131, 255, 0.16),
+        rgba(95, 212, 255, 0.12)
+      );
+      font-size: 11px;
     }
-    .buttons{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;}
-    button{
-      border:none;border-radius:14px;padding:9px 14px;font-size:13px;
-      display:inline-flex;align-items:center;gap:6px;cursor:pointer;
-      transition:transform var(--transition-fast),box-shadow var(--transition-fast),
-                 opacity var(--transition-fast),background var(--transition-fast),
-                 border-color var(--transition-fast);
+
+    .pill-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 30% 30%, #5fd4ff, #b483ff);
+      box-shadow: 0 0 10px rgba(160, 255, 255, 0.9);
     }
-    button:disabled{opacity:0.55;cursor:not-allowed;box-shadow:none!important;transform:none!important;}
-    .btn-primary{
-      flex:1;
-      background:linear-gradient(135deg,#b483ff,#5fd4ff);
-      color:#050512;box-shadow:0 16px 35px rgba(0,0,0,0.8);font-weight:500;
+
+    .btn-login-header {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 14px;
+      font-size: 13px;
+      cursor: pointer;
+      background: rgba(12, 14, 40, 0.98);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        border-color var(--transition-fast),
+        background var(--transition-fast);
     }
-    .btn-primary:hover:not(:disabled){
-      transform:translateY(-1px);
-      box-shadow:0 20px 45px rgba(0,0,0,0.9);
+
+    .btn-login-header:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.85);
+      border-color: rgba(255, 255, 255, 0.4);
     }
-    .btn-secondary{
-      background:rgba(12,14,40,0.98);
-      color:var(--text-main);border:1px solid rgba(255,255,255,0.22);
+
+    .section {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .btn-secondary:hover:not(:disabled){
-      transform:translateY(-1px);
-      box-shadow:0 16px 35px rgba(0,0,0,0.85);
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+      gap: 10px;
     }
-    .notice{margin-top:10px;font-size:11px;color:var(--text-muted);}
-    .error{margin-top:6px;font-size:12px;color:var(--danger);min-height:16px;white-space:pre-wrap;}
-    .footer-link{
-      display:inline-flex;align-items:center;gap:6px;margin-top:14px;
-      font-size:12px;color:var(--accent-2);text-decoration:none;
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 500;
     }
-    .footer-link span.arrow{font-size:14px;transform:translateY(0.5px);}
-    @media (max-width:480px){
-      .card{padding:18px 16px 18px;border-radius:22px;}
+
+    .badge {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      background: rgba(15, 18, 40, 0.96);
+      color: var(--text-muted);
+      max-width: 220px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .status-text strong {
+      color: #ffffff;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .status-pill.active {
+      border: 1px solid rgba(144, 238, 144, 0.7);
+      background: rgba(22, 122, 72, 0.5);
+      color: #eaffea;
+    }
+
+    .status-pill.inactive {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(14, 15, 40, 0.96);
+      color: var(--text-muted);
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 14px;
+      padding: 9px 14px;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      transition:
+        transform var(--transition-fast),
+        box-shadow var(--transition-fast),
+        opacity var(--transition-fast),
+        background var(--transition-fast),
+        border-color var(--transition-fast);
+    }
+
+    button:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+      box-shadow: none !important;
+      transform: none !important;
+    }
+
+    .btn-primary {
+      flex: 1;
+      background: linear-gradient(135deg, #b483ff, #5fd4ff);
+      color: #050512;
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.8);
+      font-weight: 500;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.9);
+    }
+
+    .btn-secondary {
+      background: rgba(12, 14, 40, 0.98);
+      color: var(--text-main);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 35px rgba(0, 0, 0, 0.85);
+    }
+
+    .notice {
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .error {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--danger);
+      min-height: 16px;
+      white-space: pre-wrap;
+    }
+
+    .footer-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--accent-2);
+      text-decoration: none;
+    }
+
+    .footer-link span.arrow {
+      font-size: 14px;
+      transform: translateY(0.5px);
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 18px 16px 18px;
+        border-radius: 22px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
     }
   </style>
 </head>
@@ -129,12 +317,14 @@
       <div class="header">
         <div class="title-block">
           <div class="title">Subscription</div>
-          <div class="subtitle">Unlock the full daily briefing for $1.99 / month.</div>
+          <div class="subtitle">
+            Unlock the full daily briefing for $1.99 / month.
+          </div>
         </div>
 
-        <!-- LOGIN BUTTON + STATUS PILL -->
+        <!-- Login + pill -->
         <div style="display:flex;align-items:center;gap:10px;">
-          <button class="btn-secondary" id="btnLoginHeader" type="button">
+          <button class="btn-login-header" id="btnLoginHeader" type="button">
             Login
           </button>
           <div class="pill">
@@ -168,7 +358,8 @@
         </div>
 
         <div class="notice">
-          You’ll be redirected to Stripe’s secure checkout page. You can cancel anytime via Stripe.
+          You’ll be redirected to Stripe’s secure checkout page. You can cancel
+          anytime via Stripe.
         </div>
         <div class="error" id="errorBox"></div>
       </div>
@@ -184,12 +375,48 @@
     // ===== CONFIG =====
     const API_BASE_URL = "https://api.thenewspaper.site";
 
-    // Cognito config (same as index/callback)
-    const COGNITO_DOMAIN    = 'https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com';
-    const COGNITO_CLIENT_ID = '2shion39m0mim70d0etbtp0eh9';
-    const COGNITO_REDIRECT  = 'https://thenewspaper.site/callback.html';
+    // Cognito config (must match index.html / callback.html)
+    const COGNITO_DOMAIN =
+      "https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com";
+    const COGNITO_CLIENT_ID = "2shion39m0mim70d0etbtp0eh9";
+    const COGNITO_REDIRECT = "https://thenewspaper.site/callback.html";
 
-    // === PKCE helpers ===
+    // ===== TOKEN HELPERS =====
+    function getTokens() {
+      try {
+        const raw = localStorage.getItem("newsroom_tokens");
+        if (!raw) return null;
+        return JSON.parse(raw);
+      } catch (e) {
+        console.error("Failed to parse newsroom_tokens:", e);
+        return null;
+      }
+    }
+
+    function getAccessToken() {
+      const tokens = getTokens();
+      return tokens && tokens.access_token ? tokens.access_token : null;
+    }
+
+    function getIdToken() {
+      const tokens = getTokens();
+      return tokens && tokens.id_token ? tokens.id_token : null;
+    }
+
+    function decodeEmailFromIdToken() {
+      const idToken = getIdToken();
+      if (!idToken) return null;
+      try {
+        const payload = idToken.split(".")[1];
+        const decoded = JSON.parse(atob(payload.replace(/-/g, "+").replace(/_/g, "/")));
+        return decoded.email || null;
+      } catch (e) {
+        console.error("Failed to decode id_token:", e);
+        return null;
+      }
+    }
+
+    // ===== PKCE HELPERS =====
     async function sha256(plain) {
       const encoder = new TextEncoder();
       const data = encoder.encode(plain);
@@ -231,49 +458,14 @@
             code_challenge: codeChallenge,
           });
 
-          window.location.href =
-            `${COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
+          window.location.href = `${COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
         })
         .catch((err) => {
           console.error("Failed to start login", err);
         });
     }
 
-    // ===== TOKEN HELPERS =====
-    function getTokens() {
-      try {
-        const raw = localStorage.getItem("newsroom_tokens");
-        if (!raw) return null;
-        return JSON.parse(raw);
-      } catch (e) {
-        console.error("Failed to parse newsroom_tokens:", e);
-        return null;
-      }
-    }
-
-    function getIdToken() {
-      const tokens = getTokens();
-      return tokens && tokens.id_token ? tokens.id_token : null;
-    }
-
-    function getAccessToken() {
-      const tokens = getTokens();
-      return tokens && tokens.access_token ? tokens.access_token : null;
-    }
-
-    function decodeEmailFromIdToken() {
-      const idToken = getIdToken();
-      if (!idToken) return null;
-      try {
-        const payload = idToken.split(".")[1];
-        const decoded = JSON.parse(atob(payload));
-        return decoded.email || null;
-      } catch (e) {
-        console.error("Failed to decode id_token:", e);
-        return null;
-      }
-    }
-
+    // ===== API HELPER (USES ACCESS TOKEN) =====
     async function callApi(path, options = {}) {
       const accessToken = getAccessToken();
       if (!accessToken) {
@@ -305,7 +497,7 @@
       return res.json();
     }
 
-    // ===== UI STATE =====
+    // ===== UI ELEMENTS =====
     const pillLabel = document.getElementById("pillLabel");
     const statusText = document.getElementById("statusText");
     const statusPill = document.getElementById("statusPill");

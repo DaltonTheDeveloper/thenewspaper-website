@@ -9,29 +9,31 @@
   <p>Finishing sign-in, please wait…</p>
 
   <script>
-    const COGNITO_DOMAIN    = 'https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com';
-    const COGNITO_CLIENT_ID = '2shion39m0mim70d0etbtp0eh9';
+    const COGNITO_DOMAIN =
+      "https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com";
+    const COGNITO_CLIENT_ID = "2shion39m0mim70d0etbtp0eh9";
 
-    // custom domain callback
-    const REDIRECT_URI      = 'https://thenewspaper.site/callback.html';
-    const TOKEN_ENDPOINT    = `${COGNITO_DOMAIN}/oauth2/token`;
+    // Custom domain callback + homepage
+    const REDIRECT_URI = "https://thenewspaper.site/callback.html";
+    const TOKEN_ENDPOINT = `${COGNITO_DOMAIN}/oauth2/token`;
 
     async function finishLogin() {
       const params = new URLSearchParams(window.location.search);
-      const code = params.get('code');
+      const code = params.get("code");
       if (!code) {
-        document.body.innerHTML = '<p>Missing auth code from Cognito.</p>';
+        document.body.innerHTML = "<p>Missing auth code from Cognito.</p>";
         return;
       }
 
-      const codeVerifier = sessionStorage.getItem('cognito_code_verifier');
+      const codeVerifier = sessionStorage.getItem("cognito_code_verifier");
       if (!codeVerifier) {
-        document.body.innerHTML = '<p>Missing PKCE verifier (session may have been cleared or expired).</p>';
+        document.body.innerHTML =
+          "<p>Missing PKCE verifier (session may have been cleared or expired).</p>";
         return;
       }
 
       const body = new URLSearchParams({
-        grant_type: 'authorization_code',
+        grant_type: "authorization_code",
         client_id: COGNITO_CLIENT_ID,
         code,
         redirect_uri: REDIRECT_URI,
@@ -39,29 +41,30 @@
       });
 
       const res = await fetch(TOKEN_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body,
       });
 
       if (!res.ok) {
         const text = await res.text();
-        document.body.innerHTML = '<pre>Token error:\n' + text + '</pre>';
+        document.body.innerHTML = "<pre>Token error:\n" + text + "</pre>";
         return;
       }
 
       const tokens = await res.json();
       // { access_token, id_token, refresh_token?, expires_in, token_type }
 
-      sessionStorage.removeItem('cognito_code_verifier');
-      localStorage.setItem('newsroom_tokens', JSON.stringify(tokens));
+      sessionStorage.removeItem("cognito_code_verifier");
+      localStorage.setItem("newsroom_tokens", JSON.stringify(tokens));
 
-      // back to homepage on custom domain
-      window.location.href = 'https://thenewspaper.site/';
+      // Back to homepage on custom domain
+      window.location.href = "https://thenewspaper.site/";
     }
 
-    finishLogin().catch(err => {
-      document.body.innerHTML = '<pre>' + (err?.stack || err) + '</pre>';
+    finishLogin().catch((err) => {
+      document.body.innerHTML =
+        "<pre>" + (err && (err.stack || err.message) || err) + "</pre>";
     });
   </script>
 </body>
