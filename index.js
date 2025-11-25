@@ -27,7 +27,9 @@ async function callApi(path, options = {}) {
   const idToken = tokens && tokens.id_token;
 
   if (!idToken) {
-    throw new Error("Not logged in");
+    const err = new Error("Not logged in");
+    err.httpStatus = 401;
+    throw err;
   }
 
   const headers = {
@@ -43,7 +45,11 @@ async function callApi(path, options = {}) {
 
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`API ${path} failed: ${res.status} ${text}`);
+    const err = new Error(
+      `API ${path} failed: ${res.status} ${text || res.statusText}`
+    );
+    err.httpStatus = res.status;
+    throw err;
   }
 
   return res.json();
@@ -123,6 +129,20 @@ async function refreshSubscriptionBadge() {
     }
   } catch (err) {
     console.error("Error refreshing subscription status:", err);
+
+    if (err.httpStatus === 401) {
+      // Token is missing/expired/invalid -> treat as logged out
+      clearTokens();
+
+      if (sideText) sideText.textContent = "Login to see status";
+      if (chipText) chipText.textContent = "Login to check subscription";
+      if (manageSub) manageSub.textContent = "Login required";
+
+      // Reload so the header button goes back to "Login / Sign up"
+      window.location.reload();
+      return;
+    }
+
     if (sideText) sideText.textContent = "Error loading status";
     if (chipText) chipText.textContent = "Status unavailable";
     if (manageSub) manageSub.textContent = "Open Stripe billing portal";
@@ -143,6 +163,7 @@ function initAuthUI() {
     });
     refreshSubscriptionBadge();
   } else {
+    if (labelSpan) labelSpan.textContent = "Login / Sign up";
     loginBtn.addEventListener("click", startLogin);
   }
 }

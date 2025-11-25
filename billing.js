@@ -9,7 +9,7 @@ const COGNITO_CLIENT_ID = "2shion39m0mim70d0etbtp0eh9";
 const COGNITO_REDIRECT = "https://thenewspaper.site/callback.html";
 
 /* =======================================================
-   TOKEN HELPERS  (FIXED: USE ID TOKEN ONLY)
+   TOKEN HELPERS  (ID TOKEN ONLY)
 ======================================================= */
 
 function getTokens() {
@@ -45,7 +45,7 @@ function decodeEmailFromIdToken() {
 }
 
 /* =======================================================
-   FIXED API WRAPPER (USES ID TOKEN)
+   API WRAPPER (USES ID TOKEN)
 ======================================================= */
 
 async function callApi(path, options = {}) {
@@ -59,7 +59,7 @@ async function callApi(path, options = {}) {
   const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
-    Authorization: "Bearer " + idToken, // 🔥 FIXED: ALWAYS ID TOKEN
+    Authorization: "Bearer " + idToken,
   };
 
   const res = await fetch(API_BASE_URL + path, {
@@ -145,6 +145,8 @@ const btnSubscribe = document.getElementById("btnSubscribe");
 const btnRefresh = document.getElementById("btnRefresh");
 const btnLoginHeader = document.getElementById("btnLoginHeader");
 
+let currentStatus = "unknown"; // "active" | "inactive" | "unknown"
+
 function setError(msg) {
   errorBox.textContent = msg || "";
 }
@@ -163,7 +165,13 @@ function updateEmailBadge() {
   }
 }
 
+/* =======================================================
+   STATUS RENDERING
+======================================================= */
+
 function applyActiveStatus(renewsMs) {
+  currentStatus = "active";
+
   statusText.innerHTML =
     "<strong>Active subscription.</strong> You’ll receive the full daily briefing.";
   statusPill.className = "status-pill active";
@@ -177,18 +185,27 @@ function applyActiveStatus(renewsMs) {
     }
   }
 
-  btnSubscribe.textContent = "Update billing";
+  // When active, primary button becomes "Manage billing / Cancel"
+  btnSubscribe.textContent = "Manage billing / Cancel";
 }
 
 function applyInactiveStatus(reasonText) {
+  currentStatus = "inactive";
+
   statusText.textContent =
     reasonText ||
     "No active subscription found. You’re on the free preview.";
   statusPill.className = "status-pill inactive";
   statusPillLabel.textContent = "Not subscribed";
   pillLabel.textContent = "Free preview · Upgrade for full brief";
+
+  // When inactive, primary button is the subscribe CTA
   btnSubscribe.textContent = "Subscribe · $1.99 / mo";
 }
+
+/* =======================================================
+   API CALLS FOR STATUS + BILLING
+======================================================= */
 
 async function refreshStatus() {
   setError("");
@@ -196,6 +213,7 @@ async function refreshStatus() {
 
   const idToken = getIdToken();
   if (!idToken) {
+    currentStatus = "inactive";
     statusText.textContent =
       "You must be logged in to view your subscription.";
     statusPill.className = "status-pill inactive";
@@ -219,14 +237,17 @@ async function refreshStatus() {
     console.error(err);
 
     if (err.code === "NO_LOGIN") {
+      currentStatus = "inactive";
       statusText.textContent =
         "You must be logged in to view your subscription.";
       pillLabel.textContent = "Login required";
     } else if (err.httpStatus === 401) {
+      currentStatus = "inactive";
       statusText.textContent =
         "Your login has expired. Please log in again from the main page.";
       pillLabel.textContent = "Login expired";
     } else {
+      currentStatus = "unknown";
       statusText.textContent = "Could not load subscription status.";
       pillLabel.textContent = "Error loading status";
     }
@@ -239,20 +260,58 @@ async function refreshStatus() {
   }
 }
 
+// Create a new checkout session when NOT subscribed
 async function startCheckout() {
+  const data = await callApi("/api/create-checkout-session", {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+
+  if (data && data.url) {
+    window.location.href = data.url;
+  } else {
+    throw new Error("No checkout URL returned from server.");
+  }
+}
+
+// Open Stripe billing portal when ALREADY subscribed
+async function openBillingPortal() {
+  const data = await callApi("/api/create-billing-portal-session", {
+    method: "POST",
+    body: JSON.stringify({}),
+  });
+
+  if (data && data.url) {
+    window.location.href = data.url;
+  } else {
+    throw new Error("No billing portal URL returned from server.");
+  }
+}
+
+/* =======================================================
+   PRIMARY BUTTON HANDLER
+======================================================= */
+
+async function handlePrimaryClick() {
   setError("");
   setLoading(true);
 
   try {
-    const data = await callApi("/api/create-checkout-session", {
-      method: "POST",
-      body: JSON.stringify({}),
-    });
+    const idToken = getIdToken();
+    if (!idToken) {
+      const err = new Error(
+        "You must be logged in to manage billing. Please log in again from the main page."
+      );
+      err.code = "NO_LOGIN";
+      throw err;
+    }
 
-    if (data && data.url) {
-      window.location.href = data.url;
+    if (currentStatus === "active") {
+      // Already subscribed -> go to billing portal / cancel
+      await openBillingPortal();
     } else {
-      throw new Error("No checkout URL returned from server.");
+      // Not subscribed (or unknown) -> go to checkout
+      await startCheckout();
     }
   } catch (err) {
     console.error(err);
@@ -265,15 +324,19 @@ async function startCheckout() {
       statusPill.className = "status-pill inactive";
       statusPillLabel.textContent = "Login required";
     } else {
-      setError("Could not start checkout: " + err.message);
+      setError("Could not open billing: " + (err.message || "Unknown error"));
     }
   } finally {
     setLoading(false);
   }
 }
 
+/* =======================================================
+   INIT
+======================================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
-  btnSubscribe.addEventListener("click", startCheckout);
+  btnSubscribe.addEventListener("click", handlePrimaryClick);
   btnRefresh.addEventListener("click", refreshStatus);
   if (btnLoginHeader) btnLoginHeader.addEventListener("click", startLogin);
 
