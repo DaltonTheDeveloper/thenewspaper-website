@@ -17,85 +17,131 @@
         </div>
       </div>
 
-      <div class="right-header">
-        <div class="pill">
-          <span class="pill-dot"></span>
-          <span class="pill-label">Daily briefing · Auto-updated</span>
-        </div>
-        <button class="btn-login" type="button">
-          <span class="icon">👤</span>
-          <span class="btn-login-label">Login / Sign up</span>
-        </button>
-      </div>
+      <button class="btn-login" type="button">
+        <span class="btn-login-label">Log in</span>
+        <span class="btn-login-chevron">↗</span>
+      </button>
     </header>
 
     <main class="layout">
       <section class="card-main">
         <div class="main-header-row">
-          <div class="headline">
-            <div class="headline-kicker">Today’s Briefing</div>
-            <div class="headline-main">
-              Your politics cheat sheet, in one email.
-            </div>
-            <div class="headline-sub">
-              A tight, readable summary of the day’s U.S. political news —
-              with context, definitions, and links to dig deeper.
-            </div>
-          </div>
-          <div class="status-chip" id="subStatusChip">
-            <span class="status-dot"></span>
-            <span id="subStatusText">Checking subscription…</span>
-          </div>
-        </div>
-
-        <div class="main-body">
-          <article class="tldr">
-            <div class="tldr-label">What you’ll get</div>
-            <ul class="tldr-list">
-              <li>
-                <span class="tldr-bullet"></span>
-                <span class="tldr-text">
-                  A single morning email recapping the biggest moves in U.S.
-                  politics and policy.
-                </span>
-              </li>
-              <li>
-                <span class="tldr-bullet"></span>
-                <span class="tldr-text">
-                  A neutral, fact-first summary of what happened, why it matters,
-                  and what to watch next.
-                </span>
-              </li>
-              <li>
-                <span class="tldr-bullet"></span>
-                <span class="tldr-text">
-                  Jargon explained inline — hover terms like “cloture” or “markup”
-                  to see what they mean.
-                </span>
-              </li>
-            </ul>
-          </article>
-
-          <aside class="meta-card">
-            <div class="meta-row">
-              <div>
-                <div class="meta-label">Cadence</div>
-                <div class="meta-value">Weekdays · Morning delivery</div>
-              </div>
-              <span class="meta-badge">U.S.-centric · Major global stories</span>
-            </div>
-            <div class="meta-row">
-              <div>
-                <div class="meta-label">Depth</div>
-                <div class="meta-value">TL;DR first, deep dive below</div>
-              </div>
-            </div>
-            <p class="meta-note">
-              Built for people who follow politics casually but want to stay
-              grounded in real reporting — not just the loudest timelines.
+          <div class="main-header-text">
+            <h1>One clean briefing. Every weekday.</h1>
+            <p>
+              We track U.S. politics across outlets every day, then send one
+              briefing that tells you what actually happened — not just what
+              went viral.
             </p>
-          </aside>
+          </div>
+
+          <div class="debrief-pill">
+            <div class="pill-label">Today’s debrief</div>
+            <div class="pill-value">
+              <span class="pill-value-main">10–15 min</span>
+              <span class="pill-value-sub">to get fully caught up</span>
+            </div>
+          </div>
         </div>
+
+        <section class="hero-grid">
+          <div class="hero-main">
+            <div class="hero-email">
+              <div class="hero-email-header">
+                <div class="hero-email-meta">
+                  <span class="hero-email-label">Preview · Daily U.S. politics briefing</span>
+                  <span class="hero-email-date">Example briefing</span>
+                </div>
+                <div class="hero-email-tag">
+                  <span class="hero-email-tag-dot"></span>
+                  <span id="subStatusChip">Checking subscription…</span>
+                </div>
+              </div>
+
+              <div class="hero-email-body">
+                <p class="hero-email-intro">
+                  Here’s how a typical weekday briefing will look in your inbox.
+                  Think of this as your “one tab open” for what actually happened
+                  in U.S. politics.
+                </p>
+
+                <ul class="hero-list">
+                  <li>
+                    <strong>Up top:</strong> a TL;DR that gives you the day’s
+                    main storyline in a few bullets.
+                  </li>
+                  <li>
+                    <strong>Then by section:</strong> Congress, White House,
+                    courts, campaigns, global, and “longer reads worth your time.”
+                  </li>
+                  <li>
+                    <strong>Hover-to-define:</strong> complex terms and institutions
+                    get plain-language tooltips you can hover for a quick explainer.
+                  </li>
+                </ul>
+
+                <p class="hero-email-outro">
+                  Below is a mock of the sections you’ll see in the real email.
+                  In the live product, these sections are filled with that day’s
+                  reporting, with links out to original sources.
+                </p>
+              </div>
+            </div>
+
+            <aside class="hero-side">
+              <div class="hero-side-header">
+                <div class="hero-side-label">For people who care about politics,</div>
+                <div class="hero-side-title">but don’t want it to take over their life.</div>
+              </div>
+              <div class="hero-side-body">
+                <p>
+                  The goal isn’t to chase every outrage cycle. It’s to give you a
+                  grounded, reality-based sense of what changed today — in Congress,
+                  the courts, the White House, and the broader system.
+                </p>
+                <p>
+                  Under the hood, we use an AI research assistant to sift through
+                  real reporting across outlets and wire services. Then we apply a
+                  fixed set of rules so the daily briefing is consistent,
+                  transparent, and bias-aware.
+                </p>
+                <p class="hero-side-note">
+                  You’ll always know <em>what’s signal vs. what’s noise</em>, and you’ll
+                  never have to doomscroll Twitter to get there.
+                </p>
+              </div>
+            </aside>
+          </div>
+
+          <aside class="hero-meta">
+            <div class="meta-pill">How the briefing works</div>
+            <div class="meta-card">
+              <h2>Rules the algorithm has to follow</h2>
+              <ul class="meta-list">
+                <li>
+                  <strong>Source-first:</strong> Summaries are always tied to
+                  specific pieces of reporting (with links).
+                </li>
+                <li>
+                  <strong>Cross-spectrum:</strong> We sample outlets across
+                  the political spectrum and from straight-news desks.
+                </li>
+                <li>
+                  <strong>No vibes-only narratives:</strong> If it’s just a take,
+                  it doesn’t lead the briefing.
+                </li>
+                <li>
+                  <strong>Bias-aware:</strong> We track which outlets we’re
+                  leaning on and balance accordingly.
+                </li>
+              </ul>
+              <p class="meta-note">
+                Built for people who follow politics casually but want to stay
+                grounded in real reporting — not just the loudest timelines.
+              </p>
+            </div>
+          </aside>
+        </section>
 
         <section class="sections" aria-label="Briefing sections">
           <div class="sections-header">
@@ -105,6 +151,8 @@
               <button class="chip" type="button">White House</button>
               <button class="chip" type="button">Courts</button>
               <button class="chip" type="button">Campaigns</button>
+              <button class="chip" type="button">World</button>
+              <button class="chip" type="button">Explainers</button>
             </div>
           </div>
 
@@ -121,67 +169,95 @@
                   and where the leadership fights really are.
                 </p>
                 <p>
-                  Key terms (like
-                  <span style="border-bottom: 1px dotted rgba(255,255,255,0.5); cursor: help;"
-                        title="A procedure to end debate in the Senate and move to a vote, usually requiring 60 votes.">
-                    cloture
-                  </span>
-                  or
-                  <span style="border-bottom: 1px dotted rgba(255,255,255,0.5); cursor: help;"
-                        title="The process by which a committee edits and rewrites a bill before it goes to the full chamber.">
-                    markup
-                  </span>
-                  get a short, in-line explanation like this.
+                  In the real briefing, this section is where you’ll see:
                 </p>
-              </div>
-              <div class="section-footer">
-                <span>Each section ends with a quick recap + links for deeper reads.</span>
-                <button class="btn-top" type="button" onclick="document.getElementById('top').scrollIntoView({ behavior: 'smooth' })">
-                  <span class="arrow">↑</span>
-                  <span>Back to top</span>
-                </button>
+                <ul>
+                  <li>Key votes (with margins and who crossed party lines)</li>
+                  <li>Major hearings and subpoenas</li>
+                  <li>Leadership fights and whip counts</li>
+                </ul>
               </div>
             </details>
 
             <details class="section">
               <summary>
                 <span class="section-title-main">White House · What the administration did</span>
-                <span class="section-tag">Policy moves · Statements</span>
+                <span class="section-tag">Executive orders, rules, and messaging</span>
               </summary>
               <div class="section-content">
                 <p>
-                  Executive orders, agency rules, press briefings — all boiled down
-                  into what changed and who it affects.
+                  We track what the administration actually did — rules, orders,
+                  guidance, and key briefings — plus how it will actually affect
+                  people and institutions.
                 </p>
-              </div>
-              <div class="section-footer">
-                <span>Short, readable context so you don’t have to live on X all day.</span>
-                <button class="btn-top" type="button" onclick="document.getElementById('top').scrollIntoView({ behavior: 'smooth' })">
-                  <span class="arrow">↑</span>
-                  <span>Back to top</span>
-                </button>
               </div>
             </details>
 
             <details class="section">
               <summary>
-                <span class="section-title-main">Courts · Major rulings & cases</span>
-                <span class="section-tag">Supreme Court · Key lower courts</span>
+                <span class="section-title-main">Courts · Cases that actually matter</span>
+                <span class="section-tag">SCOTUS + key lower-court rulings</span>
               </summary>
               <div class="section-content">
                 <p>
-                  When a court hands down a ruling that actually changes something,
-                  we’ll explain what the decision says — and what comes next.
+                  Instead of every filing, we track the cases that actually
+                  change the landscape, and we explain the stakes in plain English.
                 </p>
               </div>
-              <div class="section-footer">
-                <span>Focused on impact, not just legalese or hot takes.</span>
-                <button class="btn-top" type="button" onclick="document.getElementById('top').scrollIntoView({ behavior: 'smooth' })">
-                  <span class="arrow">↑</span>
-                  <span>Back to top</span>
-                </button>
+            </details>
+
+            <details class="section">
+              <summary>
+                <span class="section-title-main">Campaigns · Elections, polls, and money</span>
+                <span class="section-tag">Without horse-race brain</span>
+              </summary>
+              <div class="section-content">
+                <p>
+                  When elections heat up, this section keeps you grounded:
+                  polls that actually matter, money flows, and structural
+                  factors — not just vibes.
+                </p>
               </div>
             </details>
+
+            <details class="section">
+              <summary>
+                <span class="section-title-main">World · U.S. foreign policy & global stakes</span>
+                <span class="section-tag">Geopolitics, alliances, conflicts</span>
+              </summary>
+              <div class="section-content">
+                <p>
+                  We connect the dots between U.S. policy and global events:
+                  treaties, conflicts, and big-picture moves that shape the
+                  next decade — not just the next news cycle.
+                </p>
+              </div>
+            </details>
+
+            <details class="section">
+              <summary>
+                <span class="section-title-main">Explainers · The recurring “what does that mean?”s</span>
+                <span class="section-tag">Saved & reused over time</span>
+              </summary>
+              <div class="section-content">
+                <p>
+                  When a concept keeps coming up — like “budget reconciliation” or
+                  “Chevron deference” — we turn the explainer into a reusable
+                  card that you can hover or tap when it shows up again.
+                </p>
+                <p>
+                  Over time, this builds your own politics “internal wiki” without
+                  you having to memorize everything at once.
+                </p>
+              </div>
+            </details>
+
+            <div class="back-to-top-row">
+              <button class="back-to-top" type="button" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
+                <span class="back-to-top-icon">↑</span>
+                <span>Back to top</span>
+              </button>
+            </div>
           </div>
         </section>
       </section>
@@ -215,6 +291,16 @@
                 </span>
               </span>
               <span class="btn-wide-icon">↗</span>
+            </button>
+
+            <button class="btn-wide-ghost" type="button" id="btnPreferences">
+              <span class="btn-wide-label">
+                <span class="btn-wide-main">Email preferences</span>
+                <span class="btn-wide-sub">
+                  Choose topics & briefing length
+                </span>
+              </span>
+              <span class="btn-wide-icon">⚙</span>
             </button>
 
             <button class="btn-wide-ghost" type="button" id="btnViewSample">

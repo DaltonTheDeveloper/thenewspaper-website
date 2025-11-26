@@ -7,136 +7,64 @@
   <link rel="stylesheet" href="billing.css" />
 </head>
 <body>
-  <header class="site-header">
-    <a href="index.html" class="logo-link">
-      <div class="logo-mark">
-        <span class="logo-dot"></span>
-      </div>
-      <div class="logo-text">
-        <span class="logo-word">The</span>
-        <span class="logo-word accent">Newsroom</span>
-      </div>
-    </a>
-
-    <nav class="header-nav">
-      <a href="index.html" class="nav-link">Home</a>
-      <button id="btnHeaderLogin" class="nav-cta">Sign in</button>
-    </nav>
-  </header>
-
-  <main class="page">
-    <section class="page-hero">
-      <p class="eyebrow">Billing & access</p>
-      <h1>Manage your subscription</h1>
-      <p class="hero-text">
-        Unlock the full daily briefing with one simple subscription.  
-        You can manage, pause, or cancel anytime from this page.
-      </p>
-    </section>
-
-    <section class="layout">
-      <div class="card card-main">
-        <header class="card-header">
-          <div class="card-pill" id="statusPill">Checking status…</div>
-          <h2>Your subscription</h2>
-          <p class="card-subtitle">
-            We sync with Stripe and Cognito to keep your access in lockstep with your payments.
-          </p>
-        </header>
-
-        <div class="status-section">
-          <div class="status-row">
-            <div class="status-label">Email on file</div>
-            <div class="status-value" id="emailBadge">—</div>
-          </div>
-
-          <div class="status-row">
-            <div class="status-label">Stripe status</div>
-            <div class="status-value" id="stripeStatusText">Checking…</div>
-          </div>
-
-          <div class="status-actions">
-            <button id="btnSubscribe" class="primary-btn">
-              Start subscription
-            </button>
-            <button id="btnManage" class="ghost-btn">
-              Manage billing
-            </button>
-            <button id="btnRefresh" class="icon-btn" title="Refresh status">
-              <span class="icon-rotate">⟳</span>
-            </button>
+  <div class="shell">
+    <div class="card">
+      <div class="header">
+        <div class="title-block">
+          <div class="title">Subscription</div>
+          <div class="subtitle">
+            Unlock the full daily briefing for $0.99 / month.
           </div>
         </div>
 
-        <div class="hint-row">
-          <p class="hint-text">
-            You can update your preferences and unsubscribe from emails
-            anytime. If you cancel, you keep full access until the end of
-            your current billing period.
-          </p>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="btn-login-header" id="btnLoginHeader" type="button">
+            Login
+          </button>
+          <div class="pill">
+            <div class="pill-dot"></div>
+            <span id="pillLabel">Checking status…</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-header">
+          <div class="section-title">Status</div>
+          <div class="badge" id="userEmailBadge">Not logged in</div>
         </div>
 
+        <div class="status-text" id="statusText">
+          Loading your subscription…
+        </div>
+
+        <div class="status-pill inactive" id="statusPill">
+          <span id="statusPillLabel">Unknown</span>
+        </div>
+
+        <div class="buttons">
+          <button class="btn-primary" id="btnSubscribe">
+            Subscribe · $1.99 / mo
+          </button>
+          <button class="btn-secondary" id="btnRefresh">
+            Refresh status
+          </button>
+        </div>
+
+        <div class="notice">
+          You’ll be redirected to Stripe’s secure checkout page. You can cancel
+          anytime via Stripe.
+        </div>
         <div class="error" id="errorBox"></div>
       </div>
 
-      <!-- Preferences card -->
-      <section class="card card-ghost">
-        <header class="card-header">
-          <div class="card-pill subtle">Email preferences</div>
-          <h2>Daily briefing settings</h2>
-          <p>Tell us how often you want The Newsroom in your inbox and how wide you want the coverage.</p>
-        </header>
+      <a href="https://thenewspaper.site" class="footer-link">
+        <span class="arrow">←</span>
+        <span>Back to The Newsroom</span>
+      </a>
+    </div>
+  </div>
 
-        <form id="preferences-form" class="prefs-grid">
-          <div class="field">
-            <label class="field-label" for="pref-frequency">Briefing frequency</label>
-            <select id="pref-frequency" class="field-input">
-              <option value="daily">Every weekday (default)</option>
-              <option value="light">3x per week</option>
-              <option value="weekend">Weekend recap only</option>
-            </select>
-            <p class="field-hint">
-              You can move between plans any time — this doesn't change billing, only how often we email you.
-            </p>
-          </div>
-
-          <div class="field">
-            <label class="field-label" for="pref-focus">Focus</label>
-            <select id="pref-focus" class="field-input">
-              <option value="us-heavy">Primarily U.S. politics with key global stories</option>
-              <option value="balanced">Balanced U.S. + global politics</option>
-              <option value="global-heavy">Primarily global geopolitics with U.S. highlights</option>
-            </select>
-            <p class="field-hint">
-              All versions still cover major international events that affect U.S. policy and markets.
-            </p>
-          </div>
-
-          <div class="field">
-            <label class="field-label" for="pref-length">Depth</label>
-            <select id="pref-length" class="field-input">
-              <option value="standard">Standard briefing (7–10 minutes)</option>
-              <option value="lite">Lite version (3–5 minutes)</option>
-              <option value="deep">Deep dive (15+ minutes, more charts/links)</option>
-            </select>
-            <p class="field-hint">
-              Depth changes how detailed each section is, not the core topics we select.
-            </p>
-          </div>
-
-          <div class="prefs-footer">
-            <button id="save-prefs" type="submit" class="primary-btn">Save preferences</button>
-            <p id="prefs-status" class="pill subtle">Using smart defaults until you save.</p>
-          </div>
-        </form>
-      </section>
-
-      <footer class="page-footer">
-        <a href="index.html" class="back-link">← Back to home</a>
-      </footer>
-    </section>
-  </main>
-
-  <script src="billing.js" type="module"></script>
+  <script src="billing.js"></script>
 </body>
 </html>

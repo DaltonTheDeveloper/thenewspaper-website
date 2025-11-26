@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Newsroom · Preferences</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Reuse main site styles -->
+  <link rel="stylesheet" href="index.css" />
+
+  <!-- Small page-specific tweaks -->
+  <style>
+    .prefs-main {
+      display: grid;
+      grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.2fr);
+      gap: 24px;
+      margin-top: 8px;
+    }
+
+    .prefs-card {
+      background: var(--bg-panel);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-soft);
+      padding: 20px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .prefs-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .prefs-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .prefs-section-label {
+      font-size: 13px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .prefs-topics-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .pref-topic {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(15, 16, 40, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .pref-topic input[type="checkbox"] {
+      margin-top: 3px;
+      accent-color: var(--accent-2);
+    }
+
+    .pref-topic-main {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .pref-topic-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .prefs-inline {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+
+    .prefs-inline input[type="number"] {
+      width: 80px;
+      padding: 6px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(10, 11, 30, 0.95);
+      color: var(--text-main);
+      font-size: 13px;
+      outline: none;
+    }
+
+    .prefs-inline input[type="number"]:focus {
+      border-color: var(--accent-2);
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .toggle-row input[type="checkbox"] {
+      accent-color: var(--accent-1);
+    }
+
+    .prefs-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-top: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-save-prefs {
+      padding: 9px 18px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #050512;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .btn-save-prefs:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.9);
+    }
+
+    .prefs-status {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .prefs-status.good {
+      color: #7cffc4;
+    }
+
+    .prefs-status.error {
+      color: var(--danger);
+    }
+
+    .prefs-aside {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .prefs-aside-block {
+      background: var(--bg-panel-soft);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 16px 18px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .prefs-aside-block strong {
+      color: var(--text-main);
+    }
+
+    .prefs-back-link {
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    .prefs-back-link a {
+      color: var(--accent-2);
+      text-decoration: none;
+    }
+
+    .prefs-back-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      .prefs-main {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="brand">
+        <div class="brand-logo"></div>
+        <div class="brand-labels">
+          <div class="brand-text-title">The Newsroom</div>
+          <div class="brand-text-sub">Daily political briefing — tuned to you</div>
+        </div>
+      </div>
+
+      <div class="right-header">
+        <div class="pill" id="prefsLoginStatusPill">
+          <div class="pill-dot"></div>
+          <span id="prefsLoginStatusText">Checking login…</span>
+        </div>
+        <button class="btn-login" id="btnPrefsLogin" type="button">
+          Login
+        </button>
+      </div>
+    </header>
+
+    <main class="prefs-main">
+      <section class="prefs-card">
+        <div>
+          <div class="prefs-title">Briefing preferences</div>
+          <div class="prefs-subtitle">
+            Choose the areas you care about and how deep you want the daily briefing
+            to go.
+          </div>
+        </div>
+
+        <div>
+          <div class="prefs-section-label">Topics</div>
+          <div id="topicsGrid" class="prefs-topics-grid"></div>
+        </div>
+
+        <div>
+          <div class="prefs-section-label">Depth</div>
+          <div class="prefs-inline">
+            <label for="maxPerTopic">
+              Max stories per topic:
+            </label>
+            <input
+              type="number"
+              id="maxPerTopic"
+              min="1"
+              max="25"
+              step="1"
+              value="5"
+            />
+            <span class="prefs-subtitle">
+              (We’ll usually stay at or below this per section.)
+            </span>
+          </div>
+
+          <div class="toggle-row">
+            <input type="checkbox" id="biggestTen" />
+            <label for="biggestTen">
+              Just give me the <strong>10 biggest stories</strong> each day.
+            </label>
+          </div>
+          <p class="prefs-subtitle" style="margin-top:4px;">
+            If this is on, we’ll ignore the per-topic counts and send one list of
+            the ten most important political stories.
+          </p>
+        </div>
+
+        <div class="prefs-actions">
+          <button class="btn-save-prefs" id="btnSavePrefs" type="button">
+            Save preferences
+          </button>
+          <span class="prefs-status" id="prefsStatus">
+            Preferences load automatically if you’re logged in.
+          </span>
+        </div>
+
+        <p class="prefs-back-link">
+          ← <a href="https://thenewspaper.site/">Back to the main page</a>
+        </p>
+      </section>
+
+      <aside class="prefs-aside">
+        <div class="prefs-aside-block">
+          <strong>How this is used</strong><br />
+          Your preferences tell the backend which stories to prioritize for your
+          daily email. They’re tied to your Cognito account, not stored in the
+          browser.
+        </div>
+
+        <div class="prefs-aside-block">
+          <strong>Good defaults</strong><br />
+          If you’re not sure where to start, pick a few core topics and set
+          3-5 items per topic — or just turn on the “10 biggest stories” switch.
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="preferences.js"></script>
+</body>
+</html>
