@@ -1,344 +1,286 @@
-/* =======================================================
-   CONFIG
-======================================================= */
+// billing.js – subscription + preferences page
 const API_BASE_URL = "https://api.thenewspaper.site";
 
-const COGNITO_DOMAIN =
-  "https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com";
-const COGNITO_CLIENT_ID = "2shion39m0mim70d0etbtp0eh9";
-const COGNITO_REDIRECT = "https://thenewspaper.site/callback.html";
-
-/* =======================================================
-   TOKEN HELPERS  (ID TOKEN ONLY)
-======================================================= */
-
+// === Helpers for tokens (shared with index.js idea) ===
 function getTokens() {
   try {
-    const raw = localStorage.getItem("newsroom_tokens");
+    const raw = window.localStorage.getItem("newsroom_tokens");
     if (!raw) return null;
     return JSON.parse(raw);
   } catch (e) {
-    console.error("Failed to parse newsroom_tokens:", e);
+    console.error("Failed to parse newsroom_tokens", e);
     return null;
   }
 }
 
 function getIdToken() {
   const tokens = getTokens();
-  return tokens && tokens.id_token ? tokens.id_token : null;
+  return tokens?.id_token || null;
 }
 
-function decodeEmailFromIdToken() {
+function getUserEmail() {
   const tokens = getTokens();
-  if (!tokens || !tokens.id_token) return null;
-
-  try {
-    const payload = tokens.id_token.split(".")[1];
-    const decoded = JSON.parse(
-      atob(payload.replace(/-/g, "+").replace(/_/g, "/"))
-    );
-    return decoded.email || null;
-  } catch (e) {
-    console.error("Failed to decode id_token:", e);
-    return null;
-  }
+  return tokens?.email || null;
 }
 
-/* =======================================================
-   API WRAPPER (USES ID TOKEN)
-======================================================= */
+// === Basic DOM refs ===
+const statusPill = document.getElementById("statusPill");
+const stripeStatusText = document.getElementById("stripeStatusText");
+const emailBadge = document.getElementById("emailBadge");
+const btnSubscribe = document.getElementById("btnSubscribe");
+const btnManage = document.getElementById("btnManage");
+const btnRefresh = document.getElementById("btnRefresh");
+const btnLoginHeader = document.getElementById("btnHeaderLogin");
+const errorBox = document.getElementById("errorBox");
 
+// === Generic API caller against backend ===
 async function callApi(path, options = {}) {
   const idToken = getIdToken();
   if (!idToken) {
-    const err = new Error("You must be logged in.");
-    err.code = "NO_LOGIN";
-    throw err;
+    throw new Error("No id_token – user not logged in.");
   }
 
-  const headers = {
-    "Content-Type": "application/json",
-    ...(options.headers || {}),
-    Authorization: "Bearer " + idToken,
-  };
+  const url = `${API_BASE_URL}${path}`;
 
-  const res = await fetch(API_BASE_URL + path, {
+  const res = await fetch(url, {
     ...options,
-    headers,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${idToken}`,
+      ...(options.headers || {}),
+    },
+    credentials: "include",
   });
 
   if (!res.ok) {
     const text = await res.text();
-    const err = new Error(
-      `API ${path} failed: ${res.status} ${text || res.statusText}`
-    );
-    err.httpStatus = res.status;
-    throw err;
+    throw new Error(`API ${path} failed: ${res.status} ${text}`);
   }
 
-  return res.json();
-}
-
-/* =======================================================
-   LOGIN FLOW (PKCE)
-======================================================= */
-
-async function sha256(plain) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(plain);
-  const hash = await crypto.subtle.digest("SHA-256", data);
-  return new Uint8Array(hash);
-}
-
-function base64UrlEncode(bytes) {
-  let binary = "";
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i]);
+  const ct = res.headers.get("content-type");
+  if (ct && ct.includes("application/json")) {
+    return res.json();
   }
-  return btoa(binary)
-    .replace(/\+/g, "-")
-    .replace(/\//g, "_")
-    .replace(/=+$/, "");
+
+  return null;
 }
 
-async function createPkcePair() {
-  const codeVerifier = base64UrlEncode(
-    crypto.getRandomValues(new Uint8Array(32))
-  );
-  const hashed = await sha256(codeVerifier);
-  const codeChallenge = base64UrlEncode(hashed);
-  return { codeVerifier, codeChallenge };
+// === Status UI helpers ===
+function setStatusPill(state, label) {
+  statusPill.textContent = label;
+
+  statusPill.classList.remove("state-active", "state-none", "state-error");
+
+  if (state === "active") {
+    statusPill.classList.add("state-active");
+  } else if (state === "none") {
+    statusPill.classList.add("state-none");
+  } else if (state === "error") {
+    statusPill.classList.add("state-error");
+  }
 }
 
-function startLogin() {
-  createPkcePair()
-    .then(({ codeVerifier, codeChallenge }) => {
-      sessionStorage.setItem("cognito_code_verifier", codeVerifier);
-
-      const params = new URLSearchParams({
-        client_id: COGNITO_CLIENT_ID,
-        response_type: "code",
-        scope: "openid email profile",
-        redirect_uri: COGNITO_REDIRECT,
-        code_challenge_method: "S256",
-        code_challenge: codeChallenge,
-      });
-
-      window.location.href = `${COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
-    })
-    .catch((err) => {
-      console.error("Failed to start login", err);
-    });
-}
-
-/* =======================================================
-   UI ELEMENTS
-======================================================= */
-
-const pillLabel = document.getElementById("pillLabel");
-const statusText = document.getElementById("statusText");
-const statusPill = document.getElementById("statusPill");
-const statusPillLabel = document.getElementById("statusPillLabel");
-const errorBox = document.getElementById("errorBox");
-const userEmailBadge = document.getElementById("userEmailBadge");
-const btnSubscribe = document.getElementById("btnSubscribe");
-const btnRefresh = document.getElementById("btnRefresh");
-const btnLoginHeader = document.getElementById("btnLoginHeader");
-
-let currentStatus = "unknown"; // "active" | "inactive" | "unknown"
-
-function setError(msg) {
-  errorBox.textContent = msg || "";
-}
-
-function setLoading(isLoading) {
-  btnSubscribe.disabled = isLoading;
-  btnRefresh.disabled = isLoading;
+function setError(message) {
+  if (!errorBox) return;
+  if (!message) {
+    errorBox.style.display = "none";
+    errorBox.textContent = "";
+    return;
+  }
+  errorBox.style.display = "block";
+  errorBox.textContent = message;
 }
 
 function updateEmailBadge() {
-  const email = decodeEmailFromIdToken();
-  if (email) {
-    userEmailBadge.textContent = email;
-  } else {
-    userEmailBadge.textContent = "Not logged in";
-  }
+  const email = getUserEmail();
+  emailBadge.textContent = email || "Not signed in";
 }
 
-/* =======================================================
-   STATUS RENDERING
-======================================================= */
-
-function applyActiveStatus(renewsMs) {
-  currentStatus = "active";
-
-  statusText.innerHTML =
-    "<strong>Active subscription.</strong> You’ll receive the full daily briefing.";
-  statusPill.className = "status-pill active";
-  statusPillLabel.textContent = "Active";
-  pillLabel.textContent = "Subscriber · Daily briefing";
-
-  if (renewsMs) {
-    const d = new Date(renewsMs);
-    if (!isNaN(d.getTime())) {
-      statusText.innerHTML += `<br /><span style="font-size:11px;color:var(--text-muted);">Renews around ${d.toLocaleDateString()}.</span>`;
-    }
-  }
-
-  // When active, primary button becomes "Manage billing / Cancel"
-  btnSubscribe.textContent = "Manage billing / Cancel";
-}
-
-function applyInactiveStatus(reasonText) {
-  currentStatus = "inactive";
-
-  statusText.textContent =
-    reasonText ||
-    "No active subscription found. You’re on the free preview.";
-  statusPill.className = "status-pill inactive";
-  statusPillLabel.textContent = "Not subscribed";
-  pillLabel.textContent = "Free preview · Upgrade for full brief";
-
-  // When inactive, primary button is the subscribe CTA
-  btnSubscribe.textContent = "Subscribe · $1.99 / mo";
-}
-
-/* =======================================================
-   API CALLS FOR STATUS + BILLING
-======================================================= */
-
+// === Subscription status helper ===
 async function refreshStatus() {
   setError("");
-  setLoading(true);
+  setStatusPill("none", "Checking Stripe…");
+  stripeStatusText.textContent = "Checking…";
 
-  const idToken = getIdToken();
-  if (!idToken) {
-    currentStatus = "inactive";
-    statusText.textContent =
-      "You must be logged in to view your subscription.";
-    statusPill.className = "status-pill inactive";
-    statusPillLabel.textContent = "Login required";
-    pillLabel.textContent = "Login required";
-    setLoading(false);
+  try {
+    const data = await callApi("/stripe/status");
+
+    stripeStatusText.textContent = data.status || "unknown";
+
+    if (data.status === "active") {
+      setStatusPill("active", "Active subscriber");
+    } else if (data.status === "trialing") {
+      setStatusPill("active", "Trialing");
+    } else if (data.status === "canceled") {
+      setStatusPill("none", "Canceled");
+    } else {
+      setStatusPill("none", "No subscription");
+    }
+  } catch (err) {
+    console.error(err);
+    setStatusPill("error", "Error checking status");
+    stripeStatusText.textContent = "Error";
+    setError("We couldn't sync with Stripe. Please try again in a few seconds.");
+  }
+}
+
+// === Checkout / portal ===
+async function startCheckout() {
+  setError("");
+  try {
+    const data = await callApi("/stripe/create-checkout-session", {
+      method: "POST",
+      body: JSON.stringify({ mode: "subscription" }),
+    });
+
+    if (!data.url) {
+      throw new Error("No checkout URL returned");
+    }
+
+    window.location.href = data.url;
+  } catch (err) {
+    console.error(err);
+    setError(
+      "We couldn't start checkout. If this keeps happening, email support@thenewspaper.site."
+    );
+  }
+}
+
+async function manageSubscription() {
+  setError("");
+  try {
+    const data = await callApi("/stripe/create-portal-session", {
+      method: "POST",
+    });
+
+    if (!data.url) {
+      throw new Error("No portal URL returned");
+    }
+
+    window.location.href = data.url;
+  } catch (err) {
+    console.error(err);
+    setError(
+      "We couldn't open the billing portal. If this keeps happening, email support@thenewspaper.site."
+    );
+  }
+}
+
+// === Login redirect from header button ===
+function startLogin() {
+  // reuse the same hosted UI start as index.js
+  window.location.href = "index.html"; // send them back to home where login button lives
+}
+
+// === Preferences API integration ===
+const PREFS_API_BASE = "http://52.70.162.164:4243";
+
+const prefsForm = document.getElementById("preferences-form");
+const freqSelect = document.getElementById("pref-frequency");
+const focusSelect = document.getElementById("pref-focus");
+const lengthSelect = document.getElementById("pref-length");
+const savePrefsBtn = document.getElementById("save-prefs");
+const prefsStatus = document.getElementById("prefs-status");
+
+async function loadPreferences() {
+  if (!prefsForm) return;
+  const tokens = getTokens();
+  if (!tokens || !tokens.id_token) {
+    prefsStatus.textContent = "Log in to customise your briefing preferences.";
     return;
   }
 
-  updateEmailBadge();
+  try {
+    const res = await fetch(`${PREFS_API_BASE}/api/preferences`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${tokens.id_token}`,
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+
+    if (res.status === 404) {
+      // No preferences yet; keep defaults
+      prefsStatus.textContent =
+        "Using smart defaults. Save to personalise your briefing.";
+      return;
+    }
+
+    if (!res.ok) {
+      throw new Error(`Failed to load preferences (${res.status})`);
+    }
+
+    const data = await res.json();
+    if (data.frequency && freqSelect) freqSelect.value = data.frequency;
+    if (data.focus && focusSelect) focusSelect.value = data.focus;
+    if (data.length && lengthSelect) lengthSelect.value = data.length;
+
+    prefsStatus.textContent =
+      "Preferences loaded. You can adjust them any time.";
+  } catch (err) {
+    console.error("[PREFS] load error", err);
+    prefsStatus.textContent =
+      "Couldn't load preferences. We'll use defaults for now.";
+  }
+}
+
+async function handleSavePreferences(event) {
+  event.preventDefault();
+  if (!prefsForm) return;
+
+  const tokens = getTokens();
+  if (!tokens || !tokens.id_token) {
+    prefsStatus.textContent = "Please log in before saving preferences.";
+    return;
+  }
+
+  const payload = {
+    frequency: freqSelect ? freqSelect.value : "daily",
+    focus: focusSelect ? focusSelect.value : "us-heavy",
+    length: lengthSelect ? lengthSelect.value : "standard",
+  };
 
   try {
-    const data = await callApi("/api/subscription-status", { method: "GET" });
+    savePrefsBtn.disabled = true;
+    prefsStatus.textContent = "Saving preferences...";
 
-    if (data && data.status === "active") {
-      applyActiveStatus(data.renews);
-    } else {
-      applyInactiveStatus();
+    const res = await fetch(`${PREFS_API_BASE}/api/preferences`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${tokens.id_token}`,
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Failed to save preferences (${res.status})`);
     }
+
+    prefsStatus.textContent =
+      "Saved. Tomorrow's briefing will use these settings.";
   } catch (err) {
-    console.error(err);
-
-    if (err.code === "NO_LOGIN") {
-      currentStatus = "inactive";
-      statusText.textContent =
-        "You must be logged in to view your subscription.";
-      pillLabel.textContent = "Login required";
-    } else if (err.httpStatus === 401) {
-      currentStatus = "inactive";
-      statusText.textContent =
-        "Your login has expired. Please log in again from the main page.";
-      pillLabel.textContent = "Login expired";
-    } else {
-      currentStatus = "unknown";
-      statusText.textContent = "Could not load subscription status.";
-      pillLabel.textContent = "Error loading status";
-    }
-
-    statusPill.className = "status-pill inactive";
-    statusPillLabel.textContent = "Error";
-    setError(err.message);
+    console.error("[PREFS] save error", err);
+    prefsStatus.textContent =
+      "We couldn't save your preferences. Please try again in a moment.";
   } finally {
-    setLoading(false);
+    savePrefsBtn.disabled = false;
   }
 }
-
-// Create a new checkout session when NOT subscribed
-async function startCheckout() {
-  const data = await callApi("/api/create-checkout-session", {
-    method: "POST",
-    body: JSON.stringify({}),
-  });
-
-  if (data && data.url) {
-    window.location.href = data.url;
-  } else {
-    throw new Error("No checkout URL returned from server.");
-  }
-}
-
-// Open Stripe billing portal when ALREADY subscribed
-async function openBillingPortal() {
-  const data = await callApi("/api/create-billing-portal-session", {
-    method: "POST",
-    body: JSON.stringify({}),
-  });
-
-  if (data && data.url) {
-    window.location.href = data.url;
-  } else {
-    throw new Error("No billing portal URL returned from server.");
-  }
-}
-
-/* =======================================================
-   PRIMARY BUTTON HANDLER
-======================================================= */
-
-async function handlePrimaryClick() {
-  setError("");
-  setLoading(true);
-
-  try {
-    const idToken = getIdToken();
-    if (!idToken) {
-      const err = new Error(
-        "You must be logged in to manage billing. Please log in again from the main page."
-      );
-      err.code = "NO_LOGIN";
-      throw err;
-    }
-
-    if (currentStatus === "active") {
-      // Already subscribed -> go to billing portal / cancel
-      await openBillingPortal();
-    } else {
-      // Not subscribed (or unknown) -> go to checkout
-      await startCheckout();
-    }
-  } catch (err) {
-    console.error(err);
-
-    if (err.code === "NO_LOGIN" || err.httpStatus === 401) {
-      setError(
-        "You must be logged in to manage billing. Please log in again from the main page."
-      );
-      pillLabel.textContent = "Login required";
-      statusPill.className = "status-pill inactive";
-      statusPillLabel.textContent = "Login required";
-    } else {
-      setError("Could not open billing: " + (err.message || "Unknown error"));
-    }
-  } finally {
-    setLoading(false);
-  }
-}
-
-/* =======================================================
-   INIT
-======================================================= */
+// === End preferences integration ===
 
 document.addEventListener("DOMContentLoaded", () => {
-  btnSubscribe.addEventListener("click", handlePrimaryClick);
+  btnSubscribe.addEventListener("click", startCheckout);
   btnRefresh.addEventListener("click", refreshStatus);
+  if (btnManage) btnManage.addEventListener("click", manageSubscription);
   if (btnLoginHeader) btnLoginHeader.addEventListener("click", startLogin);
+
+  if (prefsForm) {
+    prefsForm.addEventListener("submit", handleSavePreferences);
+    loadPreferences().catch((e) => console.error(e));
+  }
 
   updateEmailBadge();
   refreshStatus().catch((e) => {
