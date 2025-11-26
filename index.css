@@ -665,3 +665,30 @@ footer a {
 footer a:hover {
   text-decoration: underline;
 }
+
+.secondary-btn {
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: transparent;
+  color: var(--accent);
+  padding: 7px 14px;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  margin-left: 10px;
+  transition:
+    transform var(--transition-fast),
+    box-shadow var(--transition-fast),
+    border-color var(--transition-fast),
+    background var(--transition-fast),
+    color var(--transition-fast);
+}
+
+.secondary-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.75);
+  border-color: rgba(255, 255, 255, 0.5);
+  background: rgba(15, 18, 55, 0.85);
+}
