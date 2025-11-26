@@ -1,6 +1,11 @@
 // ===== CONFIG =====
 const PREFS_API_BASE = "https://api.thenewspaper.site";
 
+const COGNITO_DOMAIN =
+  "https://thenewsroom-auth-1763795763.auth.us-east-1.amazoncognito.com";
+const COGNITO_CLIENT_ID = "2shion39m0mim70d0etbtp0eh9";
+const COGNITO_REDIRECT = "https://thenewspaper.site/callback.html";
+
 // ===== TOKEN / USER HELPERS =====
 
 function getStoredTokens() {
@@ -24,9 +29,7 @@ function decodeJwtPayload(token) {
   const parts = token.split(".");
   if (parts.length !== 3) return null;
   try {
-    const payload = parts[1]
-      .replace(/-/g, "+")
-      .replace(/_/g, "/");
+    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
     const decoded = atob(payload);
     return JSON.parse(decoded);
   } catch {
@@ -42,6 +45,47 @@ function getUserEmailFromToken() {
   return payload.email || payload["cognito:username"] || null;
 }
 
+// ===== LOGIN / PKCE (same pattern as main page) =====
+
+async function sha256(plain) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(plain);
+  const hash = await crypto.subtle.digest("SHA-256", data);
+  return new Uint8Array(hash);
+}
+
+function base64UrlEncode(bytes) {
+  let binary = "";
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+}
+
+async function createCodeChallengeAndVerifier() {
+  const verifier = base64UrlEncode(crypto.getRandomValues(new Uint8Array(32)));
+  const hashed = await sha256(verifier);
+  const challenge = base64UrlEncode(hashed);
+  return { verifier, challenge };
+}
+
+function startLogin() {
+  createCodeChallengeAndVerifier().then(({ verifier, challenge }) => {
+    sessionStorage.setItem("newsroom_pkce_verifier", verifier);
+
+    const params = new URLSearchParams({
+      client_id: COGNITO_CLIENT_ID,
+      response_type: "code",
+      scope: "openid email profile",
+      redirect_uri: COGNITO_REDIRECT,
+      code_challenge_method: "S256",
+      code_challenge: challenge,
+    });
+
+    window.location.href = `${COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
+  });
+}
+
 // ===== API HELPER =====
 
 async function callPrefsApi(path, method = "GET", body) {
@@ -51,7 +95,6 @@ async function callPrefsApi(path, method = "GET", body) {
     "Content-Type": "application/json",
   };
 
-  // We still send the token in case you later validate on the backend.
   if (idToken) {
     headers["Authorization"] = `Bearer ${idToken}`;
   }
@@ -81,174 +124,154 @@ function qsa(sel) {
   return Array.from(document.querySelectorAll(sel));
 }
 
-function getModeRadios() {
-  return {
-    top10: qs("#mode-top10"),
-    custom: qs("#mode-custom"),
-  };
-}
+// grey-out / enable per-topic section depending on toggle
+function syncTopicsDisabled() {
+  const top10Toggle = qs("#modeTop10");
+  const topicsSection = qs("#topicsSection");
+  if (!top10Toggle || !topicsSection) return;
 
-function getTopicRows() {
-  // Each row should have a checkbox + number input.
-  // Use classes: .topic-row, .topic-checkbox, .topic-max-input
-  return qsa(".topic-row").map((row) => {
-    return {
-      row,
-      checkbox: row.querySelector(".topic-checkbox"),
-      maxInput: row.querySelector(".topic-max-input"),
-      key: row.getAttribute("data-topic-key"),
-    };
-  });
-}
+  const isTop10 = !!top10Toggle.checked;
+  topicsSection.classList.toggle("disabled", isTop10);
 
-// Grey-out / enable topic rows depending on mode
-function syncModeUI() {
-  const { top10, custom } = getModeRadios();
-  const isTop10 = !!(top10 && top10.checked);
-
-  const rows = getTopicRows();
-  rows.forEach(({ row, checkbox, maxInput }) => {
-    if (!checkbox || !maxInput) return;
-    checkbox.disabled = isTop10;
-    maxInput.disabled = isTop10;
-    row.classList.toggle("topic-row--disabled", isTop10);
-  });
-
-  const noteEl = qs("#prefs-mode-note");
-  if (noteEl) {
+  const note = qs("#prefs-mode-note");
+  if (note) {
     if (isTop10) {
-      noteEl.textContent =
-        "You’ll receive the overall Top 10 stories each day. Topic sliders are ignored in this mode.";
+      note.textContent =
+        "You’ll receive the overall Top 10 stories each day. Topic caps are ignored in this mode.";
     } else {
-      noteEl.textContent =
-        "We only show what we have, which may be fewer stories than your max per topic. Setting a max just caps the number, never increases it.";
+      note.textContent =
+        "We only show what we have; these caps just stop any single topic from taking over the email.";
     }
   }
 }
 
-// Build preferences object from form
+// Collect prefs from the form into a JSON payload
 function collectPreferences(email) {
-  const { top10, custom } = getModeRadios();
-  const isTop10 = !!(top10 && top10.checked);
+  const top10Toggle = qs("#modeTop10");
+  const isTop10 = !!(top10Toggle && top10Toggle.checked);
 
-  if (isTop10) {
-    return {
-      email,
-      mode: "top10",
-      topics: [], // we don't need per-topic config in this mode
-    };
-  }
+  const leanRadio = qs('input[name="lean"]:checked');
+  const lean = leanRadio ? leanRadio.value : "neutral";
 
-  const rows = getTopicRows();
-  const topics = rows.map(({ checkbox, maxInput, key }) => {
-    if (!checkbox || !maxInput || !key) return null;
-    const enabled = checkbox.checked;
+  const topics = [];
+  qsa(".topic-row").forEach((row) => {
+    const key = row.getAttribute("data-topic-key");
+    if (!key) return;
+
+    const checkbox = row.querySelector(".topic-checkbox");
+    const maxInput = row.querySelector(".topic-max-input");
+    if (!checkbox || !maxInput) return;
+
     let maxStories = parseInt(maxInput.value || "0", 10);
-    if (Number.isNaN(maxStories) || maxStories < 0) {
-      maxStories = 0;
-    }
+    if (Number.isNaN(maxStories) || maxStories < 0) maxStories = 0;
     if (maxStories > 10) {
       maxStories = 10;
       maxInput.value = "10";
     }
 
-    return {
+    topics.push({
       key,
-      enabled,
+      enabled: !!checkbox.checked,
       maxStories,
-    };
-  }).filter(Boolean);
+    });
+  });
 
   return {
     email,
-    mode: "custom",
-    topics,
+    mode: isTop10 ? "top10" : "custom",
+    lean,
+    topics: isTop10 ? [] : topics,
   };
 }
 
-// Populate UI from loaded preferences
+// Apply loaded prefs to the form
 function applyPreferencesToForm(prefs) {
-  const { top10, custom } = getModeRadios();
-
+  const top10Toggle = qs("#modeTop10");
   const mode = prefs.mode === "custom" ? "custom" : "top10";
-  if (top10 && custom) {
-    if (mode === "top10") {
-      top10.checked = true;
-      custom.checked = false;
-    } else {
-      top10.checked = false;
-      custom.checked = true;
-    }
+
+  if (top10Toggle) {
+    top10Toggle.checked = mode === "top10";
   }
 
+  // Perspective
+  const lean = prefs.lean || "neutral";
+  const leanMap = {
+    neutral: "#lean-neutral",
+    democrat: "#lean-democrat",
+    republican: "#lean-republican",
+  };
+  const leanSelector = leanMap[lean] || "#lean-neutral";
+  const leanEl = qs(leanSelector);
+  if (leanEl) leanEl.checked = true;
+
+  // Topics
   const topicsByKey = {};
   (prefs.topics || []).forEach((t) => {
     if (t && t.key) topicsByKey[t.key] = t;
   });
 
-  const rows = getTopicRows();
-  rows.forEach(({ row, checkbox, maxInput, key }) => {
-    if (!checkbox || !maxInput || !key) return;
-    const t = topicsByKey[key];
+  qsa(".topic-row").forEach((row) => {
+    const key = row.getAttribute("data-topic-key");
+    if (!key) return;
+    const checkbox = row.querySelector(".topic-checkbox");
+    const maxInput = row.querySelector(".topic-max-input");
+    if (!checkbox || !maxInput) return;
 
+    const t = topicsByKey[key];
     if (t) {
       checkbox.checked = !!t.enabled;
-      const maxStories = typeof t.maxStories === "number" ? t.maxStories : 0;
-      maxInput.value = String(Math.min(Math.max(maxStories, 0), 10));
+      let maxStories =
+        typeof t.maxStories === "number" ? t.maxStories : parseInt(maxInput.value || "0", 10);
+      if (Number.isNaN(maxStories) || maxStories < 0) maxStories = 0;
+      if (maxStories > 10) maxStories = 10;
+      maxInput.value = String(maxStories);
     } else {
-      // Defaults for new users
-      checkbox.checked = false;
-      maxInput.value = "3";
+      // defaults if backend has nothing
+      // leave existing defaults from HTML for now
     }
   });
 
-  syncModeUI();
+  syncTopicsDisabled();
 }
 
 // ===== LOAD / SAVE =====
 
 async function loadPreferences(email) {
-  const statusEl = qs("#prefs-status");
-  if (statusEl) {
-    statusEl.textContent = "Loading preferences…";
-  }
+  const statusEl = qs("#prefsStatus");
+  if (statusEl) statusEl.textContent = "Loading preferences…";
 
   try {
     const prefs = await callPrefsApi(
       `/api/preferences?email=${encodeURIComponent(email)}`,
       "GET"
     );
+
     applyPreferencesToForm(
       prefs && typeof prefs === "object"
         ? prefs
-        : { mode: "top10", topics: [] }
+        : { mode: "top10", lean: "neutral", topics: [] }
     );
 
-    if (statusEl) {
-      statusEl.textContent = "Preferences loaded.";
-    }
+    if (statusEl) statusEl.textContent = "Preferences loaded.";
   } catch (err) {
     console.error("Failed to load preferences:", err);
     if (statusEl) {
-      statusEl.textContent = "Could not load preferences. Using defaults.";
+      statusEl.textContent =
+        "Could not load preferences. Using defaults (Top 10 mode).";
     }
-    applyPreferencesToForm({ mode: "top10", topics: [] });
+    applyPreferencesToForm({ mode: "top10", lean: "neutral", topics: [] });
   }
 }
 
 async function savePreferences(email) {
-  const statusEl = qs("#prefs-status");
-  if (statusEl) {
-    statusEl.textContent = "Saving…";
-  }
+  const statusEl = qs("#prefsStatus");
+  if (statusEl) statusEl.textContent = "Saving…";
 
   const payload = collectPreferences(email);
 
   try {
     await callPrefsApi("/api/preferences", "POST", payload);
-    if (statusEl) {
-      statusEl.textContent = "Preferences saved.";
-    }
+    if (statusEl) statusEl.textContent = "Preferences saved.";
   } catch (err) {
     console.error("Failed to save preferences:", err);
     if (statusEl) {
@@ -262,27 +285,47 @@ async function savePreferences(email) {
 
 function init() {
   const email = getUserEmailFromToken();
-  const statusEl = qs("#prefs-status");
+  const statusEl = qs("#prefsStatus");
+  const loginPillText = qs("#prefsLoginStatusText");
+  const loginBtn = qs("#btnPrefsLogin");
+  const formEl = qs("#preferences-form");
+
+  // Wire “top 10” toggle regardless of login state
+  const top10Toggle = qs("#modeTop10");
+  if (top10Toggle) {
+    top10Toggle.addEventListener("change", syncTopicsDisabled);
+  }
+  syncTopicsDisabled();
 
   if (!email) {
     if (statusEl) {
       statusEl.textContent =
         "You must be logged in to edit your preferences.";
     }
-    const formEl = qs("#preferences-form");
+    if (loginPillText) loginPillText.textContent = "Not logged in";
+    if (loginBtn) {
+      loginBtn.textContent = "Login";
+      loginBtn.addEventListener("click", startLogin);
+    }
     if (formEl) {
       formEl.classList.add("prefs-form--disabled");
     }
     return;
   }
 
-  // Wire mode radios
-  const { top10, custom } = getModeRadios();
-  if (top10) top10.addEventListener("change", syncModeUI);
-  if (custom) custom.addEventListener("change", syncModeUI);
+  // Logged-in UI
+  if (loginPillText) loginPillText.textContent = email;
+  if (loginBtn) {
+    loginBtn.textContent = "Account";
+    loginBtn.addEventListener("click", () => {
+      window.location.href = "https://thenewspaper.site/billing.html";
+    });
+  }
+  if (formEl) {
+    formEl.classList.remove("prefs-form--disabled");
+  }
 
-  // Wire Save button
-  const saveBtn = qs("#prefs-save-btn");
+  const saveBtn = qs("#btnSavePrefs");
   if (saveBtn) {
     saveBtn.addEventListener("click", (e) => {
       e.preventDefault();
@@ -290,17 +333,6 @@ function init() {
     });
   }
 
-  // Back button (same style as billing page)
-  const backBtn = qs("#prefs-back-btn");
-  if (backBtn) {
-    backBtn.addEventListener("click", (e) => {
-      e.preventDefault();
-      window.location.href = "index.html";
-    });
-  }
-
-  // Initial UI + load from backend
-  syncModeUI();
   loadPreferences(email);
 }
 

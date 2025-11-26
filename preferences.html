@@ -47,37 +47,6 @@
       margin-bottom: 6px;
     }
 
-    .prefs-topics-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .pref-topic {
-      display: flex;
-      align-items: flex-start;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 14px;
-      background: rgba(15, 16, 40, 0.9);
-      border: 1px solid rgba(255, 255, 255, 0.03);
-    }
-
-    .pref-topic input[type="checkbox"] {
-      margin-top: 3px;
-      accent-color: var(--accent-2);
-    }
-
-    .pref-topic-main {
-      font-size: 13px;
-      font-weight: 500;
-    }
-
-    .pref-topic-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
-
     .prefs-inline {
       display: flex;
       align-items: center;
@@ -105,12 +74,121 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-top: 8px;
+      margin-top: 10px;
       font-size: 13px;
     }
 
     .toggle-row input[type="checkbox"] {
       accent-color: var(--accent-1);
+    }
+
+    .topics-section {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 18px;
+      background: rgba(7, 8, 30, 0.95);
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .topics-section.disabled {
+      opacity: 0.45;
+      pointer-events: none;
+      filter: grayscale(0.3);
+    }
+
+    .topic-list {
+      margin-top: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .topic-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(15, 16, 40, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    .topic-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .topic-checkbox {
+      margin-top: 3px;
+      accent-color: var(--accent-2);
+    }
+
+    .topic-text-main {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .topic-text-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .topic-max-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .topic-max-input {
+      width: 60px;
+      padding: 4px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(10, 11, 30, 0.95);
+      color: var(--text-main);
+      font-size: 13px;
+      text-align: center;
+      outline: none;
+    }
+
+    .topic-max-input:focus {
+      border-color: var(--accent-2);
+    }
+
+    .prefs-mode-note {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .perspective-row {
+      margin-top: 4px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 13px;
+    }
+
+    .perspective-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(10, 12, 40, 0.98);
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .perspective-pill input[type="radio"] {
+      accent-color: var(--accent-2);
     }
 
     .prefs-actions {
@@ -185,6 +263,11 @@
       text-decoration: underline;
     }
 
+    .prefs-form--disabled {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
     @media (max-width: 768px) {
       .prefs-main {
         grid-template-columns: minmax(0, 1fr);
@@ -216,63 +299,243 @@
 
     <main class="prefs-main">
       <section class="prefs-card">
-        <div>
-          <div class="prefs-title">Briefing preferences</div>
-          <div class="prefs-subtitle">
-            Choose the areas you care about and how deep you want the daily briefing
-            to go.
+        <form id="preferences-form" autocomplete="off">
+          <div>
+            <div class="prefs-title">Briefing preferences</div>
+            <div class="prefs-subtitle">
+              Choose the areas you care about and how deep you want the daily briefing
+              to go.
+            </div>
           </div>
-        </div>
 
-        <div>
-          <div class="prefs-section-label">Topics</div>
-          <div id="topicsGrid" class="prefs-topics-grid"></div>
-        </div>
+          <!-- DEPTH / TOP-10 TOGGLE -->
+          <div>
+            <div class="prefs-section-label">Depth</div>
 
-        <div>
-          <div class="prefs-section-label">Depth</div>
-          <div class="prefs-inline">
-            <label for="maxPerTopic">
-              Max stories per topic:
-            </label>
-            <input
-              type="number"
-              id="maxPerTopic"
-              min="1"
-              max="25"
-              step="1"
-              value="5"
-            />
-            <span class="prefs-subtitle">
-              We only show what we actually have for that topic — it may be fewer than this,
-              but never more than this number.
+            <div class="toggle-row">
+              <input type="checkbox" id="modeTop10" checked />
+              <label for="modeTop10">
+                Just give me the <strong>10 biggest stories</strong> each day.
+              </label>
+            </div>
+            <p class="prefs-subtitle">
+              When this is on, we ignore per-topic counts and send one list of the ten
+              most important stories that day.
+            </p>
+
+            <!-- Fine-tune area -->
+            <div id="topicsSection" class="topics-section disabled">
+              <div class="prefs-section-label" style="margin-bottom:4px;">
+                Fine-tune by topic
+              </div>
+              <p class="prefs-mode-note" id="prefs-mode-note">
+                Turn off “10 biggest stories” to set per-topic caps. We only show what
+                we have — these caps just limit how many stories you see for each area.
+              </p>
+
+              <div class="topic-list">
+                <div class="topic-row topic-row--1" data-topic-key="congress">
+                  <div class="topic-left">
+                    <input
+                      type="checkbox"
+                      class="topic-checkbox"
+                      id="topic-congress"
+                      checked
+                    />
+                    <div>
+                      <div class="topic-text-main">Congress</div>
+                      <div class="topic-text-sub">
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit sit amet.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="topic-max-wrap">
+                    <span>Max per day</span>
+                    <input
+                      type="number"
+                      class="topic-max-input"
+                      id="max-congress"
+                      min="0"
+                      max="10"
+                      step="1"
+                      value="5"
+                    />
+                  </div>
+                </div>
+
+                <div class="topic-row" data-topic-key="white_house">
+                  <div class="topic-left">
+                    <input
+                      type="checkbox"
+                      class="topic-checkbox"
+                      id="topic-white-house"
+                      checked
+                    />
+                    <div>
+                      <div class="topic-text-main">White House</div>
+                      <div class="topic-text-sub">
+                        Lorem ipsum dolor sit amet, sed do eiusmod tempor incididunt.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="topic-max-wrap">
+                    <span>Max per day</span>
+                    <input
+                      type="number"
+                      class="topic-max-input"
+                      id="max-white-house"
+                      min="0"
+                      max="10"
+                      step="1"
+                      value="5"
+                    />
+                  </div>
+                </div>
+
+                <div class="topic-row" data-topic-key="courts">
+                  <div class="topic-left">
+                    <input
+                      type="checkbox"
+                      class="topic-checkbox"
+                      id="topic-courts"
+                      checked
+                    />
+                    <div>
+                      <div class="topic-text-main">Courts</div>
+                      <div class="topic-text-sub">
+                        Lorem ipsum dolor sit amet, sed do eiusmod alit minim veniam.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="topic-max-wrap">
+                    <span>Max per day</span>
+                    <input
+                      type="number"
+                      class="topic-max-input"
+                      id="max-courts"
+                      min="0"
+                      max="10"
+                      step="1"
+                      value="4"
+                    />
+                  </div>
+                </div>
+
+                <div class="topic-row" data-topic-key="campaigns">
+                  <div class="topic-left">
+                    <input
+                      type="checkbox"
+                      class="topic-checkbox"
+                      id="topic-campaigns"
+                      checked
+                    />
+                    <div>
+                      <div class="topic-text-main">Campaigns</div>
+                      <div class="topic-text-sub">
+                        Lorem ipsum dolor sit amet, sed do eiusmod tempor urna.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="topic-max-wrap">
+                    <span>Max per day</span>
+                    <input
+                      type="number"
+                      class="topic-max-input"
+                      id="max-campaigns"
+                      min="0"
+                      max="10"
+                      step="1"
+                      value="4"
+                    />
+                  </div>
+                </div>
+
+                <div class="topic-row" data-topic-key="world">
+                  <div class="topic-left">
+                    <input
+                      type="checkbox"
+                      class="topic-checkbox"
+                      id="topic-world"
+                    />
+                    <div>
+                      <div class="topic-text-main">World &amp; foreign policy</div>
+                      <div class="topic-text-sub">
+                        Lorem ipsum dolor sit amet, sed do eiusmod tempor consequat.
+                      </div>
+                    </div>
+                  </div>
+                  <div class="topic-max-wrap">
+                    <span>Max per day</span>
+                    <input
+                      type="number"
+                      class="topic-max-input"
+                      id="max-world"
+                      min="0"
+                      max="10"
+                      step="1"
+                      value="3"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PERSPECTIVE -->
+          <div>
+            <div class="prefs-section-label">Perspective</div>
+            <div class="perspective-row">
+              <label class="perspective-pill">
+                <input
+                  type="radio"
+                  name="lean"
+                  value="neutral"
+                  id="lean-neutral"
+                  checked
+                />
+                Neutral
+              </label>
+              <label class="perspective-pill">
+                <input
+                  type="radio"
+                  name="lean"
+                  value="democrat"
+                  id="lean-democrat"
+                />
+                Democrat-leaning
+              </label>
+              <label class="perspective-pill">
+                <input
+                  type="radio"
+                  name="lean"
+                  value="republican"
+                  id="lean-republican"
+                />
+                Republican-leaning
+              </label>
+            </div>
+            <p class="prefs-subtitle" style="margin-top:6px;">
+              This doesn’t change which facts you see — it just lets the opinion and
+              analysis sections lean toward the lens you’re most comfortable with. If
+              you leave this on <strong>Neutral</strong>, we only show cross-spectrum
+              analysis.
+            </p>
+          </div>
+
+          <!-- ACTIONS -->
+          <div class="prefs-actions">
+            <button class="btn-save-prefs" id="btnSavePrefs" type="button">
+              Save preferences
+            </button>
+            <span class="prefs-status" id="prefsStatus">
+              Preferences load automatically if you’re logged in.
             </span>
           </div>
 
-          <div class="toggle-row">
-            <input type="checkbox" id="biggestTen" />
-            <label for="biggestTen">
-              Just give me the <strong>10 biggest stories</strong> each day.
-            </label>
-          </div>
-          <p class="prefs-subtitle" style="margin-top:4px;">
-            If this is on, we ignore per-topic counts and send one list of the ten
-            most important stories that day.
+          <p class="prefs-back-link">
+            ← <a href="https://thenewspaper.site/">Back to the main page</a>
           </p>
-        </div>
-
-        <div class="prefs-actions">
-          <button class="btn-save-prefs" id="btnSavePrefs" type="button">
-            Save preferences
-          </button>
-          <span class="prefs-status" id="prefsStatus">
-            Preferences load automatically if you’re logged in.
-          </span>
-        </div>
-
-        <p class="prefs-back-link">
-          ← <a href="https://thenewspaper.site/">Back to the main page</a>
-        </p>
+        </form>
       </section>
 
       <aside class="prefs-aside">
@@ -285,8 +548,9 @@
 
         <div class="prefs-aside-block">
           <strong>Good defaults</strong><br />
-          If you’re not sure where to start, pick a few core topics and set
-          3–5 items per topic — or just turn on the “10 biggest stories” switch.
+          If you’re not sure where to start, just leave “10 biggest stories”
+          on. When you’re ready, turn it off and use the topic caps to shape
+          where the briefing spends the most time.
         </div>
       </aside>
     </main>
