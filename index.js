@@ -21,32 +21,26 @@ function clearTokens() {
 }
 
 // Core API: ALWAYS use the ID TOKEN (what server.ts expects).
-
 async function callApi(path, options = {}) {
   const tokens = getTokens();
   const idToken = tokens && tokens.id_token;
-
   if (!idToken) {
     throw new Error("Not logged in");
   }
-
   const headers = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
     Authorization: `Bearer ${idToken}`, // <-- IMPORTANT
   };
-
   const res = await fetch(`${API_BASE_URL}${path}`, {
     ...options,
     headers,
   });
-
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     console.error("API error", res.status, text);
     throw new Error(`API error ${res.status}`);
   }
-
   return res.json();
 }
 
@@ -76,7 +70,6 @@ async function createCodeChallengeAndVerifier() {
 function startLogin() {
   createCodeChallengeAndVerifier().then(({ verifier, challenge }) => {
     sessionStorage.setItem("newsroom_pkce_verifier", verifier);
-
     const params = new URLSearchParams({
       client_id: COGNITO_CLIENT_ID,
       response_type: "code",
@@ -85,7 +78,6 @@ function startLogin() {
       code_challenge_method: "S256",
       code_challenge: challenge,
     });
-
     window.location.href = `${COGNITO_DOMAIN}/oauth2/authorize?${params.toString()}`;
   });
 }
@@ -95,29 +87,23 @@ function logoutToHostedUI() {
     client_id: COGNITO_CLIENT_ID,
     logout_uri: "https://thenewspaper.site/",
   });
-
   clearTokens();
   window.location.href = `${COGNITO_DOMAIN}/logout?${params.toString()}`;
 }
 
 // ===== Subscription badge =====
-
 async function refreshSubscriptionBadge() {
   const sideText = document.getElementById("subStatusSide");
   const chipText = document.getElementById("subStatusChip");
   const manageSub = document.getElementById("btnManageBillingSub");
-
   if (sideText) sideText.textContent = "Checking…";
   if (chipText) chipText.textContent = "Checking…";
   if (manageSub) manageSub.textContent = "Checking…";
-
   try {
     const data = await callApi("/api/subscription-status");
-
     if (!data || !data.status) {
       throw new Error("Bad response");
     }
-
     if (data.status === "active") {
       if (sideText) sideText.textContent = "Active subscriber";
       if (chipText) chipText.textContent = "Full briefing unlocked";
@@ -128,10 +114,8 @@ async function refreshSubscriptionBadge() {
       if (manageSub) manageSub.textContent = "Restart subscription";
     } else {
       if (sideText) sideText.textContent = "On free preview";
-      if (chipText)
-        chipText.textContent = "Free preview · Upgrade for full brief";
-      if (manageSub)
-        manageSub.textContent = "Start subscription for $1.99 / mo";
+      if (chipText) chipText.textContent = "Free preview · Upgrade for full brief";
+      if (manageSub) manageSub.textContent = "Start subscription for $0.99 / mo";
     }
   } catch (err) {
     console.error("Error refreshing subscription status:", err);
@@ -145,9 +129,7 @@ function initAuthUI() {
   const loginBtn = document.querySelector(".btn-login");
   const labelSpan = document.querySelector(".btn-login-label");
   if (!loginBtn) return;
-
   const tokens = getTokens();
-
   if (tokens && tokens.id_token) {
     if (labelSpan) labelSpan.textContent = "Account";
     loginBtn.addEventListener("click", () => {
@@ -163,19 +145,19 @@ function initButtons() {
   const sampleBtn = document.getElementById("btnViewSample");
   const billingBtn = document.getElementById("btnManageBilling");
   const prefsBtn = document.getElementById("btnPreferences");
-
   if (sampleBtn) {
     sampleBtn.addEventListener("click", () => {
-      alert("Sample briefings will be available soon in the beta.");
+      const overlay = document.getElementById("sampleModalOverlay");
+      if (overlay) {
+        overlay.style.display = "block";
+      }
     });
   }
-
   if (billingBtn) {
     billingBtn.addEventListener("click", () => {
       window.location.href = "https://thenewspaper.site/billing.html";
     });
   }
-
   if (prefsBtn) {
     prefsBtn.addEventListener("click", () => {
       window.location.href = "https://thenewspaper.site/preferences.html";
@@ -183,7 +165,26 @@ function initButtons() {
   }
 }
 
+// Initialize the sample modal: attach close handlers
+function initSampleModal() {
+  const overlay = document.getElementById("sampleModalOverlay");
+  const closeBtn = document.getElementById("sampleCloseBtn");
+  if (!overlay) return;
+  if (closeBtn) {
+    closeBtn.addEventListener("click", () => {
+      overlay.style.display = "none";
+    });
+  }
+  overlay.addEventListener("click", (e) => {
+    // Close the modal when clicking outside the inner content
+    if (e.target === overlay) {
+      overlay.style.display = "none";
+    }
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   initAuthUI();
   initButtons();
+  initSampleModal();
 });
