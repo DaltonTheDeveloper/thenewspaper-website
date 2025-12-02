@@ -1,351 +1,519 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>The Newsroom · Daily Political Briefing</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="stylesheet" href="index.css" />
-</head>
-<body>
-  <div class="page" id="top">
-    <header>
-      <div class="brand">
-        <div class="brand-logo" aria-hidden="true"></div>
-        <div class="brand-labels">
-          <div class="brand-text-title">The Newsroom</div>
-          <div class="brand-text-sub">Daily U.S. politics, debriefed</div>
-        </div>
-      </div>
-
-      <button class="btn-login" type="button">
-        <span class="btn-login-label">Log in</span>
-        <span class="btn-login-chevron">↗</span>
-      </button>
-    </header>
-
-    <main class="layout">
-      <section class="card-main">
-        <div class="main-header-row">
-          <div class="main-header-text">
-            <h1>One clean briefing. Every weekday.</h1>
-            <p>
-              We track U.S. politics across outlets every day, then send one
-              briefing that tells you what actually happened — not just what
-              went viral.
-            </p>
-          </div>
-
-          <div class="debrief-pill">
-            <div class="pill-label">Today’s debrief</div>
-            <div class="pill-value">
-              <span class="pill-value-main">10–15 min</span>
-              <span class="pill-value-sub">to get fully caught up</span>
-            </div>
+  <head>
+    <meta charset="UTF-8" />
+    <title>The Newsroom · Daily US politics, debriefed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="index.css" />
+    <script src="index.js" defer></script>
+  </head>
+  <body>
+    <div class="page" id="top">
+      <!-- Header -->
+      <header>
+        <div class="brand">
+          <div class="brand-logo"></div>
+          <div class="brand-labels">
+            <div class="brand-text-title">The Newsroom</div>
+            <div class="brand-text-sub">Daily U.S. politics, debriefed</div>
           </div>
         </div>
 
-        <section class="hero-grid">
-          <div class="hero-main">
-            <div class="hero-email">
-              <div class="hero-email-header">
-                <div class="hero-email-meta">
-                  <span class="hero-email-label">Preview · Daily U.S. politics briefing</span>
-                  <span class="hero-email-date">Example briefing</span>
-                </div>
-                <div class="hero-email-tag">
-                  <span class="hero-email-tag-dot"></span>
-                  <span id="subStatusChip">Checking subscription…</span>
-                </div>
-              </div>
+        <div class="right-header">
+          <div class="pill">
+            <span class="pill-dot"></span>
+            <span class="pill-label" id="subStatusChip">Checking…</span>
+          </div>
 
-              <div class="hero-email-body">
-                <p class="hero-email-intro">
-                  Here’s how a typical weekday briefing will look in your inbox.
-                  Think of this as your “one tab open” for what actually happened
-                  in U.S. politics.
-                </p>
+          <button class="btn-login" type="button">
+            <span class="btn-login-label">Log in</span>
+            <span class="icon">↗</span>
+          </button>
+        </div>
+      </header>
 
-                <!-- Replaced list with simple paragraphs to reduce visual clutter -->
-                <p><strong>Up top:</strong> a TL;DR that gives you the day’s main storyline in a few bullets.</p>
-                <p><strong>Then by section:</strong> Congress, White House, courts, campaigns, global, and “longer reads worth your time.”</p>
-                <p><strong>Hover-to-define:</strong> complex terms and institutions get plain‑language tooltips you can hover for a quick explainer.</p>
-
-                <p class="hero-email-outro">
-                  Below is a mock of the sections you’ll see in the real email.
-                  In the live product, these sections are filled with that day’s
-                  reporting, with links out to original sources.
-                </p>
-              </div>
+      <main class="layout">
+        <!-- Main explainer card -->
+        <section class="card-main">
+          <div class="main-header-row">
+            <div class="headline">
+              <div class="headline-kicker">One clean briefing. Every weekday.</div>
+              <h1 class="headline-main">
+                U.S. politics, without the doomscroll.
+              </h1>
+              <p class="headline-sub">
+                We track U.S. politics across outlets every day, then send one
+                briefing that tells you what actually happened — not just what
+                went viral.
+              </p>
             </div>
 
-            <aside class="hero-side">
-              <div class="hero-side-header">
-                <div class="hero-side-label">For people who care about politics,</div>
-                <div class="hero-side-title">but don’t want it to take over their life.</div>
+            <div class="status-chip">
+              <span class="status-dot"></span>
+              <span>
+                Today’s debrief is about <strong>10–15 minutes</strong> to get
+                fully caught up.
+              </span>
+            </div>
+          </div>
+
+          <div class="main-body">
+            <!-- TL;DR preview -->
+            <section class="tldr">
+              <div class="tldr-label">A weekday email that feels human</div>
+              <ul class="tldr-list">
+                <li>
+                  <span class="tldr-bullet"></span>
+                  <span class="tldr-text">
+                    <strong>Up top:</strong> a TL;DR that gives you the day’s
+                    big picture in a few sentences.
+                  </span>
+                </li>
+                <li>
+                  <span class="tldr-bullet"></span>
+                  <span class="tldr-text">
+                    <strong>Then by section:</strong> Congress, the White House,
+                    courts, campaigns, and world — with “longer reads worth your
+                    time” clearly labeled.
+                  </span>
+                </li>
+                <li>
+                  <span class="tldr-bullet"></span>
+                  <span class="tldr-text">
+                    <strong>Hover-to-define:</strong> complex terms and
+                    institutions get quick plain-language tooltips so you can
+                    follow the story without opening a new tab.
+                  </span>
+                </li>
+              </ul>
+            </section>
+
+            <!-- Meta / rules -->
+            <aside class="meta-card">
+              <div class="meta-row">
+                <div>
+                  <div class="meta-label">Perspective</div>
+                  <div class="meta-value">Neutral by default</div>
+                </div>
+                <span class="meta-badge">You can tilt it later</span>
               </div>
-              <div class="hero-side-body">
-                <p>
-                  The goal isn’t to chase every outrage cycle. It’s to give you a
-                  grounded, reality-based sense of what changed today — in Congress,
-                  the courts, the White House, and the broader system.
-                </p>
-                <p>
-                  Under the hood, we use an AI research assistant to sift through
-                  real reporting across outlets and wire services. Then we apply a
-                  fixed set of rules so the daily briefing is consistent,
-                  transparent, and bias-aware.
-                </p>
-                <p class="hero-side-note">
-                  You’ll always know <em>what’s signal vs. what’s noise</em>, and you’ll
-                  never have to doomscroll Twitter to get there.
-                </p>
+              <div class="meta-row">
+                <div>
+                  <div class="meta-label">Source mix</div>
+                  <div class="meta-value">
+                    Cross-spectrum — from straight-news desks to analysis.
+                  </div>
+                </div>
               </div>
+              <p class="meta-note">
+                Under the hood, we use an AI research assistant to sift through
+                real reporting across outlets and wire services. Then we apply a
+                fixed set of rules so the daily briefing is consistent,
+                transparent, and bias-aware.
+              </p>
             </aside>
           </div>
 
-          <aside class="hero-meta">
-            <div class="meta-pill">How the briefing works</div>
-            <div class="meta-card">
-              <h2>Rules the algorithm has to follow</h2>
-              <!-- Simplified algorithm rules to plain text -->
-              <p><strong>Source‑first:</strong> summaries are always tied to specific pieces of reporting (with links).</p>
-              <p><strong>Cross‑spectrum:</strong> we sample outlets across the political spectrum and from straight‑news desks.</p>
-              <p><strong>No vibes‑only narratives:</strong> if it’s just a take, it doesn’t lead the briefing.</p>
-              <p><strong>Bias‑aware:</strong> we track which outlets we’re leaning on and balance accordingly.</p>
-              <p class="meta-note">
-                Built for people who follow politics casually but want to stay
-                grounded in real reporting — not just the loudest timelines.
-              </p>
+          <!-- How the briefing works -->
+          <section class="sections" aria-label="How the briefing works">
+            <div class="sections-header">
+              <h2 class="sections-title">How the briefing works</h2>
             </div>
-          </aside>
+            <div class="sections-body">
+              <div class="section-content">
+                <p>
+                  <strong>Sources-first.</strong> Summaries are always tied back
+                  to specific pieces of reporting — with links.
+                </p>
+                <p>
+                  <strong>Cross-spectrum.</strong> We sample outlets across the
+                  political spectrum and from straight-news desks.
+                </p>
+                <p>
+                  <strong>No vibe-only narratives.</strong> If it’s just a take,
+                  it doesn’t lead the briefing.
+                </p>
+                <p>
+                  <strong>Bias-aware.</strong> We track which outlets we’re
+                  leaning on and balance accordingly.
+                </p>
+                <p>
+                  Built for people who follow politics casually but want to stay
+                  grounded in real reporting — not just the loudest timelines.
+                </p>
+              </div>
+            </div>
+          </section>
         </section>
 
-        <section class="sections" aria-label="Briefing sections">
-          <div class="sections-header">
-            <div class="sections-title">What the email looks like</div>
-            <div class="sections-nav">
-              <button class="chip active" type="button">Congress</button>
-              <button class="chip" type="button">White House</button>
-              <button class="chip" type="button">Courts</button>
-              <button class="chip" type="button">Campaigns</button>
-              <button class="chip" type="button">World</button>
-              <button class="chip" type="button">Explainers</button>
+        <!-- Sidebar: subscription + actions -->
+        <aside class="card-side">
+          <div class="side-header">
+            <h2 class="side-title">Subscription</h2>
+            <div class="substatus-pill">
+              <span class="substatus-dot"></span>
+              <span id="subStatusSide">Checking…</span>
             </div>
           </div>
 
-          <div class="sections-body">
-            <details class="section" open>
-              <summary>
-                <span class="section-title-main">Congress · What passed, what stalled</span>
-                <span class="section-tag">Hover-to-define terms</span>
-              </summary>
-              <div class="section-content">
-                <p>
-                  Think of this as your running log of what Congress actually did today: which bills moved, which died quietly in committee, and where the leadership fights really are.
-                </p>
-                <p>
-                  In the real briefing, this section is where you’ll see:
-                </p>
-                <ul>
-                  <li>Key votes (with margins and who crossed party lines)</li>
-                  <li>Major hearings and subpoenas</li>
-                  <li>Leadership fights and whip counts</li>
-                </ul>
+          <div class="side-body">
+            <p>
+              The beta price is <strong>$0.99 / month</strong>. While we’re in
+              early testing, that gets you:
+            </p>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-top:2px;">
+              <div>
+                ✅ Full weekday briefings (not just the preview).
               </div>
-            </details>
-
-            <details class="section">
-              <summary>
-                <span class="section-title-main">White House · What the administration did</span>
-                <span class="section-tag">Executive orders, rules, and messaging</span>
-              </summary>
-              <div class="section-content">
-                <p>
-                  We track what the administration actually did — rules, orders, guidance, and key briefings — plus how it will actually affect people and institutions.
-                </p>
+              <div>
+                ✅ Archive access while you’re subscribed.
               </div>
-            </details>
-
-            <details class="section">
-              <summary>
-                <span class="section-title-main">Courts · Cases that actually matter</span>
-                <span class="section-tag">SCOTUS + key lower-court rulings</span>
-              </summary>
-              <div class="section-content">
-                <p>
-                  Instead of every filing, we track the cases that actually change the landscape, and we explain the stakes in plain English.
-                </p>
+              <div>
+                ✅ Ability to suggest topics &amp; recurring explainer terms.
               </div>
-            </details>
+            </div>
 
-            <details class="section">
-              <summary>
-                <span class="section-title-main">Campaigns · Elections, polls, and money</span>
-                <span class="section-tag">Without horse-race brain</span>
-              </summary>
-              <div class="section-content">
-                <p>
-                  When elections heat up, this section keeps you grounded: polls that actually matter, money flows, and structural factors — not just vibes.
-                </p>
-              </div>
-            </details>
+            <div class="side-buttons" style="margin-top:10px;">
+              <button
+                id="btnManageBilling"
+                class="btn-wide-primary"
+                type="button"
+              >
+                <span class="btn-wide-label">
+                  <span class="btn-wide-main" id="btnManageBillingSub">
+                    Checking…
+                  </span>
+                  <span class="btn-wide-sub">
+                    Billed monthly via Stripe. Cancel in a couple of clicks.
+                  </span>
+                </span>
+                <span class="btn-wide-icon">→</span>
+              </button>
 
-            <details class="section">
-              <summary>
-                <span class="section-title-main">World · U.S. foreign policy &amp; global stakes</span>
-                <span class="section-tag">Geopolitics, alliances, conflicts</span>
-              </summary>
-              <div class="section-content">
-                <p>
-                  We connect the dots between U.S. policy and global events: treaties, conflicts, and big-picture moves that shape the next decade — not just the next news cycle.
-                </p>
-              </div>
-            </details>
+              <button
+                id="btnViewSample"
+                class="btn-wide-ghost"
+                type="button"
+              >
+                <span class="btn-wide-label">
+                  <span class="btn-wide-main">View a sample briefing</span>
+                  <span class="btn-wide-sub">
+                    See the format before you subscribe.
+                  </span>
+                </span>
+                <span class="btn-wide-icon">👁</span>
+              </button>
 
-            <details class="section">
-              <summary>
-                <span class="section-title-main">Explainers · The recurring “what does that mean?”s</span>
-                <span class="section-tag">Saved &amp; reused over time</span>
-              </summary>
-              <div class="section-content">
-                <p>
-                  When a concept keeps coming up — like “budget reconciliation” or “Chevron deference” — we turn the explainer into a reusable card that you can hover or tap when it shows up again.
-                </p>
-                <p>
-                  Over time, this builds your own politics “internal wiki” without you having to memorize everything at once.
-                </p>
-              </div>
-            </details>
-
-            <div class="back-to-top-row">
-              <button class="back-to-top" type="button" onclick="window.scrollTo({ top: 0, behavior: 'smooth' })">
-                <span class="back-to-top-icon">↑</span>
-                <span>Back to top</span>
+              <button
+                id="btnPreferences"
+                class="btn-wide-ghost"
+                type="button"
+              >
+                <span class="btn-wide-label">
+                  <span class="btn-wide-main">Email preferences</span>
+                  <span class="btn-wide-sub">
+                    Choose topics &amp; briefing length.
+                  </span>
+                </span>
+                <span class="btn-wide-icon">⚙</span>
               </button>
             </div>
-          </div>
-        </section>
-      </section>
 
-      <aside class="card-side">
-        <div class="side-header">
-          <div class="side-title">Subscription</div>
-          <div class="substatus-pill">
-            <span class="substatus-dot"></span>
-            <span id="subStatusSide">Checking…</span>
+            <p class="side-note">
+              You can cancel anytime in a couple of clicks via Stripe. No
+              tricks, no annual lock-in.
+            </p>
+          </div>
+        </aside>
+      </main>
+
+      <footer>
+        <p>
+          Built by The Newsroom. Questions or feedback? Email
+          <a href="mailto:hello@thenewspaper.site">hello@thenewspaper.site</a>.
+        </p>
+      </footer>
+    </div>
+
+    <!-- Sample briefing modal (opens from “View a sample briefing”) -->
+    <div
+      id="sampleModalOverlay"
+      style="
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.78);
+        z-index: 9999;
+        padding: 32px 16px;
+        overflow-y: auto;
+      "
+    >
+      <div
+        style="
+          max-width: 760px;
+          margin: 0 auto;
+          background: #050512;
+          border-radius: 16px;
+          border: 1px solid rgba(255, 255, 255, 0.24);
+          padding: 20px 20px 24px;
+          position: relative;
+          color: #f5f5ff;
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+            sans-serif;
+        "
+      >
+        <button
+          id="sampleCloseBtn"
+          type="button"
+          aria-label="Close sample briefing"
+          style="
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            border: none;
+            background: transparent;
+            color: #a3a3c7;
+            font-size: 20px;
+            cursor: pointer;
+          "
+        >
+          ×
+        </button>
+
+        <h1 style="margin: 0 0 4px 0; font-size: 22px;">
+          The Newsroom · Daily Briefing
+        </h1>
+        <p style="margin: 4px 0 0 0; color: #a3a3c7; font-size: 13px;">
+          2025-12-01 · Perspective: <strong>neutral</strong>
+        </p>
+
+        <hr
+          style="
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.16);
+            margin: 16px 0;
+          "
+        />
+
+        <p style="font-size: 13px; color: #a3a3c7; margin-bottom: 10px;">
+          Here’s what a typical weekday briefing looks like in your inbox. This
+          sample shows the <strong>top story</strong> from each section.
+        </p>
+
+        <!-- Sections chips -->
+        <div style="margin-bottom: 12px;">
+          <span
+            style="
+              display: inline-block;
+              margin: 0 6px 6px 0;
+              padding: 4px 10px;
+              border-radius: 999px;
+              background: #151735;
+              color: #6fa8ff;
+              font-size: 11px;
+            "
+            >Congress</span
+          >
+          <span
+            style="
+              display: inline-block;
+              margin: 0 6px 6px 0;
+              padding: 4px 10px;
+              border-radius: 999px;
+              background: #151735;
+              color: #6fa8ff;
+              font-size: 11px;
+            "
+            >White House</span
+          >
+          <span
+            style="
+              display: inline-block;
+              margin: 0 6px 6px 0;
+              padding: 4px 10px;
+              border-radius: 999px;
+              background: #151735;
+              color: #6fa8ff;
+              font-size: 11px;
+            "
+            >Courts</span
+          >
+          <span
+            style="
+              display: inline-block;
+              margin: 0 6px 6px 0;
+              padding: 4px 10px;
+              border-radius: 999px;
+              background: #151735;
+              color: #6fa8ff;
+              font-size: 11px;
+            "
+            >Campaigns</span
+          >
+          <span
+            style="
+              display: inline-block;
+              margin: 0 6px 6px 0;
+              padding: 4px 10px;
+              border-radius: 999px;
+              background: #151735;
+              color: #6fa8ff;
+              font-size: 11px;
+            "
+            >World &amp; foreign policy</span
+          >
+        </div>
+
+        <!-- Congress -->
+        <h2 style="margin-top: 18px; font-size: 18px;">Congress</h2>
+        <div
+          style="
+            margin-top: 8px;
+            border-radius: 10px;
+            background: #151735;
+            padding: 12px 14px;
+          "
+        >
+          <div
+            style="
+              font-weight: 600;
+              font-size: 15px;
+              margin-bottom: 4px;
+            "
+          >
+            Congressional reviews of Trump’s boat strikes gain bipartisan support
+          </div>
+          <div style="font-size: 13px; line-height: 1.5;">
+            <strong>TL;DR:</strong> Lawmakers from both parties support
+            congressional reviews of U.S. military strikes on suspected
+            drug-smuggling vessels, after reports that Defense Secretary Pete
+            Hegseth ordered all crew members killed in a September 2 attack.
           </div>
         </div>
 
-        <div class="side-body">
-          <p>
-            The beta price is <strong>$0.99 / month</strong>. While we’re in early testing, that gets you:
-          </p>
-          <!-- Converted feature list to individual paragraphs for a cleaner look -->
-          <p>✅ Full weekday briefings (not just the preview)</p>
-          <p>✅ Archive access while you’re subscribed</p>
-          <p>✅ Ability to suggest topics & recurring explainer terms</p>
-
-          <div class="side-buttons">
-            <button class="btn-wide-primary" type="button" id="btnManageBilling">
-              <span class="btn-wide-label">
-                <span class="btn-wide-main">Manage billing</span>
-                <span class="btn-wide-sub" id="btnManageBillingSub">
-                  Open Stripe billing portal
-                </span>
-              </span>
-              <span class="btn-wide-icon">↗</span>
-            </button>
-
-            <button class="btn-wide-ghost" type="button" id="btnPreferences">
-              <span class="btn-wide-label">
-                <span class="btn-wide-main">Email preferences</span>
-                <span class="btn-wide-sub">
-                  Choose topics &amp; briefing length
-                </span>
-              </span>
-              <span class="btn-wide-icon">⚙</span>
-            </button>
-
-            <button class="btn-wide-ghost" type="button" id="btnViewSample">
-              <span class="btn-wide-label">
-                <span class="btn-wide-main">View a sample briefing</span>
-                <span class="btn-wide-sub">
-                  See the format before subscribing
-                </span>
-              </span>
-              <span class="btn-wide-icon">→</span>
-            </button>
+        <!-- White House -->
+        <h2 style="margin-top: 20px; font-size: 18px;">White House</h2>
+        <div
+          style="
+            margin-top: 8px;
+            border-radius: 10px;
+            background: #151735;
+            padding: 12px 14px;
+          "
+        >
+          <div
+            style="
+              font-weight: 600;
+              font-size: 15px;
+              margin-bottom: 4px;
+            "
+          >
+            Trump administration limits “no tax on tips” policy
           </div>
-
-          <p class="side-note">
-            You can cancel anytime in a couple of clicks via Stripe. No tricks, no annual lock-in.
-          </p>
-        </div>
-      </aside>
-    </main>
-
-    <footer>
-      Built on top of real reporting from outlets across the spectrum.
-      We’ll always link out so you can read more from the original sources.
-      · <a href="https://thenewspaper.site/billing.html">Billing &amp; subscription settings</a>
-    </footer>
-  </div>
-
-  <!-- Sample briefing modal overlay -->
-  <div id="sampleModalOverlay" style="display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:9999; overflow-y:auto; padding:40px 20px;">
-    <div style="position:relative; max-width:720px; margin:0 auto;">
-      <button id="sampleCloseBtn" style="position:absolute; top:10px; right:10px; background:none; border:none; color:#ffffff; font-size:24px; cursor:pointer;">×</button>
-      <!-- Trimmed sample briefing content showing the top story of each section -->
-      <div style="font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;color:#f5f5ff;padding:16px">
-        <div style="max-width:720px;margin:0 auto;background:#111324;border-radius:12px;padding:24px;border:1px solid rgba(255,255,255,0.12)">
-          <h1 style="margin:0 0 4px 0;font-size:24px">The Newsroom · Daily Briefing</h1>
-          <p style="margin:4px 0 0 0;color:#a3a3c7;font-size:14px">2025-12-01</p>
-          <p style="margin:12px 0 0 0;font-size:14px">Perspective: <strong>neutral</strong></p>
-          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.12);margin:16px 0">
-          <p style="font-size:13px;color:#a3a3c7;margin:0 0 8px 0">Sections:</p>
-          <div style="margin-bottom:12px">
-            <a href="#sample_congress" style="display:inline-block;margin:0 6px 6px 0;padding:4px 10px;border-radius:999px;background:#151735;color:#6fa8ff;text-decoration:none;font-size:12px">Congress</a>
-            <a href="#sample_white_house" style="display:inline-block;margin:0 6px 6px 0;padding:4px 10px;border-radius:999px;background:#151735;color:#6fa8ff;text-decoration:none;font-size:12px">White House</a>
-            <a href="#sample_courts" style="display:inline-block;margin:0 6px 6px 0;padding:4px 10px;border-radius:999px;background:#151735;color:#6fa8ff;text-decoration:none;font-size:12px">Courts</a>
-            <a href="#sample_campaigns" style="display:inline-block;margin:0 6px 6px 0;padding:4px 10px;border-radius:999px;background:#151735;color:#6fa8ff;text-decoration:none;font-size:12px">Campaigns</a>
-            <a href="#sample_world" style="display:inline-block;margin:0 6px 6px 0;padding:4px 10px;border-radius:999px;background:#151735;color:#6fa8ff;text-decoration:none;font-size:12px">World &amp; Foreign Policy</a>
-          </div>
-          <hr style="border:none;border-top:1px solid rgba(255,255,255,0.12);margin:8px 0 16px">
-          <a id="sample_congress"></a>
-          <h2 style="margin-top:4px;font-size:18px">Congress</h2>
-          <div style="margin-top:16px;border-radius:10px;background:#151735;padding:12px 14px">
-            <div style="font-weight:600;font-size:15px;margin-bottom:4px"><strong>Congressional reviews of Trump's boat strikes gain bipartisan support</strong></div>
-            <div style="font-size:14px;line-height:1.5"><strong>TL;DR:</strong> Lawmakers from both parties support congressional reviews of U.S. military strikes on suspected drug‑smuggling vessels, following reports that Defense Secretary Pete Hegseth ordered all crew members killed in a September 2 attack.</div>
-          </div>
-          <a id="sample_white_house"></a>
-          <h2 style="margin-top:24px;font-size:18px">White House</h2>
-          <div style="margin-top:16px;border-radius:10px;background:#151735;padding:12px 14px">
-            <div style="font-weight:600;font-size:15px;margin-bottom:4px"><strong>Trump administration limits 'no tax on tips' policy to exclude earnings from 'pornographic activity'</strong></div>
-            <div style="font-size:14px;line-height:1.5"><strong>TL;DR:</strong> The Trump administration is proposing to exclude tips earned from &quot;pornographic activity&quot; from a new tax break for tipped workers, raising questions about how the IRS will enforce the rule.</div>
-          </div>
-          <a id="sample_courts"></a>
-          <h2 style="margin-top:24px;font-size:18px">Courts</h2>
-          <div style="margin-top:16px;border-radius:10px;background:#151735;padding:12px 14px">
-            <div style="font-weight:600;font-size:15px;margin-bottom:4px"><strong>Federal Appeals Court Rules Alina Habba Cannot Serve as U.S. Attorney in New Jersey</strong></div>
-            <div style="font-size:14px;line-height:1.5"><strong>TL;DR:</strong> A federal appeals court ruled that Alina Habba has been serving unlawfully as U.S. attorney in New Jersey, disqualifying her from the role.</div>
-          </div>
-          <a id="sample_campaigns"></a>
-          <h2 style="margin-top:24px;font-size:18px">Campaigns</h2>
-          <div style="margin-top:16px;border-radius:10px;background:#151735;padding:12px 14px">
-            <div style="font-weight:600;font-size:15px;margin-bottom:4px"><strong>Several Georgia 2020 Election Officials Seek Higher Office</strong></div>
-            <div style="font-size:14px;line-height:1.5"><strong>TL;DR:</strong> Several officials involved in the 2020 election dispute in Georgia are now running for higher office.</div>
-          </div>
-          <a id="sample_world"></a>
-          <h2 style="margin-top:24px;font-size:18px">World &amp; Foreign Policy</h2>
-          <div style="margin-top:16px;border-radius:10px;background:#151735;padding:12px 14px">
-            <div style="font-weight:600;font-size:15px;margin-bottom:4px"><strong>U.S. and Ukraine Hold Talks on Ending Russia War, Envoy Heads to Moscow</strong></div>
-            <div style="font-size:14px;line-height:1.5"><strong>TL;DR:</strong> U.S. and Ukrainian officials held four hours of talks aimed at ending the war between Russia and Ukraine, with a U.S. envoy scheduled to visit Moscow soon.</div>
+          <div style="font-size: 13px; line-height: 1.5;">
+            <strong>TL;DR:</strong> The Trump administration plans to exclude
+            tips earned from “pornographic activity” from a new tax break for
+            tipped workers, raising questions about how the IRS would enforce
+            the rule.
           </div>
         </div>
+
+        <!-- Courts -->
+        <h2 style="margin-top: 20px; font-size: 18px;">Courts</h2>
+        <div
+          style="
+            margin-top: 8px;
+            border-radius: 10px;
+            background: #151735;
+            padding: 12px 14px;
+          "
+        >
+          <div
+            style="
+              font-weight: 600;
+              font-size: 15px;
+              margin-bottom: 4px;
+            "
+          >
+            Appeals court rules Alina Habba cannot serve as U.S. attorney in New
+            Jersey
+          </div>
+          <div style="font-size: 13px; line-height: 1.5;">
+            <strong>TL;DR:</strong> A federal appeals court ruled that Alina
+            Habba has been serving unlawfully as U.S. attorney in New Jersey,
+            disqualifying her from the role and potentially disrupting ongoing
+            prosecutions.
+          </div>
+        </div>
+
+        <!-- Campaigns -->
+        <h2 style="margin-top: 20px; font-size: 18px;">Campaigns</h2>
+        <div
+          style="
+            margin-top: 8px;
+            border-radius: 10px;
+            background: #151735;
+            padding: 12px 14px;
+          "
+        >
+          <div
+            style="
+              font-weight: 600;
+              font-size: 15px;
+              margin-bottom: 4px;
+            "
+          >
+            Georgia 2020 election officials seek higher office
+          </div>
+          <div style="font-size: 13px; line-height: 1.5;">
+            <strong>TL;DR:</strong> Several officials involved in Georgia’s 2020
+            election fights are now running for higher office, shaping how
+            future elections are overseen in a critical swing state.
+          </div>
+        </div>
+
+        <!-- World & Foreign Policy -->
+        <h2 style="margin-top: 20px; font-size: 18px;">
+          World &amp; foreign policy
+        </h2>
+        <div
+          style="
+            margin-top: 8px;
+            border-radius: 10px;
+            background: #151735;
+            padding: 12px 14px;
+          "
+        >
+          <div
+            style="
+              font-weight: 600;
+              font-size: 15px;
+              margin-bottom: 4px;
+            "
+          >
+            U.S. and Ukraine hold talks on ending Russia war
+          </div>
+          <div style="font-size: 13px; line-height: 1.5;">
+            <strong>TL;DR:</strong> U.S. and Ukrainian officials held four hours
+            of talks aimed at ending the war with Russia, with a U.S. envoy set
+            to visit Moscow — an early test of whether diplomacy can gain real
+            traction.
+          </div>
+        </div>
+
+        <p
+          style="
+            margin-top: 18px;
+            font-size: 12px;
+            color: #a3a3c7;
+            text-align: right;
+          "
+        >
+          That’s roughly how much fits into a single weekday email — plus
+          section-level “why it matters” notes and links back to original
+          reporting.
+        </p>
       </div>
     </div>
-  </div>
-
-  <script src="index.js"></script>
-</body>
+  </body>
 </html>
